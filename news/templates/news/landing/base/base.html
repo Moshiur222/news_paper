@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="bn" id="htmlRoot">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="pageTitle">{% block title %}দৈনিক সংবাদ — আজকের সংবাদ{% endblock title %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700;800;900&family=Playfair+Display:wght@400;600;700;800;900&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --red:#c0392b; --dark-red:#96281b; --black:#111;
+      --dark:#1a1a1a; --mid:#3d3d3d; --muted:#777;
+      --light-bg:#f5f5f0; --border:#e0e0d8;
+      --white:#fff; --gold:#d4a017; --accent-blue:#1a3c5e;
+    }
+    *{box-sizing:border-box;}
+
+    /* ─── FONT SWITCHING ─── */
+    body.lang-bn { font-family:'Hind Siliguri',sans-serif; font-size:15px; line-height:1.75; }
+    body.lang-en { font-family:'Lora',serif; font-size:15px; line-height:1.7; }
+    .lang-bn .serif { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .serif { font-family:'Playfair Display',serif; }
+
+    body { background:var(--light-bg); color:var(--dark); transition:background .3s,color .3s; }
+
+    /* ─── LANG TOGGLE ─── */
+    .lang-toggle-wrap {
+      display:flex; align-items:center; gap:8px;
+      background:#1a1a1a; border-radius:30px;
+      padding:3px 4px; border:1px solid #444;
+    }
+    .lang-btn {
+      padding:3px 14px; border-radius:20px; border:none;
+      font-size:12px; font-weight:700; cursor:pointer;
+      transition:all .25s; letter-spacing:.5px;
+    }
+    .lang-btn.active { background:var(--red); color:#fff; }
+    .lang-btn:not(.active) { background:transparent; color:#aaa; }
+    .lang-btn:not(.active):hover { color:#fff; }
+
+    /* ─── CONTENT SWITCHING ─── */
+    [data-bn], [data-en] { display:none; }
+    body.lang-bn [data-bn] { display:inline; }
+    body.lang-en [data-en] { display:inline; }
+    [data-bn-block], [data-en-block] { display:none; }
+    body.lang-bn [data-bn-block] { display:block; }
+    body.lang-en [data-en-block] { display:block; }
+    [data-bn-flex], [data-en-flex] { display:none; }
+    body.lang-bn [data-bn-flex] { display:flex; }
+    body.lang-en [data-en-flex] { display:flex; }
+
+    /* ─── TICKER ─── */
+    .ticker-bar { background:var(--black); color:#fff; font-size:13px; padding:6px 0; overflow:hidden; }
+    .ticker-label { background:var(--red); padding:2px 14px; font-weight:700; white-space:nowrap; }
+    .ticker-wrap { overflow:hidden; flex:1; }
+    .ticker-bn,.ticker-en { display:none; }
+    body.lang-bn .ticker-bn { display:inline-block; white-space:nowrap; animation:ticker 42s linear infinite; }
+    body.lang-en .ticker-en { display:inline-block; white-space:nowrap; animation:ticker 42s linear infinite; }
+    .ticker-bn span,.ticker-en span { margin:0 36px; }
+    .ticker-bn span::before,.ticker-en span::before { content:'◆'; color:var(--gold); margin-right:12px; }
+    @keyframes ticker{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+    /* ─── TOP BAR ─── */
+    .top-bar { background:#fff; border-bottom:1px solid var(--border); font-size:12.5px; color:var(--muted); padding:5px 0; }
+    .top-bar a { color:var(--muted); text-decoration:none; }
+    .top-bar a:hover { color:var(--red); }
+    .social-icon {
+      display:inline-flex; align-items:center; justify-content:center;
+      width:26px; height:26px; border-radius:50%; background:var(--light-bg);
+      color:var(--mid); font-size:13px; transition:all .2s;
+    }
+    .social-icon:hover { background:var(--red); color:#fff; }
+
+    /* ─── MASTHEAD ─── */
+    .masthead { background:#fff; border-bottom:3px solid var(--red); padding:18px 0 14px; }
+    .masthead-brand { font-size:clamp(2rem,5vw,3.8rem); font-weight:900; color:var(--red); line-height:1; letter-spacing:-1px; }
+    .lang-bn .masthead-brand { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .masthead-brand { font-family:'Playfair Display',serif; }
+    .masthead-tagline { font-size:12px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:4px; }
+    .masthead-edition { text-align:right; font-size:12px; color:var(--muted); line-height:1.8; }
+    .weather-badge {
+      display:inline-flex; align-items:center; gap:6px; background:var(--light-bg);
+      border-radius:30px; padding:4px 14px; font-size:13px; color:var(--mid);
+      border:1px solid var(--border);
+    }
+    .weather-badge i { color:var(--gold); font-size:16px; }
+
+    /* ─── NAV ─── */
+    .main-nav { background:var(--dark); position:sticky; top:0; z-index:999; }
+    .main-nav .navbar-brand {
+      display:none; color:var(--red)!important; font-weight:900; font-size:1.3rem;
+    }
+    .lang-bn .main-nav .navbar-brand { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .main-nav .navbar-brand { font-family:'Playfair Display',serif; }
+    @media(max-width:991px){ .main-nav .navbar-brand{display:block;} }
+    .main-nav .nav-link {
+      color:#ddd!important; font-size:13.5px; padding:12px 13px!important;
+      position:relative; transition:color .2s; font-weight:500;
+    }
+    .main-nav .nav-link::after {
+      content:''; position:absolute; bottom:0; left:50%; right:50%;
+      height:2px; background:var(--red); transition:all .25s;
+    }
+    .main-nav .nav-link:hover { color:#fff!important; }
+    .main-nav .nav-link:hover::after { left:8px; right:8px; }
+    .nav-search-btn {
+      background:none; border:1px solid #555; color:#aaa;
+      border-radius:4px; padding:5px 12px; font-size:13px; cursor:pointer; transition:all .2s;
+    }
+    .nav-search-btn:hover { background:var(--red); border-color:var(--red); color:#fff; }
+    .navbar-toggler { border-color:#555!important; }
+    .navbar-toggler-icon { filter:invert(1); }
+
+    /* ─── CAT STRIP ─── */
+    .cat-strip {
+      background:#fff; border-bottom:1px solid var(--border);
+      overflow-x:auto; white-space:nowrap; scrollbar-width:none;
+    }
+    .cat-strip::-webkit-scrollbar{display:none;}
+    .cat-pill {
+      display:inline-block; padding:8px 18px; font-size:13px;
+      color:var(--mid); cursor:pointer; border-bottom:3px solid transparent;
+      transition:all .2s; text-decoration:none;
+    }
+    .cat-pill:hover,.cat-pill.active { color:var(--red); border-bottom-color:var(--red); background:#fff9f9; }
+
+    /* ─── SECTION HEADS ─── */
+    .section-head { display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border); padding-bottom:10px; margin-bottom:20px; }
+    .section-head h5 { font-weight:800; font-size:1.15rem; color:var(--dark); margin:0; }
+    .lang-bn .section-head h5 { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .section-head h5 { font-family:'Playfair Display',serif; }
+    .section-head .badge-red { background:var(--red); color:#fff; font-size:11px; padding:3px 10px; border-radius:3px; font-weight:600; }
+    .section-head .line { flex:1; height:2px; background:linear-gradient(90deg,var(--border) 0%,transparent 100%); }
+
+    /* ─── CARDS ─── */
+    .news-img { width:100%; aspect-ratio:16/10; object-fit:cover; display:block; transition:transform .4s; }
+    .img-wrap { overflow:hidden; }
+    .img-wrap:hover .news-img { transform:scale(1.04); }
+    .cat-tag {
+      display:inline-block; background:var(--red); color:#fff;
+      font-size:11px; padding:2px 9px; font-weight:600; text-transform:uppercase;
+      letter-spacing:.5px; margin-bottom:7px;
+    }
+    .news-title {
+      font-weight:700; color:var(--dark); line-height:1.45;
+      margin-bottom:7px; transition:color .2s; cursor:pointer;
+    }
+    .lang-bn .news-title { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .news-title { font-family:'Playfair Display',serif; }
+    .news-title:hover { color:var(--red); }
+    .news-title.xl { font-size:1.55rem; }
+    .news-title.lg { font-size:1.2rem; }
+    .news-title.md { font-size:1.05rem; }
+    .news-title.sm { font-size:.93rem; }
+    .news-meta { font-size:12px; color:var(--muted); }
+    .news-excerpt { font-size:14px; color:var(--mid); line-height:1.65; margin-bottom:8px; }
+
+    /* ─── HERO ─── */
+    .hero-wrap { background:#fff; border-bottom:3px double var(--border); padding:24px 0; }
+    .hero-img-wrap { position:relative; overflow:hidden; }
+    .hero-img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+    .hero-label { position:absolute; top:16px; left:16px; background:var(--red); color:#fff; padding:4px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+    .hero-title { font-weight:900; color:var(--dark); line-height:1.35; margin-bottom:12px; font-size:clamp(1.4rem,3vw,2.1rem); }
+    .lang-bn .hero-title { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .hero-title { font-family:'Playfair Display',serif; }
+    .hero-title:hover { color:var(--red); cursor:pointer; }
+    .divider-dot { color:var(--muted); margin:0 6px; }
+
+    /* ─── SIDE LIST ─── */
+    .side-news-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+    .side-news-item:last-child { border-bottom:none; }
+    .side-thumb { width:80px; height:65px; object-fit:cover; flex-shrink:0; }
+    .side-title { font-size:.93rem; font-weight:600; color:var(--dark); line-height:1.4; cursor:pointer; transition:color .2s; }
+    .lang-bn .side-title { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .side-title { font-family:'Playfair Display',serif; }
+    .side-title:hover { color:var(--red); }
+
+    /* ─── OPINION ─── */
+    .opinion-card { background:#fff; border:1px solid var(--border); padding:18px; height:100%; }
+    .opinion-author-img { width:54px; height:54px; border-radius:50%; object-fit:cover; border:2px solid var(--red); }
+
+    /* ─── GALLERY ─── */
+    .gallery-grid { display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:200px 200px; gap:4px; }
+    .gallery-grid .g-main { grid-row:1/3; overflow:hidden; }
+    .gallery-item { overflow:hidden; position:relative; cursor:pointer; }
+    .gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+    .gallery-item:hover img { transform:scale(1.07); }
+    .gallery-item .overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.7),transparent 50%); opacity:0; transition:opacity .3s; }
+    .gallery-item:hover .overlay { opacity:1; }
+    @media(max-width:576px){
+      .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,140px);}
+      .gallery-grid .g-main{grid-row:1/2;grid-column:1/3;}
+    }
+
+    /* ─── VIDEO ─── */
+    .video-thumb { position:relative; overflow:hidden; cursor:pointer; }
+    .video-thumb img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; transition:transform .3s; }
+    .video-thumb:hover img { transform:scale(1.04); }
+    .play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:48px; height:48px; background:rgba(192,57,43,.9); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; transition:background .2s; }
+    .video-thumb:hover .play-btn { background:var(--red); }
+
+    /* ─── SIDEBAR ─── */
+    .widget { background:#fff; border:1px solid var(--border); margin-bottom:24px; }
+    .widget-head { background:var(--dark); color:#fff; padding:10px 16px; font-size:.97rem; font-weight:700; }
+    .lang-bn .widget-head { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .widget-head { font-family:'Playfair Display',serif; }
+    .widget-body { padding:14px 16px; }
+    .popular-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border); }
+    .popular-item:last-child { border-bottom:none; }
+    .pop-num { font-size:1.5rem; font-weight:900; color:var(--border); line-height:1; min-width:28px; font-family:'Playfair Display',serif; }
+    .popular-item:nth-child(1) .pop-num{color:var(--red);}
+    .popular-item:nth-child(2) .pop-num{color:#e67e22;}
+    .popular-item:nth-child(3) .pop-num{color:var(--gold);}
+    .pop-title { font-size:.9rem; font-weight:600; cursor:pointer; transition:color .2s; line-height:1.4; }
+    .lang-bn .pop-title { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .pop-title { font-family:'Playfair Display',serif; }
+    .pop-title:hover { color:var(--red); }
+    .tag-cloud .tag { display:inline-block; margin:4px; padding:4px 12px; border:1px solid var(--border); font-size:12.5px; color:var(--mid); cursor:pointer; border-radius:3px; transition:all .2s; }
+    .tag-cloud .tag:hover { background:var(--red); color:#fff; border-color:var(--red); }
+
+    /* ─── AD ─── */
+    .ad-banner { background:linear-gradient(135deg,#1a3c5e,#0e2338); color:#fff; text-align:center; padding:18px; border-radius:4px; margin-bottom:24px; }
+    .ad-banner small { color:#aac4e0; font-size:11px; display:block; margin-bottom:6px; }
+    .ad-banner h6 { font-size:1.1rem; margin:0; }
+    .lang-bn .ad-banner h6 { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .ad-banner h6 { font-family:'Playfair Display',serif; }
+    .ad-leaderboard { background:#fff; border:1px dashed #ccc; text-align:center; padding:20px; color:#aaa; font-size:12px; margin:16px 0; }
+    .red-line-left { border-left:4px solid var(--red); padding-left:14px; }
+    .breaking-badge { background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:2px 10px; border-radius:2px; animation:pulse 1.4s ease-in-out infinite; display:inline-block; margin-right:6px; }
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+    .section-bg { background:#fff; padding:28px 0; margin-bottom:4px; }
+    .section-bg-gray { background:var(--light-bg); padding:28px 0; margin-bottom:4px; }
+
+    /* ─── FOOTER ─── */
+    .footer-top { background:var(--dark); color:#ccc; padding:48px 0 32px; border-top:4px solid var(--red); }
+    .footer-brand { font-size:2.2rem; font-weight:900; color:var(--red); }
+    .lang-bn .footer-brand { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .footer-brand { font-family:'Playfair Display',serif; }
+    .footer-top h6 { color:#fff; font-size:.95rem; font-weight:700; border-bottom:1px solid #444; padding-bottom:8px; margin-bottom:14px; }
+    .lang-bn .footer-top h6 { font-family:'Noto Serif Bengali',serif; }
+    .lang-en .footer-top h6 { font-family:'Playfair Display',serif; }
+    .footer-top ul { list-style:none; padding:0; margin:0; }
+    .footer-top ul li { margin-bottom:7px; }
+    .footer-top ul li a { color:#aaa; text-decoration:none; font-size:13.5px; transition:color .2s; }
+    .footer-top ul li a::before { content:'›'; margin-right:6px; color:var(--red); }
+    .footer-top ul li a:hover { color:#fff; }
+    .footer-bottom { background:#0d0d0d; color:#666; padding:14px 0; font-size:12px; text-align:center; }
+    .footer-bottom a { color:#888; text-decoration:none; }
+    .footer-bottom a:hover { color:var(--red); }
+
+    /* ─── DARK MODE ─── */
+    body.dark-mode { background:#0f0f0f; color:#e0e0e0; }
+    body.dark-mode .hero-wrap,
+    body.dark-mode .section-bg,
+    body.dark-mode .widget,
+    body.dark-mode .opinion-card,
+    body.dark-mode .top-bar,
+    body.dark-mode .masthead,
+    body.dark-mode .cat-strip { background:#1c1c1c; border-color:#333; }
+    body.dark-mode .section-bg-gray { background:#141414; }
+    body.dark-mode .news-title,body.dark-mode .side-title,body.dark-mode .hero-title { color:#e8e8e8; }
+    body.dark-mode .news-excerpt { color:#aaa; }
+
+    /* ─── SCROLL TOP ─── */
+    #scrollTop {
+      position:fixed; bottom:30px; right:30px; width:42px; height:42px;
+      background:var(--red); color:#fff; border:none; border-radius:4px;
+      font-size:18px; cursor:pointer; opacity:0; transition:opacity .3s;
+      z-index:888; display:flex; align-items:center; justify-content:center;
+    }
+    #scrollTop.show { opacity:1; }
+
+    /* ─── SEARCH OVERLAY ─── */
+    .search-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:9999; align-items:center; justify-content:center; }
+    .search-overlay.active { display:flex; }
+    .search-box { background:#fff; border-radius:8px; padding:30px; width:min(560px,90vw); }
+    .search-box input { border:2px solid var(--border); border-radius:6px; padding:10px 16px; font-size:16px; width:100%; outline:none; }
+    .lang-bn .search-box input { font-family:'Hind Siliguri',sans-serif; }
+    .lang-en .search-box input { font-family:'Lora',serif; }
+    .search-box input:focus { border-color:var(--red); }
+
+    /* ─── TRANSITION ─── */
+    .lang-fade { animation:langFade .35s ease; }
+    @keyframes langFade { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+    @media(max-width:767px){
+      .hero-title{font-size:1.3rem;}
+      .news-title.xl{font-size:1.15rem;}
+      .news-title.lg{font-size:1rem;}
+    }
+  </style>
+</head>
+<body class="lang-bn">
+<!-- ══════════ TICKER ══════════ -->
+
+{% block ticker %}
+
+{% endblock ticker %}
+
+<!-- ══════════ TOP BAR ══════════ -->
+{% block topbar %}
+
+{% endblock topbar %}
+
+
+
+<!-- ══════════ MASTHEAD ══════════ -->
+ {% block masthead %}
+
+ {% endblock masthead %}
+
+<!-- AD -->
+{% block ad %}
+
+{% endblock ad %}
+<!-- ══════════ MAIN NAV ══════════ -->
+{% block navber %}
+
+{% endblock navber %}
+
+<!-- ══════════ CAT STRIP ══════════ -->
+{% block cat_strip %}
+
+{% endblock cat_strip %}
+
+<!-- ══════════ HERO ══════════ -->
+{% block hero %}
+
+{% endblock hero %}
+<!-- ══════════ MAIN CONTENT ══════════ -->
+{% block main_content %}
+
+{% endblock main_content %}
+
+<!-- ══════════ BREAKING BAND ══════════ -->
+{% block breaking_news %}
+
+{% endblock breaking_news %}
+<!-- ══════════ LIFESTYLE & TECH ══════════ -->
+{% block lifestyle_tech %}
+
+{% endblock lifestyle_tech %}
+
+<!-- ══════════ FOOTER ══════════ -->
+{% block footer %}
+{% endblock footer %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   DATA — both languages
+═══════════════════════════════════════ */
+const DATA = {
+  navLinks: {
+    bn: ['প্রচ্ছদ','জাতীয়','রাজনীতি','আন্তর্জাতিক','অর্থনীতি','খেলাধুলা','বিনোদন','প্রযুক্তি','মতামত','লাইফস্টাইল'],
+    en: ['Home','National','Politics','World','Economy','Sports','Entertainment','Technology','Opinion','Lifestyle']
+  },
+  cats: {
+    bn: ['সব','সর্বশেষ','ঢাকা','চট্টগ্রাম','সিলেট','রাজশাহী','ময়মনসিংহ','শিক্ষা','স্বাস্থ্য','পরিবেশ','বিজ্ঞান','আইন-আদালত'],
+    en: ['All','Latest','Dhaka','Chittagong','Sylhet','Rajshahi','Mymensingh','Education','Health','Environment','Science','Law & Court']
+  },
+  popular: {
+    bn: [
+      ['বাজেটে মধ্যবিত্তের করমুক্ত আয়সীমা বাড়ানোর দাবি জোরালো হচ্ছে','৪৮,৩২১ পাঠক'],
+      ['ঢাকা-চট্টগ্রাম হাইওয়েতে ৮ লেন সম্প্রসারণ প্রকল্পের অনুমোদন','৩৭,৮৯০ পাঠক'],
+      ['বিশ্ব বাজারে জ্বালানি তেলের দাম হঠাৎ ঊর্ধ্বমুখী','২৯,৪৫৬ পাঠক'],
+      ['জাতীয় বিশ্ববিদ্যালয়ের ফলাফল প্রকাশ নিয়ে নতুন ঘোষণা','২৫,১২৩ পাঠক'],
+      ['নতুন সাইবার নিরাপত্তা আইনে কী বলা হয়েছে','১৯,৮৭৫ পাঠক'],
+    ],
+    en: [
+      ['Calls Grow to Raise Tax-Free Income Limit for Middle Class','48,321 readers'],
+      ['8-Lane Expansion of Dhaka-Chittagong Highway Gets Approval','37,890 readers'],
+      ['Global Fuel Prices Surge Unexpectedly','29,456 readers'],
+      ['National University Results Announcement Date Confirmed','25,123 readers'],
+      ['What the New Cybersecurity Law Actually Says','19,875 readers'],
+    ]
+  },
+  latest: {
+    bn: [
+      {tag:'জাতীয়', title:'বন্দরে আমদানি শুল্ক কমানোর ঘোষণা দিল এনবিআর', time:'৩০ মি আগে'},
+      {tag:'রাজনীতি', title:'সরকারি দলের কাউন্সিলে নতুন কমিটি ঘোষণা', time:'১ ঘণ্টা আগে'},
+      {tag:'আন্তর্জাতিক', title:'মিয়ানমারে যুদ্ধ বিরতির সম্ভাবনা তৈরি হয়েছে', time:'২ ঘণ্টা আগে'},
+      {tag:'অর্থনীতি', title:'ব্যাংক ঋণের সুদহার নিয়ে নতুন নির্দেশনা', time:'৩ ঘণ্টা আগে'},
+      {tag:'শিক্ষা', title:'জেএসসি পরীক্ষার সময়সূচি পরিবর্তন করল শিক্ষা বোর্ড', time:'৪ ঘণ্টা আগে'},
+      {tag:'স্বাস্থ্য', title:'ডেঙ্গু পরিস্থিতি নিয়ন্ত্রণে জরুরি ব্যবস্থা নিচ্ছে সিটি কর্পোরেশন', time:'৫ ঘণ্টা আগে'},
+    ],
+    en: [
+      {tag:'National', title:'NBR Announces Cut in Port Import Duties', time:'30 min ago'},
+      {tag:'Politics', title:'New Committee Named at Ruling Party Council', time:'1 hour ago'},
+      {tag:'World', title:'Ceasefire Possibility Emerges in Myanmar', time:'2 hours ago'},
+      {tag:'Economy', title:'New Directive on Bank Lending Interest Rates', time:'3 hours ago'},
+      {tag:'Education', title:'Education Board Revises JSC Exam Schedule', time:'4 hours ago'},
+      {tag:'Health', title:'City Corporation Takes Emergency Measures to Control Dengue', time:'5 hours ago'},
+    ]
+  },
+  tags: {
+    bn: ['রাজনীতি','বাজেট','ক্রিকেট','শিক্ষা','বন্যা','পরিবেশ','প্রযুক্তি','ব্যাংক','রপ্তানি','ঢাকা','স্বাস্থ্য','কৃষি','নির্বাচন','আইন','উন্নয়ন'],
+    en: ['Politics','Budget','Cricket','Education','Flood','Environment','Technology','Banking','Exports','Dhaka','Health','Agriculture','Election','Law','Development']
+  },
+  breaking: {
+    bn: [
+      {img:'br1',tag:'রাজনীতি',title:'জরুরি ভিত্তিতে বৈঠক ডেকেছেন প্রধানমন্ত্রী',time:'১৫ মিনিট আগে'},
+      {img:'br2',tag:'দুর্যোগ',title:'দেশের তিনটি জেলায় বন্যার সতর্কতা জারি',time:'২৫ মিনিট আগে'},
+      {img:'br3',tag:'অর্থনীতি',title:'ঢাকা স্টক এক্সচেঞ্জে সার্কিট ব্রেকার চালু',time:'৩৫ মিনিট আগে'},
+      {img:'br4',tag:'ব্যাংক',title:'বাংলাদেশ ব্যাংকের মুদ্রানীতি ঘোষণা আজ',time:'৫০ মিনিট আগে'},
+    ],
+    en: [
+      {img:'br1',tag:'Politics',title:'Prime Minister Calls Emergency Cabinet Meeting',time:'15 minutes ago'},
+      {img:'br2',tag:'Disaster',title:'Flood Alert Issued for Three Districts',time:'25 minutes ago'},
+      {img:'br3',tag:'Economy',title:'Circuit Breaker Triggered at Dhaka Stock Exchange',time:'35 minutes ago'},
+      {img:'br4',tag:'Banking',title:'Bangladesh Bank to Announce Monetary Policy Today',time:'50 minutes ago'},
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════
+   LANGUAGE SWITCH
+═══════════════════════════════════════ */
+let currentLang = 'bn';
+
+function setLang(lang) {
+  currentLang = lang;
+  const body = document.body;
+  body.classList.remove('lang-bn','lang-en');
+  body.classList.add('lang-' + lang);
+  body.classList.add('lang-fade');
+  setTimeout(()=>body.classList.remove('lang-fade'),400);
+
+  document.getElementById('htmlRoot').lang = lang === 'bn' ? 'bn' : 'en';
+  document.getElementById('pageTitle').textContent = lang === 'bn'
+    ? 'দৈনিক সংবাদ — আজকের সংবাদ'
+    : 'Daily Sangbad — Today\'s News';
+
+  document.getElementById('tickerLabel').textContent = lang === 'bn' ? 'সর্বশেষ' : 'LATEST';
+  document.getElementById('searchInput').placeholder = lang === 'bn' ? 'কীওয়ার্ড লিখুন...' : 'Enter keyword...';
+  document.getElementById('nlInput').placeholder = lang === 'bn' ? 'আপনার ইমেইল লিখুন' : 'Enter your email';
+
+  document.getElementById('btnBn').classList.toggle('active', lang === 'bn');
+  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+
+  buildNavLinks(lang);
+  buildCatStrip(lang);
+  buildPopular(lang);
+  buildLatest(lang);
+  buildTags(lang);
+  buildBreaking(lang);
+}
+
+function buildNavLinks(lang) {
+  const ul = document.getElementById('navLinks');
+  ul.innerHTML = DATA.navLinks[lang].map(t =>
+    `<li class="nav-item"><a class="nav-link" href="#">${t}</a></li>`).join('');
+}
+
+function buildCatStrip(lang) {
+  const el = document.getElementById('catStrip');
+  el.innerHTML = DATA.cats[lang].map((t,i) =>
+    `<a class="cat-pill${i===0?' active':''}" href="#">${t}</a>`).join('');
+  el.querySelectorAll('.cat-pill').forEach(p => {
+    p.addEventListener('click', function(e){
+      e.preventDefault();
+      el.querySelectorAll('.cat-pill').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+}
+
+function buildPopular(lang) {
+  const el = document.getElementById('popularList');
+  el.innerHTML = DATA.popular[lang].map((item,i) => `
+    <div class="popular-item">
+      <div class="pop-num">${i+1}</div>
+      <div>
+        <div class="pop-title">${item[0]}</div>
+        <div class="news-meta mt-1"><i class="bi bi-eye me-1"></i>${item[1]}</div>
+      </div>
+    </div>`).join('');
+}
+
+function buildLatest(lang) {
+  const el = document.getElementById('latestList');
+  el.innerHTML = DATA.latest[lang].map(item => `
+    <div class="side-news-item px-3" style="cursor:pointer;">
+      <div>
+        <span class="cat-tag" style="font-size:10px;">${item.tag}</span>
+        <div class="side-title">${item.title}</div>
+        <div class="news-meta"><i class="bi bi-clock me-1"></i>${item.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+function buildTags(lang) {
+  const el = document.getElementById('tagCloud');
+  el.innerHTML = DATA.tags[lang].map(t => `<span class="tag">${t}</span>`).join('');
+}
+
+function buildBreaking(lang) {
+  const el = document.getElementById('breakingRow');
+  el.innerHTML = DATA.breaking[lang].map(b => `
+    <div class="col-md-3" style="cursor:pointer;">
+      <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/${b.img}/400/230" alt="" class="news-img" style="aspect-ratio:16/9;"/></div>
+      <span class="cat-tag">${b.tag}</span>
+      <div class="news-title sm" style="color:#e8e8e8;">${b.title}</div>
+      <div class="news-meta" style="color:#888;"><i class="bi bi-clock me-1"></i>${b.time}</div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════
+   DARK MODE
+═══════════════════════════════════════ */
+function toggleDark() {
+  document.body.classList.toggle('dark-mode');
+  document.getElementById('darkIcon').className =
+    document.body.classList.contains('dark-mode') ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+}
+
+/* ═══════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════ */
+function toggleSearch() {
+  document.getElementById('searchOverlay').classList.toggle('active');
+  if(document.getElementById('searchOverlay').classList.contains('active'))
+    setTimeout(()=>document.getElementById('searchInput').focus(),100);
+}
+function closeSearch(e) {
+  if(e.target===document.getElementById('searchOverlay')) toggleSearch();
+}
+document.addEventListener('keydown', e => {
+  if(e.key==='Escape') document.getElementById('searchOverlay').classList.remove('active');
+});
+
+/* ═══════════════════════════════════════
+   SCROLL TOP
+═══════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 500);
+});
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+setLang('bn');
+</script>
+</body>
+</html>

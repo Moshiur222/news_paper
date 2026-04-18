@@ -1,0 +1,56 @@
+{% extends "news/landing/base/base.html" %}
+
+
+{% block ticker %}
+<div class="ticker-bar d-flex align-items-center">
+    <div class="ticker-label" id="tickerLabel">সর্বশেষ</div>
+  <div class="ticker-wrap ms-3">
+      <div class="ticker-bn">
+      <span>বাংলাদেশে ডিজিটাল নিরাপত্তা আইনের সংশোধন প্রস্তাব সংসদে উপস্থাপন</span>
+      <span>ঢাকায় তীব্র বজ্রপাতের আশঙ্কা, আবহাওয়া অধিদপ্তরের সতর্কতা জারি</span>
+      <span>শেয়ার বাজারে ঊর্ধ্বমুখী প্রবণতা, ডিএসই সূচক ৭০ পয়েন্ট বৃদ্ধি</span>
+      <span>বাংলাদেশ ক্রিকেট দলের ওয়েস্ট ইন্ডিজ সফরের সময়সূচি চূড়ান্ত</span>
+    </div>
+    <div class="ticker-en">
+      <span>Digital Security Act amendment proposal presented in Parliament</span>
+      <span>Severe lightning warning issued for Dhaka by the Meteorological Department</span>
+      <span>Stock market gains momentum as DSE index rises by 70 points</span>
+      <span>Bangladesh cricket team's West Indies tour schedule confirmed</span>
+    </div>
+  </div>
+</div>
+{% endblock ticker %}
+
+<!-- ══════════ TOP BAR ══════════ -->
+{% block topbar %}
+<div class="top-bar">
+  <div class="container-xl">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <span><i class="bi bi-calendar3 me-1"></i><span data-bn>শনিবার, ১৯ এপ্রিল ২০২৬</span><span data-en>Saturday, April 19, 2026</span></span>
+        <span class="d-none d-sm-inline">|</span>
+        <span class="d-none d-sm-inline"><i class="bi bi-thermometer-sun me-1"></i><span data-bn>ঢাকা: ৩৩°সে</span><span data-en>Dhaka: 33°C</span></span>
+        <span class="d-none d-md-inline">|</span>
+        <span class="d-none d-md-inline"><i class="bi bi-moon-stars me-1"></i><span data-bn>ফজর: ৪:১৭ | মাগরিব: ৬:২৭</span><span data-en>Fajr: 4:17 | Maghrib: 6:27</span></span>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="social-icons d-flex gap-1">
+          <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+        </div>
+        <!-- LANGUAGE TOGGLE -->
+        <div class="lang-toggle-wrap">
+          <button class="lang-btn active" id="btnBn" onclick="setLang('bn')">বাংলা</button>
+          <button class="lang-btn" id="btnEn" onclick="setLang('en')">English</button>
+        </div>
+        <button onclick="toggleDark()" class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size:12px;" title="Dark Mode">
+          <i class="bi bi-moon-fill" id="darkIcon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock topbar %}

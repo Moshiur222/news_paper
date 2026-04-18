@@ -1,0 +1,441 @@
+{% extends "news/landing/base/base.html" %}
+
+<!-- ══════════ HERO ══════════ -->
+{% block hero %}
+<div class="hero-wrap">
+  <div class="container-xl">
+    <div class="row g-4">
+      <!-- Lead -->
+      <div class="col-lg-6">
+        <div class="hero-img-wrap">
+          <img src="https://picsum.photos/seed/news1/800/450" alt="" class="hero-img"/>
+          <div class="hero-label"><span data-bn>প্রধান সংবাদ</span><span data-en>Top Story</span></div>
+        </div>
+        <div class="mt-3">
+          <h1 class="hero-title">
+            <span data-bn>জাতীয় বাজেটে শিক্ষা ও স্বাস্থ্য খাতে বরাদ্দ উল্লেখযোগ্য হারে বৃদ্ধির সুপারিশ করেছে সংসদীয় কমিটি</span>
+            <span data-en>Parliamentary Committee Recommends Significant Increase in Education &amp; Health Budget Allocation</span>
+          </h1>
+          <p class="news-excerpt">
+            <span data-bn>অর্থ মন্ত্রণালয়ের প্রতিবেদনের ভিত্তিতে সংসদীয় স্থায়ী কমিটি আগামী অর্থবছরের বাজেটে শিক্ষা ও স্বাস্থ্য খাতে মোট বরাদ্দ ৩০ শতাংশ বৃদ্ধির সুপারিশ করেছে।</span>
+            <span data-en>Based on a Finance Ministry report, the parliamentary standing committee has recommended a 30% increase in total allocations for education and health in the upcoming fiscal budget.</span>
+          </p>
+          <div class="news-meta">
+            <i class="bi bi-person-fill me-1"></i><span data-bn>নিজস্ব প্রতিবেদক</span><span data-en>Staff Reporter</span>
+            <span class="divider-dot">•</span>
+            <i class="bi bi-clock me-1"></i><span data-bn>২ ঘণ্টা আগে</span><span data-en>2 hours ago</span>
+            <span class="divider-dot">•</span>
+            <i class="bi bi-chat-dots me-1"></i> 147 <span data-bn>মন্তব্য</span><span data-en>comments</span>
+          </div>
+        </div>
+      </div>
+      <!-- Col 2 -->
+      <div class="col-lg-3">
+        <div class="mb-4">
+          <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/news2/500/300" alt="" class="news-img"/></div>
+          <span class="cat-tag"><span data-bn>রাজনীতি</span><span data-en>Politics</span></span>
+          <div class="news-title lg">
+            <span data-bn>আগামী সংসদ নির্বাচনের রোডম্যাপ ঘোষণা করতে পারে নির্বাচন কমিশন</span>
+            <span data-en>Election Commission May Announce Roadmap for Upcoming Parliamentary Polls</span>
+          </div>
+          <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৩ ঘণ্টা আগে</span><span data-en>3 hours ago</span></div>
+        </div>
+        <div class="side-news-item">
+          <img src="https://picsum.photos/seed/news5/200/150" alt="" class="side-thumb"/>
+          <div>
+            <span class="cat-tag" style="font-size:10px;"><span data-bn>অর্থনীতি</span><span data-en>Economy</span></span>
+            <div class="side-title"><span data-bn>রপ্তানি আয়ে নতুন মাইলফলক স্পর্শ করল বাংলাদেশ</span><span data-en>Bangladesh Reaches New Milestone in Export Earnings</span></div>
+            <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৫ ঘণ্টা আগে</span><span data-en>5 hours ago</span></div>
+          </div>
+        </div>
+        <div class="side-news-item">
+          <img src="https://picsum.photos/seed/news6/200/150" alt="" class="side-thumb"/>
+          <div>
+            <span class="cat-tag" style="font-size:10px;"><span data-bn>আন্তর্জাতিক</span><span data-en>World</span></span>
+            <div class="side-title"><span data-bn>মধ্যপ্রাচ্যে উত্তেজনা প্রশমনে কূটনৈতিক উদ্যোগ জোরদার</span><span data-en>Diplomatic Efforts Intensify to Ease Middle East Tensions</span></div>
+            <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৬ ঘণ্টা আগে</span><span data-en>6 hours ago</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Col 3 -->
+      <div class="col-lg-3">
+        <div class="mb-4">
+          <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/news3/500/300" alt="" class="news-img"/></div>
+          <span class="cat-tag"><span data-bn>খেলাধুলা</span><span data-en>Sports</span></span>
+          <div class="news-title lg">
+            <span data-bn>বাংলাদেশ ক্রিকেটে নতুন কোচিং প্যানেলের সাথে চুক্তি সম্পন্ন</span>
+            <span data-en>Bangladesh Cricket Signs Contract with New Coaching Panel</span>
+          </div>
+          <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৪ ঘণ্টা আগে</span><span data-en>4 hours ago</span></div>
+        </div>
+        <div class="side-news-item">
+          <img src="https://picsum.photos/seed/news7/200/150" alt="" class="side-thumb"/>
+          <div>
+            <span class="cat-tag" style="font-size:10px;"><span data-bn>প্রযুক্তি</span><span data-en>Technology</span></span>
+            <div class="side-title"><span data-bn>দেশে কৃত্রিম বুদ্ধিমত্তা গবেষণাকেন্দ্র প্রতিষ্ঠার ঘোষণা</span><span data-en>Artificial Intelligence Research Centre to Be Established in Bangladesh</span></div>
+            <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৭ ঘণ্টা আগে</span><span data-en>7 hours ago</span></div>
+          </div>
+        </div>
+        <div class="side-news-item">
+          <img src="https://picsum.photos/seed/news8/200/150" alt="" class="side-thumb"/>
+          <div>
+            <span class="cat-tag" style="font-size:10px;"><span data-bn>বিনোদন</span><span data-en>Entertainment</span></span>
+            <div class="side-title"><span data-bn>ঢালিউডের নতুন মৌসুমে আসছে একগুচ্ছ বহুল প্রতীক্ষিত চলচ্চিত্র</span><span data-en>Dhallywood's New Season Brings a Wave of Highly-Anticipated Films</span></div>
+            <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৮ ঘণ্টা আগে</span><span data-en>8 hours ago</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock hero %}
+
+<!-- ══════════ MAIN CONTENT ══════════ -->
+{% block main_content %}
+<div class="container-xl mt-4">
+  <div class="row g-4">
+
+    <!-- MAIN COL -->
+    <div class="col-lg-8">
+
+      <!-- NATIONAL -->
+      <div class="section-bg mb-4 px-3 py-4">
+        <div class="section-head">
+          <h5><span data-bn>জাতীয়</span><span data-en>National</span></h5>
+          <span class="badge-red"><span data-bn>আরও দেখুন</span><span data-en>More</span></span>
+          <div class="line"></div>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/nat1/600/360" alt="" class="news-img"/></div>
+            <span class="cat-tag"><span data-bn>জাতীয়</span><span data-en>National</span></span>
+            <div class="news-title lg"><span data-bn>পদ্মা সেতুতে রেল যোগাযোগ আরও উন্নত করার পরিকল্পনা প্রকাশ</span><span data-en>Plans Unveiled to Upgrade Rail Connectivity on Padma Bridge</span></div>
+            <p class="news-excerpt"><span data-bn>পরিবহন মন্ত্রণালয় জানিয়েছে, পদ্মা সেতু রেল সংযোগকে হাইস্পিড ট্রেনের উপযোগী করে গড়ে তোলা হবে।</span><span data-en>The Transport Ministry has announced that the Padma Bridge rail link will be upgraded to accommodate high-speed trains.</span></p>
+            <div class="news-meta"><i class="bi bi-clock me-1"></i><span data-bn>১ ঘণ্টা আগে</span><span data-en>1 hour ago</span></div>
+          </div>
+          <div class="col-md-6">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/nat2/600/360" alt="" class="news-img"/></div>
+            <span class="cat-tag"><span data-bn>পরিবেশ</span><span data-en>Environment</span></span>
+            <div class="news-title lg"><span data-bn>সুন্দরবনে বাঘের সংখ্যা বৃদ্ধি পেয়েছে, জানাল বন বিভাগ</span><span data-en>Tiger Population in Sundarbans on the Rise, Says Forest Department</span></div>
+            <p class="news-excerpt"><span data-bn>সর্বশেষ জরিপে সুন্দরবনে রয়েল বেঙ্গল টাইগারের সংখ্যা উল্লেখযোগ্যভাবে বৃদ্ধির তথ্য উঠে এসেছে।</span><span data-en>The latest survey reveals a significant increase in the Royal Bengal Tiger population in the Sundarbans delta.</span></p>
+            <div class="news-meta"><i class="bi bi-clock me-1"></i><span data-bn>৪ ঘণ্টা আগে</span><span data-en>4 hours ago</span></div>
+          </div>
+          <div class="col-md-4">
+            <div class="side-news-item border-0 px-0 pt-0" style="border-top:1px solid var(--border)!important;padding-top:12px!important;">
+              <img src="https://picsum.photos/seed/nat3/200/150" alt="" class="side-thumb"/>
+              <div>
+                <div class="news-title sm"><span data-bn>সংসদে বিরোধী দলের নতুন কর্মসূচির ঘোষণা</span><span data-en>Opposition Announces New Programme in Parliament</span></div>
+                <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৫ ঘণ্টা আগে</span><span data-en>5 hours ago</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="side-news-item border-0 px-0 pt-0" style="border-top:1px solid var(--border)!important;padding-top:12px!important;">
+              <img src="https://picsum.photos/seed/nat4/200/150" alt="" class="side-thumb"/>
+              <div>
+                <div class="news-title sm"><span data-bn>রাজধানীতে নতুন পানি শোধনাগার নির্মাণ কাজ শুরু</span><span data-en>Construction of New Water Treatment Plant Begins in the Capital</span></div>
+                <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৬ ঘণ্টা আগে</span><span data-en>6 hours ago</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="side-news-item border-0 px-0 pt-0" style="border-top:1px solid var(--border)!important;padding-top:12px!important;">
+              <img src="https://picsum.photos/seed/nat5/200/150" alt="" class="side-thumb"/>
+              <div>
+                <div class="news-title sm"><span data-bn>জনপ্রশাসনে সংস্কার আনতে নতুন কমিশন গঠনের উদ্যোগ</span><span data-en>New Commission to Be Formed for Public Administration Reforms</span></div>
+                <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৭ ঘণ্টা আগে</span><span data-en>7 hours ago</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ad-leaderboard mb-4" style="height:90px;line-height:70px;">Advertisement — 728 × 90</div>
+
+      <!-- INTERNATIONAL -->
+      <div class="section-bg mb-4 px-3 py-4">
+        <div class="section-head">
+          <h5><span data-bn>আন্তর্জাতিক</span><span data-en>World</span></h5>
+          <div class="line"></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-5">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/int1/600/360" alt="" class="news-img"/></div>
+            <span class="cat-tag"><span data-bn>আন্তর্জাতিক</span><span data-en>World</span></span>
+            <div class="news-title lg"><span data-bn>জাতিসংঘের জলবায়ু সম্মেলনে উন্নয়নশীল দেশগুলোর কঠোর অবস্থান</span><span data-en>Developing Nations Take Firm Stance at UN Climate Summit</span></div>
+            <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৩ ঘণ্টা আগে</span><span data-en>3 hours ago</span></div>
+          </div>
+          <div class="col-md-7">
+            <div class="d-flex flex-column gap-3">
+              <div class="red-line-left">
+                <div class="news-title md"><span data-bn>চীন-যুক্তরাষ্ট্র বাণিজ্য উত্তেজনায় নতুন মোড়, আলোচনার ইঙ্গিত</span><span data-en>China-US Trade Tensions Take a New Turn as Talks Loom</span></div>
+                <div class="news-meta"><i class="bi bi-clock me-1"></i><span data-bn>৪ ঘণ্টা আগে</span><span data-en>4 hours ago</span></div>
+              </div>
+              <div class="red-line-left">
+                <div class="news-title md"><span data-bn>ইউরোপে অভিবাসন নীতি নিয়ে ইইউ সদস্যদের মধ্যে মতভেদ তীব্র</span><span data-en>Divisions Deepen Among EU Members Over Immigration Policy</span></div>
+                <div class="news-meta"><i class="bi bi-clock me-1"></i><span data-bn>৫ ঘণ্টা আগে</span><span data-en>5 hours ago</span></div>
+              </div>
+              <div class="red-line-left">
+                <div class="news-title md"><span data-bn>রাশিয়া-ইউক্রেন যুদ্ধবিরতির সম্ভাবনা ক্ষীণ হচ্ছে</span><span data-en>Prospects for Russia-Ukraine Ceasefire Grow Dim, Say Analysts</span></div>
+                <div class="news-meta"><i class="bi bi-clock me-1"></i><span data-bn>৬ ঘণ্টা আগে</span><span data-en>6 hours ago</span></div>
+              </div>
+              <div class="red-line-left">
+                <div class="news-title md"><span data-bn>ভারতে লোকসভা নির্বাচনের প্রচারণায় নতুন ইস্যু সামনে আসছে</span><span data-en>New Issues Emerge in India's Lok Sabha Election Campaign</span></div>
+                <div class="news-meta"><i class="bi bi-clock me-1"></i><span data-bn>৮ ঘণ্টা আগে</span><span data-en>8 hours ago</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPORTS -->
+      <div class="section-bg mb-4 px-3 py-4">
+        <div class="section-head">
+          <h5><span data-bn>খেলাধুলা</span><span data-en>Sports</span></h5>
+          <div class="line"></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/sports1/600/360" alt="" class="news-img"/></div>
+            <span class="cat-tag" style="background:var(--accent-blue);"><span data-bn>ক্রিকেট</span><span data-en>Cricket</span></span>
+            <div class="news-title lg"><span data-bn>টাইগাররা ওয়েস্ট ইন্ডিজে টেস্ট সিরিজ জেতার স্বপ্ন দেখছে</span><span data-en>Tigers Dream of Winning Test Series in the West Indies</span></div>
+            <p class="news-excerpt"><span data-bn>বাংলাদেশ টেস্ট দলের অধিনায়ক নতুন কোচিং স্টাফের সাথে মিলে দলকে আরও প্রতিযোগিতামূলক করার পরিকল্পনা নিয়েছেন।</span><span data-en>Bangladesh's Test captain has joined forces with the new coaching staff to make the team more competitive in the longer format.</span></p>
+            <div class="news-meta"><i class="bi bi-clock me-1"></i><span data-bn>২ ঘণ্টা আগে</span><span data-en>2 hours ago</span></div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex flex-column gap-3">
+              <div class="side-news-item border-0 p-0" style="border-bottom:1px solid var(--border)!important;padding-bottom:12px!important;">
+                <img src="https://picsum.photos/seed/sp2/200/150" alt="" class="side-thumb"/>
+                <div>
+                  <span class="cat-tag" style="font-size:10px;background:var(--accent-blue);"><span data-bn>ফুটবল</span><span data-en>Football</span></span>
+                  <div class="side-title"><span data-bn>বাংলাদেশ জাতীয় ফুটবল দলের নতুন কোচ নিয়োগ চূড়ান্ত</span><span data-en>New Coach Appointment for Bangladesh National Football Team Finalised</span></div>
+                  <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৩ ঘণ্টা আগে</span><span data-en>3 hours ago</span></div>
+                </div>
+              </div>
+              <div class="side-news-item border-0 p-0" style="border-bottom:1px solid var(--border)!important;padding-bottom:12px!important;">
+                <img src="https://picsum.photos/seed/sp3/200/150" alt="" class="side-thumb"/>
+                <div>
+                  <span class="cat-tag" style="font-size:10px;background:#16a085;"><span data-bn>টেনিস</span><span data-en>Tennis</span></span>
+                  <div class="side-title"><span data-bn>রোলাঁ গারোতে বাংলাদেশি টেনিস তারকার অভিষেক</span><span data-en>Bangladeshi Tennis Star Makes Debut at Roland Garros</span></div>
+                  <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৫ ঘণ্টা আগে</span><span data-en>5 hours ago</span></div>
+                </div>
+              </div>
+              <div class="side-news-item border-0 p-0">
+                <img src="https://picsum.photos/seed/sp4/200/150" alt="" class="side-thumb"/>
+                <div>
+                  <span class="cat-tag" style="font-size:10px;"><span data-bn>শাটল</span><span data-en>Badminton</span></span>
+                  <div class="side-title"><span data-bn>আন্তর্জাতিক ব্যাডমিন্টনে বাংলাদেশের সাফল্য অব্যাহত</span><span data-en>Bangladesh Continues Strong Run in International Badminton</span></div>
+                  <div class="news-meta mt-1"><i class="bi bi-clock me-1"></i><span data-bn>৭ ঘণ্টা আগে</span><span data-en>7 hours ago</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GALLERY -->
+      <div class="section-bg mb-4 px-3 py-4">
+        <div class="section-head">
+          <h5><span data-bn>ফটো গ্যালারি</span><span data-en>Photo Gallery</span></h5>
+          <div class="line"></div>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-item g-main"><img src="https://picsum.photos/seed/g1/800/600" alt=""/><div class="overlay"></div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/g2/400/300" alt=""/><div class="overlay"></div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/g3/400/300" alt=""/><div class="overlay"></div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/g4/400/300" alt=""/><div class="overlay"></div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/g5/400/300" alt=""/><div class="overlay"></div></div>
+        </div>
+      </div>
+
+      <!-- VIDEO -->
+      <div class="section-bg mb-4 px-3 py-4">
+        <div class="section-head">
+          <h5><span data-bn>ভিডিও সংবাদ</span><span data-en>Video News</span></h5>
+          <div class="line"></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-5">
+            <div class="video-thumb">
+              <img src="https://picsum.photos/seed/vid1/600/340" alt=""/>
+              <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+            </div>
+            <div class="news-title md mt-2"><span data-bn>সংসদ অধিবেশনে বাজেট নিয়ে উত্তপ্ত বিতর্ক — সরাসরি সম্প্রচার</span><span data-en>Heated Budget Debate in Parliament Session — Live Broadcast</span></div>
+            <div class="news-meta"><i class="bi bi-camera-video me-1"></i>45:32 | <span data-bn>১ ঘণ্টা আগে</span><span data-en>1 hour ago</span></div>
+          </div>
+          <div class="col-md-7">
+            <div class="row g-3">
+              <div class="col-6"><div class="video-thumb"><img src="https://picsum.photos/seed/vid2/400/225" alt=""/><div class="play-btn" style="width:36px;height:36px;font-size:14px;"><i class="bi bi-play-fill"></i></div></div><div class="news-title sm mt-1"><span data-bn>পদ্মার ভাঙনে নিঃস্ব পরিবারদের কান্না</span><span data-en>Families Devastated by Padma River Erosion</span></div></div>
+              <div class="col-6"><div class="video-thumb"><img src="https://picsum.photos/seed/vid3/400/225" alt=""/><div class="play-btn" style="width:36px;height:36px;font-size:14px;"><i class="bi bi-play-fill"></i></div></div><div class="news-title sm mt-1"><span data-bn>ঢাকায় বন্যা মোকাবেলায় সেনাবাহিনীর তৎপরতা</span><span data-en>Army Deployed as Dhaka Battles Flooding</span></div></div>
+              <div class="col-6"><div class="video-thumb"><img src="https://picsum.photos/seed/vid4/400/225" alt=""/><div class="play-btn" style="width:36px;height:36px;font-size:14px;"><i class="bi bi-play-fill"></i></div></div><div class="news-title sm mt-1"><span data-bn>বিশ্বকাপে বাংলাদেশের সাফল্যের গল্প</span><span data-en>Bangladesh's Story of World Cup Triumph</span></div></div>
+              <div class="col-6"><div class="video-thumb"><img src="https://picsum.photos/seed/vid5/400/225" alt=""/><div class="play-btn" style="width:36px;height:36px;font-size:14px;"><i class="bi bi-play-fill"></i></div></div><div class="news-title sm mt-1"><span data-bn>নতুন প্রযুক্তিতে কৃষিতে বিপ্লব আনছে তরুণরা</span><span data-en>Young Entrepreneurs Revolutionise Agriculture with New Tech</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPINION -->
+      <div class="section-bg-gray mb-4 px-3 py-4">
+        <div class="section-head">
+          <h5><span data-bn>মতামত / সম্পাদকীয়</span><span data-en>Opinion / Editorial</span></h5>
+          <div class="line"></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="opinion-card">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <img src="https://picsum.photos/seed/auth1/100/100" alt="" class="opinion-author-img"/>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;"><span data-bn>ড. মোহাম্মদ ফারুক</span><span data-en>Dr. Mohammad Farooq</span></div>
+                  <div style="font-size:12px;color:var(--muted);"><span data-bn>অর্থনীতিবিদ</span><span data-en>Economist</span></div>
+                </div>
+              </div>
+              <div class="news-title md"><span data-bn>মূল্যস্ফীতি নিয়ন্ত্রণে সরকারের পদক্ষেপ কি যথেষ্ট?</span><span data-en>Are Government Steps Enough to Control Inflation?</span></div>
+              <p style="font-size:13px;color:var(--mid);"><span data-bn>মুদ্রানীতির মাধ্যমে মূল্যস্ফীতি কমানোর চেষ্টা চলছে, কিন্তু কাঠামোগত সংস্কার ছাড়া স্থায়ী সমাধান সম্ভব নয়…</span><span data-en>Monetary policy is being used to curb inflation, but without structural reforms a lasting solution remains elusive…</span></p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="opinion-card">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <img src="https://picsum.photos/seed/auth2/100/100" alt="" class="opinion-author-img"/>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;"><span data-bn>অধ্যাপক সালমা বেগম</span><span data-en>Prof. Salma Begum</span></div>
+                  <div style="font-size:12px;color:var(--muted);"><span data-bn>শিক্ষাবিদ</span><span data-en>Educationist</span></div>
+                </div>
+              </div>
+              <div class="news-title md"><span data-bn>শিক্ষা ব্যবস্থায় ডিজিটাল রূপান্তরের চ্যালেঞ্জ ও সম্ভাবনা</span><span data-en>Challenges and Prospects of Digital Transformation in Education</span></div>
+              <p style="font-size:13px;color:var(--mid);"><span data-bn>ডিজিটাল শিক্ষার প্রসারে অবকাঠামো উন্নয়ন এবং শিক্ষক প্রশিক্ষণকে অগ্রাধিকার দিতে হবে…</span><span data-en>Expanding digital education requires prioritising infrastructure development and teacher training above all else…</span></p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="opinion-card">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <img src="https://picsum.photos/seed/auth3/100/100" alt="" class="opinion-author-img"/>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;"><span data-bn>রাশেদ খান</span><span data-en>Rashed Khan</span></div>
+                  <div style="font-size:12px;color:var(--muted);"><span data-bn>রাজনৈতিক বিশ্লেষক</span><span data-en>Political Analyst</span></div>
+                </div>
+              </div>
+              <div class="news-title md"><span data-bn>আঞ্চলিক ভূরাজনীতিতে বাংলাদেশের ভবিষ্যৎ কৌশল</span><span data-en>Bangladesh's Future Strategy in Regional Geopolitics</span></div>
+              <p style="font-size:13px;color:var(--mid);"><span data-bn>দক্ষিণ এশিয়ার পরিবর্তিত রাজনৈতিক পরিস্থিতিতে বাংলাদেশকে সুচিন্তিত পররাষ্ট্রনীতি অনুসরণ করতে হবে…</span><span data-en>In South Asia's shifting political landscape, Bangladesh must pursue a carefully considered foreign policy…</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main col -->
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-4">
+
+      <!-- POPULAR -->
+      <div class="widget">
+        <div class="widget-head"><span data-bn>সর্বাধিক পঠিত</span><span data-en>Most Read</span></div>
+        <div class="widget-body" id="popularList"></div>
+      </div>
+
+      <div class="ad-banner">
+        <small><span data-bn>বিজ্ঞাপন</span><span data-en>Advertisement</span></small>
+        <h6><span data-bn>আপনার পণ্য বিজ্ঞাপন দিন</span><span data-en>Advertise Your Product Here</span></h6>
+        <button class="btn btn-sm mt-2" style="background:var(--gold);color:#000;font-size:12px;"><span data-bn>যোগাযোগ করুন</span><span data-en>Contact Us</span></button>
+      </div>
+
+      <!-- LATEST -->
+      <div class="widget">
+        <div class="widget-head"><span data-bn>সর্বশেষ সংবাদ</span><span data-en>Latest News</span></div>
+        <div class="widget-body p-0" id="latestList"></div>
+      </div>
+
+      <!-- TAGS -->
+      <div class="widget">
+        <div class="widget-head"><span data-bn>বিষয় ট্যাগ</span><span data-en>Topic Tags</span></div>
+        <div class="widget-body tag-cloud" id="tagCloud"></div>
+      </div>
+
+      <!-- E-PAPER -->
+      <div class="widget text-center">
+        <div class="widget-head"><span data-bn>ই-পেপার</span><span data-en>E-Paper</span></div>
+        <div class="widget-body">
+          <img src="https://picsum.photos/seed/epaper/300/400" alt="" style="width:100%;border:1px solid var(--border);"/>
+          <a href="#" class="btn w-100 mt-2" style="background:var(--red);color:#fff;border-radius:2px;font-size:13px;">
+            <i class="bi bi-file-earmark-pdf me-2"></i><span data-bn>পূর্ণ সংখ্যা পড়ুন</span><span data-en>Read Full Edition</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- NEWSLETTER -->
+      <div class="widget">
+        <div class="widget-head"><span data-bn>নিউজলেটার</span><span data-en>Newsletter</span></div>
+        <div class="widget-body">
+          <p style="font-size:13px;color:var(--mid);"><span data-bn>প্রতিদিনের গুরুত্বপূর্ণ সংবাদ আপনার ইনবক্সে পেতে সাবস্ক্রাইব করুন।</span><span data-en>Subscribe to receive the day's top news directly in your inbox.</span></p>
+          <input type="email" class="form-control form-control-sm mb-2" id="nlInput" style="border-radius:2px;"/>
+          <button class="btn btn-sm w-100" style="background:var(--red);color:#fff;border-radius:2px;"><span data-bn>সাবস্ক্রাইব করুন</span><span data-en>Subscribe</span></button>
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+  </div>
+</div>
+{% endblock main_content %}
+
+<!-- ══════════ BREAKING BAND ══════════ -->
+{% block breaking_news %}
+<div style="background:var(--dark);padding:28px 0;margin:8px 0 0;">
+  <div class="container-xl">
+    <div class="section-head" style="border-color:#444;">
+      <h5 style="color:#fff;">
+        <span class="breaking-badge"><span data-bn>ব্রেকিং</span><span data-en>BREAKING</span></span>
+        <span data-bn>জরুরি সংবাদ</span><span data-en>Urgent News</span>
+      </h5>
+      <div class="line" style="background:linear-gradient(90deg,#444,transparent);"></div>
+    </div>
+    <div class="row g-3" id="breakingRow"></div>
+  </div>
+</div>
+{% endblock breaking_news %}
+<!-- ══════════ LIFESTYLE & TECH ══════════ -->
+{% block lifestyle_tech %}
+<div class="section-bg-gray py-4">
+  <div class="container-xl">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="section-head">
+          <h5><span data-bn>লাইফস্টাইল</span><span data-en>Lifestyle</span></h5>
+          <div class="line"></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/life1/400/250" alt="" class="news-img"/></div>
+            <span class="cat-tag" style="background:#8e44ad;"><span data-bn>লাইফস্টাইল</span><span data-en>Lifestyle</span></span>
+            <div class="news-title md"><span data-bn>গরমে সুস্থ থাকতে বিশেষজ্ঞদের পরামর্শ</span><span data-en>Expert Tips to Stay Healthy During the Summer Heat</span></div>
+          </div>
+          <div class="col-sm-6">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/life2/400/250" alt="" class="news-img"/></div>
+            <span class="cat-tag" style="background:#8e44ad;"><span data-bn>রান্না</span><span data-en>Food</span></span>
+            <div class="news-title md"><span data-bn>ঐতিহ্যবাহী বাংলাদেশি রান্নার আধুনিক রূপান্তর</span><span data-en>Traditional Bangladeshi Cuisine Gets a Modern Makeover</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="section-head">
+          <h5><span data-bn>প্রযুক্তি</span><span data-en>Technology</span></h5>
+          <div class="line"></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/tech1/400/250" alt="" class="news-img"/></div>
+            <span class="cat-tag" style="background:#16a085;"><span data-bn>প্রযুক্তি</span><span data-en>Tech</span></span>
+            <div class="news-title md"><span data-bn>এআই প্রযুক্তিতে বাংলাদেশের উদ্যোক্তাদের সাফল্য</span><span data-en>Bangladeshi Entrepreneurs Find Success with AI Technology</span></div>
+          </div>
+          <div class="col-sm-6">
+            <div class="img-wrap mb-2"><img src="https://picsum.photos/seed/tech2/400/250" alt="" class="news-img"/></div>
+            <span class="cat-tag" style="background:#16a085;"><span data-bn>গেমিং</span><span data-en>Gaming</span></span>
+            <div class="news-title md"><span data-bn>দেশীয় গেম ডেভেলপারদের আন্তর্জাতিক মঞ্চে অভিষেক</span><span data-en>Local Game Developers Make Their International Debut</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock lifestyle_tech %}

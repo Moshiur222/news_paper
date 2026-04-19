@@ -1,0 +1,73 @@
+<style>
+        .cat-strip {
+      background: #ffffff;
+      border-bottom: 1px solid #e9ecef;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      position: relative;
+      z-index: 99;
+    }
+    .category-scroll {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-scroll::-webkit-scrollbar {
+      height: 3px;
+    }
+    .category-scroll::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .category-scroll::-webkit-scrollbar-thumb {
+      background: var(--primary-red);
+      border-radius: 10px;
+    }
+    .cat-item {
+      flex: 0 0 auto;
+      background: #f8fafc;
+      border-radius: 40px;
+      padding: 0.4rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1e293b;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      white-space: nowrap;
+      border: 1px solid #e2e8f0;
+    }
+    .cat-item i {
+      margin-right: 6px;
+      font-size: 0.75rem;
+      color: var(--primary-red);
+    }
+    .cat-item:hover, .cat-item.active-cat {
+      background: var(--primary-red);
+      color: white;
+      border-color: var(--primary-red);
+    }
+    .cat-item:hover i, .cat-item.active-cat i {
+      color: white;
+    }
+</style>
+
+<div class="cat-strip">
+  <div class="container-xl px-0 px-md-3" id="catStrip">
+    <div class="category-scroll">
+      <a href="#" class="cat-item"><i class="fas fa-landmark"></i> রাজনীতি</a>
+      <a href="#" class="cat-item"><i class="fas fa-globe-asia"></i> বিশ্ব</a>
+      <a href="#" class="cat-item"><i class="fas fa-coins"></i> বাণিজ্য</a>
+      <a href="#" class="cat-item"><i class="fas fa-futbol"></i> ক্রীড়া</a>
+      <a href="#" class="cat-item"><i class="fas fa-film"></i> বিনোদন</a>
+      <a href="#" class="cat-item"><i class="fas fa-microchip"></i> টেক</a>
+      <a href="#" class="cat-item"><i class="fas fa-heartbeat"></i> স্বাস্থ্য</a>
+      <a href="#" class="cat-item"><i class="fas fa-gavel"></i> আইন ও আদালত</a>
+      <a href="#" class="cat-item"><i class="fas fa-graduation-cap"></i> শিক্ষা</a>
+      <a href="#" class="cat-item"><i class="fas fa-leaf"></i> জলবায়ু</a>
+      <a href="#" class="cat-item"><i class="fas fa-car"></i> যাতায়াত</a>
+    </div>
+  </div>
+</div>

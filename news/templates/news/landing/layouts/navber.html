@@ -1,0 +1,51 @@
+<style>
+.nav-modern {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-nav .nav-link {
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 1rem 1rem;
+  color: #2d3e50;
+  transition: 0.2s;
+}
+
+.navbar-nav .nav-link:hover, 
+.navbar-nav .nav-link.active {
+  color: var(--primary-red);
+  border-bottom: 2px solid var(--primary-red);
+}
+</style>
+
+<nav class="navbar navbar-expand-lg nav-modern">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="#">হোম</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">জাতীয়</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">রাজনীতি</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">আন্তর্জাতিক</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">অর্থ-বাণিজ্য</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">খেলাধুলা</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">বিনোদন</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">প্রযুক্তি</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">মতামত</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">সবার শীর্ষে</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">সারা দেশ</a></li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control form-control-sm rounded-pill me-2" type="search" placeholder="খুঁজুন..." aria-label="Search">
+        <button class="btn btn-sm btn-outline-danger rounded-pill" type="submit"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
+  </div>
+</nav>

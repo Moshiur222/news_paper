@@ -3,65 +3,88 @@
 <footer class="footer-modern">
   <div class="container">
     <div class="row">
+
+      <!-- LOGO + CONTACT -->
       <div class="col-lg-4 mb-4">
-        <img src="{% static 'news/images/logo.png' %}" alt="Ad Banner" class="img-fluid rounded" style="max-height:60px;">
+        <img src="{% static 'news/landing/images/logo.png' %}" class="img-fluid rounded" style="max-height:60px;">
         <div class="mt-3">
           <i class="fas fa-envelope me-2"></i> newsroom@inews24.com<br>
-          <i class="fas fa-phone-alt me-2"></i> +৮৮০ ২ ৯৮৭৬৫৪৩
+          <i class="fas fa-phone-alt me-2"></i> +880 2 9876543
         </div>
       </div>
+
+      <!-- MAIN MENU -->
       <div class="col-lg-2 col-6 mb-4 footer-links">
-        <h6>প্রধান বিভাগ</h6>
+        <h6>{{ t.main_sections }}</h6>
         <ul class="list-unstyled">
-          <li><a href="#">জাতীয়</a></li>
-          <li><a href="#">রাজনীতি</a></li>
-          <li><a href="#">অর্থনীতি</a></li>
-          <li><a href="#">আন্তর্জাতিক</a></li>
+          <li><a href="#">{{ t.national }}</a></li>
+          <li><a href="#">{{ t.politics }}</a></li>
+          <li><a href="#">{{ t.economy }}</a></li>
+          <li><a href="#">{{ t.international }}</a></li>
         </ul>
       </div>
+
+      <!-- OTHER MENU -->
       <div class="col-lg-2 col-6 mb-4 footer-links">
-        <h6>অন্যান্য</h6>
+        <h6>{{ t.others }}</h6>
         <ul class="list-unstyled">
-          <li><a href="#">খেলাধুলা</a></li>
-          <li><a href="#">বিনোদন</a></li>
-          <li><a href="#">প্রযুক্তি</a></li>
-          <li><a href="#">লাইফস্টাইল</a></li>
+          <li><a href="#">{{ t.sports }}</a></li>
+          <li><a href="#">{{ t.entertainment }}</a></li>
+          <li><a href="#">{{ t.technology }}</a></li>
+          <li><a href="#">{{ t.lifestyle }}</a></li>
         </ul>
       </div>
+
+      <!-- NEWSLETTER -->
       <div class="col-lg-4 mb-4">
-        <h6>নিউজলেটার সাবস্ক্রাইব</h6>
+        <h6>{{ t.newsletter }}</h6>
         <div class="input-group">
-          <input type="email" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="আপনার ইমেইল">
-          <button class="btn btn-sm btn-danger" type="button">সাবস্ক্রাইব</button>
+          <input type="email"
+                 class="form-control form-control-sm bg-dark text-white border-secondary"
+                 placeholder="{{ t.email_placeholder }}">
+          <button class="btn btn-sm btn-danger" type="button">
+            {{ t.subscribe }}
+          </button>
         </div>
+
         <div class="mt-3 d-flex gap-3">
-          <a href="#" class="text-white-50"><i class="fab fa-facebook-f fa-lg"></i></a>
-          <a href="#" class="text-white-50"><i class="fab fa-twitter fa-lg"></i></a>
-          <a href="#" class="text-white-50"><i class="fab fa-instagram fa-lg"></i></a>
-          <a href="#" class="text-white-50"><i class="fab fa-youtube fa-lg"></i></a>
+          <a href="#" class="text-white-50"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="text-white-50"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-white-50"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="text-white-50"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER BOTTOM -->
+    <div class="footer-bottom">
+      <div class="footer-inner-container">
+        <div class="footer-bottom-content">
+
+          <span class="copyright-text">
+            © {% now "Y" %} SISPAB. {{ t.copyright }}
+          </span>
+
+          <div class="info-row">
+            <span>
+              <a href="https://iglweb.com/web/domains-services.php" target="_blank">Domain</a> by IGL
+            </span>
+            <span>
+              <a href="https://iglweb.com/web/hosting-regular-shared.php" target="_blank">Hosting</a> by IGL
+            </span>
+            <span>
+              <a href="https://iglweb.com/web/web-development.php" target="_blank">Development</a> by IGL
+            </span>
+          </div>
+
         </div>
       </div>
     </div>
-    <!-- Footer Bottom (unchanged) -->
-  <div class="footer-bottom">
-    <div class="footer-inner-container">
-      <div class="footer-bottom-content">
-        <span class="copyright-text">Copyright &copy; {% now "Y" %} SISPAB. All Rights Reserved</span>
-        <div class="info-row">
-          <span class="legal-link-group">
-            <a href="https://iglweb.com/web/domains-services.php" target="_blank">Domain Registration</a> by: <a href="https://iglweb.com/web/domains-services.php" target="_blank">IGL Web Ltd.</a>
-          </span>
-          <span class="legal-link-group">
-            <a href="https://iglweb.com/web/hosting-regular-shared.php" target="_blank">Web Hosting</a> by: <a href="https://iglweb.com/web/hosting-regular-shared.php" target="_blank">IGL Web Ltd.</a>
-          </span>
-          <span class="legal-link-group">
-            <a href="https://iglweb.com/web/web-development.php" target="_blank">Web Design & Development</a> by: <a href="https://iglweb.com/web/web-development.php" target="_blank">IGL Web Ltd.</a>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
+
   </div>
 </footer>
 
-<button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
+<button class="scroll-top" id="scrollTopBtn">
+  <i class="fas fa-arrow-up"></i>
+</button>

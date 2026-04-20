@@ -157,30 +157,15 @@
       <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="2"></button>
     </div>
     <div class="carousel-inner">
+      {% for hero in hero_areas %}
       <div class="carousel-item active">
-        <img src="https://picsum.photos/id/104/1600/600" class="d-block w-100" alt="সংবাদ ছবি">
+        <img src="{{hero.image.url}}" class="d-block w-100" alt="সংবাদ ছবি">
         <div class="carousel-caption">
-          <div class="badge-cat">জাতীয় শীর্ষ সংবাদ</div>
-          <h3>নির্বাচন কমিশন নতুন তফসিল ঘোষণা, সব প্রস্তুতি চূড়ান্ত পর্যায়ে</h3>
-          <p>আসন্ন জাতীয় নির্বাচন সামনে রেখে রিটার্নিং কর্মকর্তাদের মাধ্যমে প্রার্থী তালিকা চূড়ান্ত...</p>
+          <div class="badge-cat">{{hero.title}}</div>
+          <p>{{hero.description|safe}}</p>
         </div>
       </div>
-      <div class="carousel-item">
-        <img src="https://picsum.photos/id/20/1600/600" class="d-block w-100" alt="অর্থনীতি">
-        <div class="carousel-caption">
-          <div class="badge-cat">অর্থনীতি ও বাণিজ্য</div>
-          <h3>বিশ্ববাজারে জ্বালানি তেলের দাম কমেছে, রেমিট্যান্স রেকর্ড</h3>
-          <p>চলতি অর্থবছরে প্রবাসী আয় ২০% বৃদ্ধি পেয়েছে, ডলার সংকট কাটিয়ে উঠছে দেশ।</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img src="https://picsum.photos/id/30/1600/600" class="d-block w-100" alt="খেলা">
-        <div class="carousel-caption">
-          <div class="badge-cat">খেলাধুলা</div>
-          <h3>এশিয়া কাপের দল ঘোষণা, ফিরছেন সাকিব আল হাসান</h3>
-          <p>বাংলাদেশ ক্রিকেট বোর্ড ১৫ সদস্যের দল ঘোষণা করেছে, শক্তিশালী দল নিয়ে বিশ্বকাপের প্রস্তুতি।</p>
-        </div>
-      </div>
+      {% endfor %}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#heroSlider" data-bs-slide="prev">
       <span class="carousel-control-prev-icon"></span>

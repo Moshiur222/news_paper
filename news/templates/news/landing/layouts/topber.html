@@ -4,38 +4,151 @@
 .top-bar {
   background: #1e293b;
   color: #e2e8f0;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   padding: 8px 0;
 }
 
-.date-time i, .social-icons a {
-  margin-right: 12px;
+.date-time i,
+.social-icons a {
+  margin-right: 10px;
   color: #cbd5e1;
-  transition: 0.2s;
 }
 
-.social-icons a:hover { 
-  color: var(--gold-accent); 
+.social-icons a:hover {
+  color: #fbbf24;
+}
+
+.lang-toggle {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #cbd5e1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.lang-toggle:hover {
+  background: #fbbf24;
+  color: #000;
 }
 </style>
-
 
 <div class="top-bar">
   <div class="container">
     <div class="row align-items-center">
-      <div class="col-md-6 col-12 text-md-start text-center mb-2 mb-md-0 date-time">
-        <i class="far fa-calendar-alt"></i> শনিবার, ১৯ এপ্রিল ২০২৬
-        <i class="far fa-clock ms-3"></i> ঢাকা ১০:৪৫ AM
+
+      <!-- DATE + TIME -->
+      <div class="col-md-6 col-12 text-md-start text-center date-time">
+
+        <i class="far fa-calendar-alt"></i>
+        <span id="datePrimary"></span>
+
+        <span class="mx-2">|</span>
+
+        <span id="dateSecondary"></span>
+
+        <i class="far fa-clock ms-3"></i>
+        <span id="currentTime"></span>
+
+        <span class="ms-3">📍 {{ t.dhaka }}</span>
       </div>
+
+      <!-- LANGUAGE -->
       <div class="col-md-6 col-12 text-md-end text-center social-icons">
-        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-        <a href="#" class="lang-toggle ms-2" id="langBanglaBtn">বাংলা</a>
-        <a href="#" class="lang-toggle" id="langEnglishBtn">English</a>
+
+        {% if current_language == 'en' %}
+        <form action="{% url 'switch_language' %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <input type="hidden" name="language" value="bn">
+          <button type="submit" class="lang-toggle">বাংলা</button>
+        </form>
+        {% else %}
+        <form action="{% url 'switch_language' %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <input type="hidden" name="language" value="en">
+          <button type="submit" class="lang-toggle">English</button>
+        </form>
+        {% endif %}
+
       </div>
     </div>
   </div>
 </div>
+
+<script>
+function getBanglaDate() {
+    const now = new Date();
+
+    const months = [
+        "বৈশাখ","জ্যৈষ্ঠ","আষাঢ়","শ্রাবণ",
+        "ভাদ্র","আশ্বিন","কার্তিক","অগ্রহায়ণ",
+        "পৌষ","মাঘ","ফাল্গুন","চৈত্র"
+    ];
+
+    const days = [
+        "রবিবার","সোমবার","মঙ্গলবার",
+        "বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"
+    ];
+
+    let year = now.getFullYear() - 593;
+    let month = (now.getMonth() + 9) % 12;
+    let date = now.getDate();
+
+    return `${days[now.getDay()]}, ${date} ${months[month]} ${year}`;
+}
+
+function getEnglishDate() {
+    const now = new Date();
+    return now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+// 🔥 Convert English number → Bangla number
+function toBanglaNumber(num) {
+    return num.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+}
+
+function updateDateTime() {
+    const lang = "{{ current_language }}";
+    const now = new Date();
+
+    let bnDate = getBanglaDate();
+    let enDate = getEnglishDate();
+
+    // 🔥 TIME (১০:৪৫ PM format)
+    let time = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    // number convert (10 → ১০)
+    let parts = time.split(' ');
+    let bnTime = toBanglaNumber(parts[0]) + ' ' + parts[1];
+
+    if (lang === 'bn') {
+        // ✅ FULL BANGLA FIRST
+        document.getElementById("datePrimary").innerText =
+            `${bnDate} | ${enDate}`;
+
+        document.getElementById("currentTime").innerText = bnTime;
+
+    } else {
+        // ✅ FULL ENGLISH FIRST
+        document.getElementById("datePrimary").innerText =
+            `${enDate} | ${bnDate}`;
+
+        document.getElementById("currentTime").innerText = time;
+    }
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
+</script>

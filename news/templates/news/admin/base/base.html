@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dek - Modern Admin Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'news/admin/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'news/admin/css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'news/admin/css/responsive.css' %}">
+    {% block css %}
+    {% endblock css %}
+    <style>
+        .message-container{
+            position: fixed;
+            top: 370px;
+            right: 850px;
+            z-index: 9999;
+        }
+
+        .alert{
+            padding: 12px 18px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* success */
+        .alert.success{
+            background: #10b981;
+        }
+
+        /* error */
+        .alert.error{
+            background: #ef4444;
+        }
+
+        /* info */
+        .alert.info{
+            background: #3b82f6;
+        }
+</style>
+</head>
+<body>
+    <div class="main-wrapper">
+       {% block sidebar %}
+       {% include "news/admin/layouts/sidebar.html" %}
+       {% endblock sidebar %}
+       <!-- Main Content -->
+       <div class="main-content">
+           <!-- Header -->
+           {% block header %}
+           {% include "news/admin/layouts/header.html" %}
+           {% endblock header %}
+           {% if messages %}
+                <div class="message-container">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+           
+           <!-- Page Content -->
+           {% block main %}
+           {% endblock main %}
+        </div>
+    </div>
+
+    <!-- Custom JS -->
+    {% block js %}{% endblock js %}
+    <script src="{% static 'news/admin/js/main.js' %}"></script>
+    <script src="{% static 'news/admin/js/charts.js' %}"></script>
+    <script>
+        setTimeout(function () {
+            const msg = document.querySelector('.message-container');
+            if (msg) {
+                msg.style.transition = "opacity 0.5s ease";
+                msg.style.opacity = "0";
+            
+                setTimeout(() => {
+                    msg.remove();
+                }, 500);
+            }
+        }, 10000); // 10 seconds
+    </script>
+</body>
+</html>

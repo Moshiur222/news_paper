@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+     'django.middleware.locale.LocaleMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -52,6 +53,21 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'news_paper.urls'
+AUTH_USER_MODEL = 'news.User'
+
+LANGUAGE_CODE = 'en'
+
+USE_I18N = True
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('bn', 'Bangla'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
 
 TEMPLATES = [
     {
@@ -63,6 +79,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'news.context_processors.locations',
+                'news.context_processors.active_menu',
+                'news.context_processors.get_translations',
             ],
         },
     },

@@ -1,0 +1,289 @@
+{% extends "news/admin/base/base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<style>
+body {
+    background: #f5f7fb !important;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* MAIN CARD */
+.card {
+    background: #fff !important;
+    border: none !important;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06) !important;
+}
+
+/* HEADER */
+.card-header {
+    background: transparent !important;
+    border-bottom: 1px solid #eef0f5;
+    padding: 18px 20px;
+}
+
+/* TABLE WRAPPER */
+.table {
+    border: none !important;
+}
+
+/* TABLE STYLE */
+#locationTable {
+    border-collapse: separate !important;
+    border-spacing: 0 10px;
+}
+
+/* ROW CARD LOOK */
+#locationTable tbody tr {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    transition: 0.2s;
+}
+
+#locationTable tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* CELLS */
+#locationTable td,
+#locationTable th {
+    padding: 14px 16px !important;
+    border: none !important;
+    vertical-align: middle;
+}
+
+/* HEADER */
+#locationTable thead tr {
+    background: #f1f5f9;
+}
+
+#locationTable thead th {
+    font-weight: 600;
+    color: #475569;
+    font-size: 14px;
+}
+
+/* BUTTONS */
+.btn-sm {
+    border-radius: 8px !important;
+}
+
+/* SEARCH BOX */
+.dataTables_filter input {
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    padding: 6px 10px;
+    outline: none;
+}
+
+/* PAGINATION */
+.dataTables_paginate .paginate_button {
+    border-radius: 8px !important;
+    margin: 0 3px;
+    border: none !important;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background: #16a34a !important;
+    color: #fff !important;
+}
+
+/* DRAWER */
+.drawer {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 380px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -6px 0 25px rgba(0,0,0,0.15);
+    transition: 0.3s ease;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.drawer.open {
+    right: 0;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.drawer-header button {
+    border: none;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* BACKDROP */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    z-index: 1500;
+}
+
+.drawer-overlay.show {
+    display: block;
+}
+</style>
+{% endblock css %}
+
+{% block main %}
+
+<div class="main-wrapper">
+<main class="page-content">
+
+    <!-- CARD -->
+    <div class="card mb-3">
+
+        <!-- HEADER -->
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Locations List</h3>
+
+            <button class="btn btn-success btn-sm" onclick="openAddDrawer()">
+                + Add
+            </button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="card-body">
+            <div class="table-responsive">
+
+                <table id="locationTable" class="table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>District Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for location in locations %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ location.name }}</td>
+                            <td>
+
+                                <button class="btn btn-sm btn-primary"
+                                        onclick="openEditDrawer('{{ location.id }}', '{{ location.name }}')">
+                                    Edit
+                                </button>
+
+                                <form method="POST" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="delete_id" value="{{ location.id }}">
+                                    <button class="btn btn-sm btn-danger">
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+</div>
+
+<!-- BACKDROP -->
+<div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER -->
+<div id="drawer" class="drawer">
+
+    <div class="drawer-header">
+        <h5 id="drawerTitle">Add Location</h5>
+        <button onclick="closeDrawer()">×</button>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="hidden" id="formMode" name="form_mode" value="add">
+        <input type="hidden" id="editId" name="update_id">
+
+        <label class="form-label">District Name</label>
+        <input type="text"
+               id="nameInput"
+               name="name"
+               class="form-control"
+               required>
+
+        <button type="submit" class="btn btn-success w-100 mt-3">
+            Save
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock main %}
+
+{% block js %}
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    $('#locationTable').DataTable({
+        pageLength: 10,
+        ordering: true,
+        searching: true
+    });
+});
+
+/* ADD */
+function openAddDrawer() {
+    document.getElementById("drawerTitle").innerText = "Add Location";
+    document.getElementById("formMode").value = "add";
+    document.getElementById("editId").value = "";
+    document.getElementById("nameInput").value = "";
+    openDrawer();
+}
+
+/* EDIT */
+function openEditDrawer(id, name) {
+    document.getElementById("drawerTitle").innerText = "Update Location";
+    document.getElementById("formMode").value = "update";
+    document.getElementById("editId").value = id;
+    document.getElementById("nameInput").value = name;
+    openDrawer();
+}
+
+/* OPEN */
+function openDrawer() {
+    document.getElementById("drawer").classList.add("open");
+    document.getElementById("drawerOverlay").classList.add("show");
+}
+
+/* CLOSE */
+function closeDrawer() {
+    document.getElementById("drawer").classList.remove("open");
+    document.getElementById("drawerOverlay").classList.remove("show");
+}
+</script>
+
+{% endblock js %}

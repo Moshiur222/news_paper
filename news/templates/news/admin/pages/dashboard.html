@@ -1,0 +1,426 @@
+{% extends "news/admin/base/base.html" %}
+        
+ {% block main %}
+    <main class="page-content">
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>Dashboard</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>45,678</h3>
+                    <p>Total Users</p>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 12.5%</span>
+                    <span class="stat-period">Since last month</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon bg-success">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>$78,234</h3>
+                    <p>Total Revenue</p>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 8.2%</span>
+                    <span class="stat-period">Since last month</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon bg-warning">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>2,456</h3>
+                    <p>New Orders</p>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-trend down"><i class="fas fa-arrow-down"></i> 3.1%</span>
+                    <span class="stat-period">Since last month</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon bg-danger">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>89%</h3>
+                    <p>Bounce Rate</p>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 2.4%</span>
+                    <span class="stat-period">Since last month</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Revenue Overview</h3>
+                    <div class="card-actions">
+                        <select class="chart-select">
+                            <option>This Week</option>
+                            <option>This Month</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Sales Analytics</h3>
+                    <div class="card-actions">
+                        <select class="chart-select">
+                            <option>This Week</option>
+                            <option>This Month</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Row -->
+        <div class="tables-row">
+            <div class="table-card">
+                <div class="card-header">
+                    <h3>Recent Orders</h3>
+                    <a href="#" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#ORD-001</td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <img src="https://ui-avatars.com/api/?name=John+Smith&background=6366f1&color=fff&size=32" alt="">
+                                            <span>John Smith</span>
+                                        </div>
+                                    </td>
+                                    <td>Premium Package</td>
+                                    <td>$299.00</td>
+                                    <td><span class="status-badge success">Completed</span></td>
+                                    <td>Feb 21, 2026</td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-002</td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <img src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=10b981&color=fff&size=32" alt="">
+                                            <span>Sarah Johnson</span>
+                                        </div>
+                                    </td>
+                                    <td>Basic Package</td>
+                                    <td>$99.00</td>
+                                    <td><span class="status-badge warning">Pending</span></td>
+                                    <td>Feb 20, 2026</td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-003</td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <img src="https://ui-avatars.com/api/?name=Mike+Brown&background=f59e0b&color=fff&size=32" alt="">
+                                            <span>Mike Brown</span>
+                                        </div>
+                                    </td>
+                                    <td>Enterprise Package</td>
+                                    <td>$599.00</td>
+                                    <td><span class="status-badge success">Completed</span></td>
+                                    <td>Feb 19, 2026</td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-004</td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <img src="https://ui-avatars.com/api/?name=Emily+Davis&background=ef4444&color=fff&size=32" alt="">
+                                            <span>Emily Davis</span>
+                                        </div>
+                                    </td>
+                                    <td>Pro Package</td>
+                                    <td>$199.00</td>
+                                    <td><span class="status-badge danger">Cancelled</span></td>
+                                    <td>Feb 18, 2026</td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-005</td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <img src="https://ui-avatars.com/api/?name=David+Wilson&background=8b5cf6&color=fff&size=32" alt="">
+                                            <span>David Wilson</span>
+                                        </div>
+                                    </td>
+                                    <td>Standard Package</td>
+                                    <td>$149.00</td>
+                                    <td><span class="status-badge success">Completed</span></td>
+                                    <td>Feb 17, 2026</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-card">
+                <div class="card-header">
+                    <h3>Top Products</h3>
+                    <a href="#" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="product-list">
+                        <div class="product-item">
+                            <div class="product-img">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <div class="product-info">
+                                <h4>Laptop Pro</h4>
+                                <p>Electronics</p>
+                            </div>
+                            <div class="product-sales">
+                                <span class="sales-count">1,234</span>
+                                <span class="sales-label">Sales</span>
+                            </div>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-img">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="product-info">
+                                <h4>Smartphone X</h4>
+                                <p>Electronics</p>
+                            </div>
+                            <div class="product-sales">
+                                <span class="sales-count">987</span>
+                                <span class="sales-label">Sales</span>
+                            </div>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-img">
+                                <i class="fas fa-headphones"></i>
+                            </div>
+                            <div class="product-info">
+                                <h4>Wireless Headphones</h4>
+                                <p>Accessories</p>
+                            </div>
+                            <div class="product-sales">
+                                <span class="sales-count">756</span>
+                                <span class="sales-label">Sales</span>
+                            </div>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-img">
+                                <i class="fas fa-watch"></i>
+                            </div>
+                            <div class="product-info">
+                                <h4>Smart Watch</h4>
+                                <p>Wearables</p>
+                            </div>
+                            <div class="product-sales">
+                                <span class="sales-count">543</span>
+                                <span class="sales-label">Sales</span>
+                            </div>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-img">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <div class="product-info">
+                                <h4>Digital Camera</h4>
+                                <p>Electronics</p>
+                            </div>
+                            <div class="product-sales">
+                                <span class="sales-count">321</span>
+                                <span class="sales-label">Sales</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Row -->
+        <div class="progress-row">
+            <div class="progress-card">
+                <div class="card-header">
+                    <h3>Task Progress</h3>
+                </div>
+                <div class="card-body">
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <span>Website Development</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <span>Mobile App Design</span>
+                            <span>45%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <span>Database Migration</span>
+                            <span>90%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <span>API Integration</span>
+                            <span>60%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-card">
+                <div class="card-header">
+                    <h3>Team Members</h3>
+                </div>
+                <div class="card-body">
+                    <div class="team-list">
+                        <div class="team-member">
+                            <img src="https://ui-avatars.com/api/?name=Alex+Thompson&background=6366f1&color=fff&size=40" alt="">
+                            <div class="member-info">
+                                <h4>Alex Thompson</h4>
+                                <span>Project Manager</span>
+                            </div>
+                            <div class="member-status online"></div>
+                        </div>
+                        <div class="team-member">
+                            <img src="https://ui-avatars.com/api/?name=Maria+Garcia&background=10b981&color=fff&size=40" alt="">
+                            <div class="member-info">
+                                <h4>Maria Garcia</h4>
+                                <span>UI/UX Designer</span>
+                            </div>
+                            <div class="member-status online"></div>
+                        </div>
+                        <div class="team-member">
+                            <img src="https://ui-avatars.com/api/?name=James+Anderson&background=f59e0b&color=fff&size=40" alt="">
+                            <div class="member-info">
+                                <h4>James Anderson</h4>
+                                <span>Backend Developer</span>
+                            </div>
+                            <div class="member-status away"></div>
+                        </div>
+                        <div class="team-member">
+                            <img src="https://ui-avatars.com/api/?name=Lisa+Martinez&background=ef4444&color=fff&size=40" alt="">
+                            <div class="member-info">
+                                <h4>Lisa Martinez</h4>
+                                <span>Frontend Developer</span>
+                            </div>
+                            <div class="member-status offline"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-card">
+                <div class="card-header">
+                    <h3>Browser Statistics</h3>
+                </div>
+                <div class="card-body">
+                    <div class="browser-stats">
+                        <div class="browser-item">
+                            <div class="browser-icon">
+                                <i class="fab fa-chrome"></i>
+                            </div>
+                            <div class="browser-info">
+                                <span>Chrome</span>
+                                <span class="browser-percent">64%</span>
+                            </div>
+                            <div class="browser-bar">
+                                <div class="browser-fill" style="width: 64%"></div>
+                            </div>
+                        </div>
+                        <div class="browser-item">
+                            <div class="browser-icon">
+                                <i class="fab fa-safari"></i>
+                            </div>
+                            <div class="browser-info">
+                                <span>Safari</span>
+                                <span class="browser-percent">19%</span>
+                            </div>
+                            <div class="browser-bar">
+                                <div class="browser-fill" style="width: 19%"></div>
+                            </div>
+                        </div>
+                        <div class="browser-item">
+                            <div class="browser-icon">
+                                <i class="fab fa-firefox"></i>
+                            </div>
+                            <div class="browser-info">
+                                <span>Firefox</span>
+                                <span class="browser-percent">12%</span>
+                            </div>
+                            <div class="browser-bar">
+                                <div class="browser-fill" style="width: 12%"></div>
+                            </div>
+                        </div>
+                        <div class="browser-item">
+                            <div class="browser-icon">
+                                <i class="fab fa-edge"></i>
+                            </div>
+                            <div class="browser-info">
+                                <span>Edge</span>
+                                <span class="browser-percent">5%</span>
+                            </div>
+                            <div class="browser-bar">
+                                <div class="browser-fill" style="width: 5%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main %}

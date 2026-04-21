@@ -1,0 +1,192 @@
+{% extends "news/landing/base/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* News Cards */
+    .news-card {
+      background: var(--soft-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      box-shadow: var(--card-shadow);
+      height: 100%;
+      border: none;
+      margin-bottom: 25px;
+    }
+
+    .news-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.1);
+    }
+    .news-img {
+      height: 200px;
+      object-fit: cover;
+      width: 100%;
+      transition: transform 0.3s;
+    }
+    .news-card:hover .news-img {
+      transform: scale(1.02);
+    }
+    .card-body {
+      padding: 1.2rem;
+    }
+    .card-category {
+      color: var(--primary-red);
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    .card-title {
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .card-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .card-title a:hover {
+      color: var(--primary-red);
+    }
+    .card-text {
+      color: #4a5568;
+      font-size: 0.85rem;
+    }
+    .card-date {
+      font-size: 0.7rem;
+      color: #8a99b4;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* Section Headers */
+    .section-header {
+      border-left: 5px solid var(--primary-red);
+      padding-left: 15px;
+      margin: 35px 0 20px;
+    }
+    .section-header h2 {
+      font-weight: 800;
+      font-size: 1.7rem;
+      margin-bottom: 5px;
+    }
+    .section-header span {
+      font-size: 0.8rem;
+      color: #5b6e8c;
+    }
+    .section-header a {
+      color: var(--primary-red);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+    .my-4 {
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -12px;
+    }
+    .col-md-6 {
+      width: 50%;
+      padding: 10px 12px;
+    }
+    .d-flex {
+      display: flex;
+    }
+    .justify-content-between {
+      justify-content: space-between;
+    }
+    .align-items-center {
+      align-items: center;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .section-header h2 {
+        font-size: 1.3rem;
+      }
+      .news-img {
+        height: 180px;
+      }
+      .col-md-6 {
+        width: 100%;
+      }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block main_content %}
+<div class="container my-4">
+  <!-- শীর্ষ সংবাদ / Top News Section (4 news - শুধু টপ নিউজ) -->
+  <div class="section-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2>{% if current_language == 'bn' %}শীর্ষ সংবাদ{% else %}Top News{% endif %}</h2>
+      <span>{% if current_language == 'bn' %}সর্বাধিক পঠিত{% else %}Most Read{% endif %}</span>
+    </div>
+    <a href="#">{% if current_language == 'bn' %}সব দেখুন →{% else %}View All →{% endif %}</a>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="news-card">
+        <img src="https://picsum.photos/id/15/400/240" class="news-img" alt="Top News">
+        <div class="card-body">
+          <span class="card-category">শীর্ষ সংবাদ</span>
+          <h5 class="card-title"><a href="#">বাজেট অধিবেশন শুরু আজ, কী কী সিদ্ধান্ত আসছে?</a></h5>
+          <p class="card-text">আজ থেকে শুরু হচ্ছে জাতীয় সংসদের বাজেট অধিবেশন...</p>
+          <div class="card-date"><i class="far fa-clock"></i> ২ ঘণ্টা আগে</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="news-card">
+        <img src="https://picsum.photos/id/1/400/240" class="news-img" alt="Top News">
+        <div class="card-body">
+          <span class="card-category">শীর্ষ সংবাদ</span>
+          <h5 class="card-title"><a href="#">নির্বাচন কমিশনের বড় সিদ্ধান্ত, নতুন ভোটার তালিকা প্রকাশ</a></h5>
+          <p class="card-text">দেশব্যাপী ভোটার তালিকা হালনাগাদ করা হয়েছে...</p>
+          <div class="card-date"><i class="far fa-clock"></i> ৫ ঘণ্টা আগে</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="news-card">
+        <img src="https://picsum.photos/id/2/400/240" class="news-img" alt="Top News">
+        <div class="card-body">
+          <span class="card-category">শীর্ষ সংবাদ</span>
+          <h5 class="card-title"><a href="#">ডলার সংকট কাটিয়ে উঠতে কেন্দ্রীয় ব্যাংকের নতুন উদ্যোগ</a></h5>
+          <p class="card-text">রেমিট্যান্স বাড়াতে বিশেষ প্রণোদনা ঘোষণা করেছে বাংলাদেশ ব্যাংক...</p>
+          <div class="card-date"><i class="far fa-clock"></i> ৮ ঘণ্টা আগে</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="news-card">
+        <img src="https://picsum.photos/id/3/400/240" class="news-img" alt="Top News">
+        <div class="card-body">
+          <span class="card-category">শীর্ষ সংবাদ</span>
+          <h5 class="card-title"><a href="#">বাংলাদেশের প্রথম স্যাটেলাইটের সফল উৎক্ষেপণ</a></h5>
+          <p class="card-text">বঙ্গবন্ধু স্যাটেলাইট-২ এর উৎক্ষেপণ সফলভাবে সম্পন্ন হয়েছে...</p>
+          <div class="card-date"><i class="far fa-clock"></i> ১০ ঘণ্টা আগে</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock main_content %}

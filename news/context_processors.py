@@ -2,8 +2,14 @@ from .models import *
 
 def locations(request):
     return {
-        'locations': Location.objects.all()
+        'locations': Location.objects.all().order_by('id')
     }
+
+def category(request):
+    return {
+        'categories': Category.objects.all().order_by('id')
+    }
+
 def active_menu(request):
     url_name = ""
 

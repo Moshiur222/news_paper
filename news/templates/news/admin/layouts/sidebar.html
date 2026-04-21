@@ -43,7 +43,7 @@
             </li>
 
             <!-- Home -->
-            <li class="menu-item has-submenu {% if active_url == 'admin_location_list' or active_url == 'hero' %}active open{% endif %}">
+            <li class="menu-item has-submenu {% if active_url == 'admin_location_list' or active_url == 'news' or active_url == 'category' %}active open {% endif %}">
 
                 <a href="#" class="menu-link">
                     <i class="fas fa-folder"></i>
@@ -55,8 +55,11 @@
                     <li class="{% if active_url == 'admin_location_list' %}active{% endif %}">
                         <a href="{% url 'admin_location_list' %}">Location</a>
                     </li>
-                    <li class="{% if active_url == 'hero' %}active{% endif %}">
-                        <a href="{% url 'hero' %}">Hero Section</a>
+                    <li class="{% if active_url == 'category' %}active{% endif %}">
+                        <a href="{% url 'category' %}">Category</a>
+                    </li>
+                    <li class="{% if active_url == 'news' %}active{% endif %}">
+                        <a href="{% url 'news' %}">Add News</a>
                     </li>
                 </ul>
             </li>

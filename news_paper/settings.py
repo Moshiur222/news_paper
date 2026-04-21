@@ -82,6 +82,7 @@ TEMPLATES = [
                 'news.context_processors.locations',
                 'news.context_processors.active_menu',
                 'news.context_processors.get_translations',
+                'news.context_processors.category',
             ],
         },
     },
@@ -94,9 +95,21 @@ WSGI_APPLICATION = 'news_paper.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'news_portal',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',   
+        'PORT': '3306',
+        'OPTIONS': {
+             'charset': 'utf8',
+            'use_unicode': True, 
+        },
     }
 }
 

@@ -47,19 +47,29 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-
-from django.db import models
-from django.utils.text import slugify
-
-
 # ================= LOCATION =================
 class Location(models.Model):
     name_en = models.CharField(max_length=50, default="Unknown")
     name_bn = models.CharField(max_length=50, default="অজানা")
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name_en)
+            slug = base_slug
+            counter = 1
+
+            # ✅ FIX HERE
+            while Location.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name_en
-
 
 # ================= CATEGORY =================
 class Category(models.Model):
@@ -84,22 +94,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name_en
-
-
-# ================= HERO SECTION =================
-class HeroSection(models.Model):
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-
-    title_en = models.CharField(max_length=150, default="Title")
-    title_bn = models.CharField(max_length=150, default="শিরোনাম")
-
-    image = models.ImageField(upload_to="hero_image/")
-
-    description_en = models.TextField(null=True, blank=True)
-    description_bn = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.title_en
 
 
 # ================= NEWS =================

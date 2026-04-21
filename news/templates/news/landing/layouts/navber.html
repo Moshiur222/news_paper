@@ -10,7 +10,7 @@
 
 .navbar-nav .nav-link {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   padding: 1rem 1rem;
   color: #2d3e50;
   transition: 0.2s;
@@ -35,17 +35,14 @@
       <!-- MENU -->
       <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
-        <li class="nav-item"><a class="nav-link active" href="#">{{ t.home }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.national }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.politics }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.international }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.economy }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.sports }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.entertainment }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.technology }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.opinion }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.top_news }}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">{{ t.country }}</a></li>
+        <li class="nav-item"><a class="nav-link {% if active_url == 'home' %}active{% endif %}" href="{% url 'home' %}">{% if current_language == 'bn' %} হোম {% else %} Home {% endif %} </a></li>
+        {% for cat in categories %}
+          {% if current_language == 'en' %}
+            <li class="nav-item"><a class="nav-link {% if active_url == cat.slug %}active{% endif %}" href="{% url 'category_news' cat.slug %}">{{ cat.name_en }}</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link {% if active_url == cat.slug %}active{% endif %}" href="{% url 'category_news' cat.slug %}">{{ cat.name_bn }}</a></li>
+          {% endif %}
+        {% endfor %}
 
       </ul>
 

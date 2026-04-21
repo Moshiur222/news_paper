@@ -50,13 +50,19 @@
 
     <div class="category-scroll">
 
-      <!-- LOCATION (AUTO TRANSLATE) -->
-      {% for location in locations %}
-        <a href="#" class="cat-item">
-          <i class="fas fa-map-marker-alt"></i>
-          {% trans location.name %}
-        </a>
-      {% endfor %}
+        <!-- LOCATION (AUTO TRANSLATE) -->
+        {% for location in locations %}
+          <a href="#" class="cat-item">
+            <i class="fas fa-map-marker-alt"></i>
+
+            {% if current_language == 'en' %}
+              {{ location.name_en }}
+            {% else %}
+              {{ location.name_bn }}
+            {% endif %}
+            
+          </a>
+        {% endfor %}
 
       <!-- STATIC CATEGORIES (AUTO TRANSLATE) -->
       <a href="#" class="cat-item"><i class="fas fa-globe-asia"></i> {% trans "World" %}</a>

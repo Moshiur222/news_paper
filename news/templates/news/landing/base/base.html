@@ -108,106 +108,104 @@
       border-color: var(--primary-red);
     }
     .footer-container .footer-bottom {
-  background: var(--footer-bg-light); 
-  padding: 1.5rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-}
+      background: var(--footer-bg-light); 
+      padding: 1.5rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
 
-.footer-container .footer-bottom-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
+    .footer-container .footer-bottom-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-.footer-container .info-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  font-size: 0.85rem;
-  color: var(--footer-text-secondary);
-}
+    .footer-container .info-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--footer-text-secondary);
+    }
 
-.footer-container .legal-link-group {
-  display: inline-block;
-}
+    .footer-container .legal-link-group {
+      display: inline-block;
+    }
 
-.footer-container .legal-link-group a {
-  color: var(--footer-text-secondary);
-  text-decoration: none;
-}
+    .footer-container .legal-link-group a {
+      color: var(--footer-text-secondary);
+      text-decoration: none;
+    }
 
-.footer-container .legal-link-group a:hover {
-  color: #ffffff;
-  text-decoration: underline;
-}
+    .footer-container .legal-link-group a:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
 
-/* The Pipe Separator | */
-.footer-container .info-row > *:not(:last-child)::after {
-  content: "|";
-  margin: 0 12px;
-  color: rgba(255, 255, 255, 0.3);
-}
+    /* The Pipe Separator | */
+    .footer-container .info-row > *:not(:last-child)::after {
+      content: "|";
+      margin: 0 12px;
+      color: rgba(255, 255, 255, 0.3);
+    }
 
-.footer-container .concern-row {
-  margin-top: 4px;
-  font-size: 0.85rem;
-  color: var(--footer-text-secondary);
-}
+    .footer-container .concern-row {
+      margin-top: 4px;
+      font-size: 0.85rem;
+      color: var(--footer-text-secondary);
+    }
 
-.footer-container .concern-row strong {
-  color: #ffffff;
-}
+    .footer-container .concern-row strong {
+      color: #ffffff;
+    }
 
-@media (max-width: 768px) {
-  .footer-container .info-row { flex-direction: column; gap: 5px; }
-  .footer-container .info-row > *:not(:last-child)::after { display: none; }
-}
-.see-more-button:hover {
-  background-color: #eff6ff;
-}
+    @media (max-width: 768px) {
+      .footer-container .info-row { flex-direction: column; gap: 5px; }
+      .footer-container .info-row > *:not(:last-child)::after { display: none; }
+    }
+    .see-more-button:hover {
+      background-color: #eff6ff;
+    }
 
-.extra-contact {
-  display: none;
-}
+    .extra-contact {
+      display: none;
+    }
 
-/* Optional: Add animation for smooth appearance */
-.extra-contact {
-  animation: fadeIn 0.3s ease-in-out;
-}
+    /* Optional: Add animation for smooth appearance */
+    .extra-contact {
+      animation: fadeIn 0.3s ease-in-out;
+    }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.see-more-button:hover {
-  background-color: #eff6ff;
-}
+    .see-more-button:hover {
+      background-color: #eff6ff;
+    }
 
-.extra-service {
-  display: none;
-}
+    .extra-service {
+      display: none;
+    }
 
-/* Smooth animation for appearance */
-.extra-service {
-  animation: fadeIn 0.3s ease-in-out;
-}
+    /* Smooth animation for appearance */
+    .extra-service {
+      animation: fadeIn 0.3s ease-in-out;
+    }
 
-/* Gap between the two service grids */
-.footer-container .services-section .services-grid:first-child {
-  margin-bottom: 1.5rem;
-
-}
-
+    /* Gap between the two service grids */
+    .footer-container .services-section .services-grid:first-child {
+      margin-bottom: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -236,6 +234,7 @@
 {% block hero_area %}
 
 {% endblock hero_area %}
+
 <!-- MAIN CONTENT -->
 {% block main_content %}
 
@@ -245,6 +244,9 @@
 {% block footer %}
 {% include "news/landing/layouts/footer.html" %}
 {% endblock footer %}
+
+{% block extra_js %}{% endblock extra_js %}
+
 <script>
   (function() {
     // language toggles
@@ -260,28 +262,35 @@
         alert('English version loading (demo) \nSwitching to English interface.');
       });
     }
+    
     // scroll to top
     const scrollBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 400) scrollBtn.classList.add('show');
-      else scrollBtn.classList.remove('show');
-    });
-    scrollBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    // active category highlight on click
-    const catItems = document.querySelectorAll('.cat-item');
-    catItems.forEach(item => {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        catItems.forEach(cat => cat.classList.remove('active-cat'));
-        this.classList.add('active-cat');
-        // optional: simulate category filter alert
-        // alert(`Showing news for: ${this.innerText.trim()}`);
+    if(scrollBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) scrollBtn.classList.add('show');
+        else scrollBtn.classList.remove('show');
       });
-    });
+      scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+    
+    // ========== FIXED: CATEGORY STRIP (NO PREVENT DEFAULT) ==========
+    // শুধু active ক্লাস যোগ করবে, লিংক ব্লক করবে না
+    const catItems = document.querySelectorAll('.cat-item');
+    if(catItems.length > 0) {
+      catItems.forEach(item => {
+        item.addEventListener('click', function() {
+          catItems.forEach(cat => cat.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    }
+    // =================================================================
+    
   })();
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,714 @@
+{% extends "news/landing/base/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --newspaper-border: #e5e7eb;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --accent-red: #dc2626;
+    }
+
+    body {
+        background: #f9fafb;
+        font-family: 'Noto Sans', 'Noto Sans Bengali', sans-serif;
+    }
+
+    /* Breaking News Ticker */
+    .breaking-news-ticker {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border-bottom: 3px solid #991b1b;
+        margin-bottom: 20px;
+    }
+    
+    .breaking-badge {
+        background: #fff;
+        color: #dc2626;
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    /* Main Container */
+    .newspaper-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+    }
+
+    /* Article Container */
+    .article-container {
+        background: white;
+        border: 1px solid var(--newspaper-border);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* Article Header */
+    .article-category {
+        color: var(--accent-red);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        display: inline-block;
+    }
+
+    .article-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        color: var(--text-primary);
+        margin-bottom: 20px;
+        border-bottom: 3px solid var(--accent-red);
+        padding-bottom: 15px;
+    }
+
+    .article-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--newspaper-border);
+        margin-bottom: 25px;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+
+    .article-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .article-meta-item i {
+        color: var(--accent-red);
+        font-size: 0.9rem;
+    }
+
+    /* Featured Image */
+    .article-featured-image {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+        object-fit: cover;
+        border: 1px solid var(--newspaper-border);
+        margin-bottom: 30px;
+    }
+
+    .image-caption {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin-top: -20px;
+        margin-bottom: 30px;
+        padding-left: 10px;
+        border-left: 3px solid var(--newspaper-border);
+    }
+
+    /* Article Content */
+    .article-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--text-primary);
+        text-align: justify;
+    }
+
+    .article-content p {
+        margin-bottom: 20px;
+    }
+
+    .article-content p:first-of-type:first-letter {
+        font-size: 3.5rem;
+        font-weight: 800;
+        float: left;
+        line-height: 1;
+        margin: 5px 10px 0 0;
+        color: var(--accent-red);
+    }
+
+    .article-content img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid var(--newspaper-border);
+        margin: 25px 0;
+        display: block;
+    }
+
+    .article-content h2, 
+    .article-content h3, 
+    .article-content h4 {
+        font-weight: 700;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        color: var(--text-primary);
+    }
+
+    .article-content ul, 
+    .article-content ol {
+        margin: 20px 0;
+        padding-left: 30px;
+    }
+
+    .article-content li {
+        margin-bottom: 10px;
+    }
+
+    /* Share Section */
+    .share-section {
+        border-top: 2px solid var(--newspaper-border);
+        border-bottom: 2px solid var(--newspaper-border);
+        padding: 20px 0;
+        margin: 30px 0;
+    }
+
+    .share-label {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .share-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .share-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .share-btn:hover {
+        opacity: 0.85;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .share-facebook { background: #1877f2; }
+    .share-twitter { background: #1da1f2; }
+    .share-linkedin { background: #0077b5; }
+    .share-whatsapp { background: #25d366; }
+    .share-copy { background: #6b7280; }
+
+    /* Copy Toast */
+    .copy-toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        z-index: 9999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        animation: fadeInOut 2s ease;
+    }
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+
+    /* Sidebar */
+    .sidebar-section {
+        position: sticky;
+        top: 20px;
+    }
+
+    .sidebar-box {
+        background: white;
+        border: 2px solid var(--newspaper-border);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: var(--accent-red);
+        color: white;
+        padding: 10px 15px;
+        font-weight: 800;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-content {
+        padding: 15px;
+    }
+
+    /* Trending List */
+    .trending-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px dashed var(--newspaper-border);
+        transition: all 0.2s;
+    }
+
+    .trending-item:last-child {
+        border-bottom: none;
+    }
+
+    .trending-item.active-trending {
+        background: linear-gradient(90deg, rgba(220, 38, 38, 0.1) 0%, rgba(220, 38, 38, 0) 100%);
+        border-left: 4px solid var(--accent-red);
+        padding-left: 8px;
+        margin-left: -4px;
+    }
+
+    .trending-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-red);
+        min-width: 30px;
+        line-height: 1;
+        opacity: 0.7;
+    }
+
+    .trending-item.active-trending .trending-number {
+        opacity: 1;
+    }
+
+    .trending-title {
+        flex: 1;
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .trending-title a {
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .trending-title a:hover {
+        color: var(--accent-red);
+    }
+
+    .trending-item.active-trending .trending-title a {
+        color: var(--accent-red);
+        font-weight: 700;
+    }
+
+    .trending-check {
+        color: var(--accent-red);
+        font-size: 0.9rem;
+        margin-left: auto;
+    }
+
+    /* Latest News */
+    .latest-compact-item {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--newspaper-border);
+        transition: all 0.2s;
+    }
+
+    .latest-compact-item:last-child {
+        border-bottom: none;
+    }
+
+    .latest-compact-item.active-latest {
+        background: linear-gradient(90deg, rgba(220, 38, 38, 0.1) 0%, rgba(220, 38, 38, 0) 100%);
+        border-left: 4px solid var(--accent-red);
+        padding-left: 8px;
+        margin-left: -4px;
+    }
+
+    .latest-compact-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: 4px;
+    }
+
+    .latest-compact-title a {
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .latest-compact-title a:hover {
+        color: var(--accent-red);
+    }
+
+    .latest-compact-item.active-latest .latest-compact-title a {
+        color: var(--accent-red);
+        font-weight: 700;
+    }
+
+    .latest-compact-time {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+    }
+
+    .latest-compact-item.active-latest .latest-compact-time {
+        color: var(--accent-red);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .article-container {
+            padding: 20px;
+        }
+
+        .article-title {
+            font-size: 2rem;
+        }
+
+        .article-content {
+            font-size: 1rem;
+        }
+
+        .sidebar-section {
+            position: static;
+            margin-top: 30px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .article-title {
+            font-size: 1.6rem;
+        }
+
+        .article-featured-image {
+            max-height: 300px;
+        }
+
+        .share-buttons {
+            gap: 8px;
+        }
+
+        .share-btn {
+            padding: 8px 14px;
+            font-size: 0.75rem;
+        }
+
+        .article-content p:first-of-type:first-letter {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block main_content %}
+
+<!-- BREAKING NEWS TICKER -->
+<div class="breaking-news-ticker py-2">
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <span class="breaking-badge">
+                {% if current_language == 'bn' %}ব্রেকিং নিউজ{% else %}BREAKING NEWS{% endif %}
+            </span>
+            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();" class="text-white ms-3 small fw-bold">
+                {% for t in top_newses %}
+                    {% if current_language == 'bn' %}
+                        {{ t.title_bn }}
+                    {% else %}
+                        {{ t.title_en }}
+                    {% endif %}
+                    {% if not forloop.last %} &nbsp;&nbsp;||&nbsp;&nbsp; {% endif %}
+                {% empty %}
+                    {% if current_language == 'bn' %}কোন ব্রেকিং নিউজ নেই{% else %}No breaking news available{% endif %}
+                {% endfor %}
+            </marquee>
+        </div>
+    </div>
+</div>
+
+<div class="newspaper-container">
+    <div class="container py-4">
+        <div class="row">
+            <!-- Main Article Content -->
+            <div class="col-lg-9">
+                {% if news %}
+                    <article class="article-container">
+                        <!-- Article Header -->
+                        <header>
+                            <span class="article-category">
+                                <i class="fas fa-bookmark"></i>
+                                {% if current_language == 'bn' %}
+                                    {{ news.category.name_bn }}
+                                {% else %}
+                                    {{ news.category.name_en }}
+                                {% endif %}
+                            </span>
+
+                            <h1 class="article-title">
+                                {% if current_language == 'bn' %}
+                                    {{ news.title_bn }}
+                                {% else %}
+                                    {{ news.title_en }}
+                                {% endif %}
+                            </h1>
+
+                            <div class="article-meta">
+                                <div class="article-meta-item">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>{{ news.created_at|date:"d F Y" }}</span>
+                                </div>
+                                <div class="article-meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>{{ news.created_at|date:"h:i A" }}</span>
+                                </div>
+                                <div class="article-meta-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>
+                                        {{ news.views|default:"0" }}
+                                        {% if current_language == 'bn' %}ভিউ{% else %}Views{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </header>
+
+                        <!-- Featured Image -->
+                        {% if news.image %}
+                            <img src="{{ news.image.url }}" class="article-featured-image" alt="{{ news.title_en }}">
+                            <div class="image-caption">
+                                {% if current_language == 'bn' %}
+                                    {{ news.title_bn|truncatewords:15 }}
+                                {% else %}
+                                    {{ news.title_en|truncatewords:15 }}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Article Content -->
+                        <div class="article-content">
+                            {% if current_language == 'bn' %}
+                                {{ news.description_bn|safe }}
+                            {% else %}
+                                {{ news.description_en|safe }}
+                            {% endif %}
+                        </div>
+
+                        <!-- Share Section -->
+                        <div class="share-section">
+                            <div class="share-label">
+                                <i class="fas fa-share-alt"></i>
+                                <span>
+                                    {% if current_language == 'bn' %}এই সংবাদটি শেয়ার করুন{% else %}Share this article{% endif %}
+                                </span>
+                            </div>
+                            <div class="share-buttons">
+                                <button class="share-btn share-facebook" onclick="shareOnFacebook()">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <span>Facebook</span>
+                                </button>
+                                
+                                <button class="share-btn share-twitter" onclick="shareOnTwitter()">
+                                    <i class="fab fa-twitter"></i>
+                                    <span>Twitter</span>
+                                </button>
+                                
+                                <button class="share-btn share-linkedin" onclick="shareOnLinkedIn()">
+                                    <i class="fab fa-linkedin-in"></i>
+                                    <span>LinkedIn</span>
+                                </button>
+                                
+                                <button class="share-btn share-whatsapp" onclick="shareOnWhatsApp()">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <span>WhatsApp</span>
+                                </button>
+                                
+                                <button class="share-btn share-copy" onclick="copyToClipboard()">
+                                    <i class="fas fa-copy"></i>
+                                    <span>
+                                        {% if current_language == 'bn' %}লিংক কপি{% else %}Copy Link{% endif %}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar-section">
+                    
+                    <!-- TRENDING NEWS -->
+                    <div class="sidebar-box">
+                        <div class="sidebar-header">
+                            <i class="fas fa-fire"></i>
+                            {% if current_language == 'bn' %}জনপ্রিয় সংবাদ{% else %}Trending News{% endif %}
+                        </div>
+                        <div class="sidebar-content">
+                            {% for trending in trending_news|slice:":7" %}
+                                <div class="trending-item {% if trending.slug == news.slug %}active-trending{% endif %}">
+                                    <div class="trending-number">{{ forloop.counter }}</div>
+                                    <div class="trending-title">
+                                        <a href="{% url 'trending_news' trending.slug %}">
+                                            {% if current_language == 'bn' %}
+                                                {{ trending.title_bn|truncatewords:10 }}
+                                            {% else %}
+                                                {{ trending.title_en|truncatewords:10 }}
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    {% if trending.slug == news.slug %}
+                                        <i class="fas fa-check-circle trending-check"></i>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <div class="trending-item">
+                                    <div class="trending-title">
+                                        {% if current_language == 'bn' %}কোন ট্রেন্ডিং নিউজ নেই{% else %}No trending news{% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- LATEST NEWS -->
+                    <div class="sidebar-box">
+                        <div class="sidebar-header">
+                            <i class="fas fa-newspaper"></i>
+                            {% if current_language == 'bn' %}সর্বশেষ{% else %}Latest News{% endif %}
+                        </div>
+                        <div class="sidebar-content">
+                            {% for latest in latest_news|slice:":8" %}
+                                <div class="latest-compact-item {% if latest.slug == news.slug %}active-latest{% endif %}">
+                                    <div class="latest-compact-title">
+                                        <a href="{% url 'news_home' latest.slug %}">
+                                            {% if current_language == 'bn' %}
+                                                {{ latest.title_bn|truncatewords:10 }}
+                                            {% else %}
+                                                {{ latest.title_en|truncatewords:10 }}
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="latest-compact-time">
+                                        <i class="far fa-clock"></i>
+                                        {% if current_language == 'bn' %}
+                                            {{ latest.created_at|timesince }} আগে
+                                        {% else %}
+                                            {{ latest.created_at|timesince }} ago
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="latest-compact-item">
+                                    {% if current_language == 'bn' %}কোন সংবাদ নেই{% else %}No news available{% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main_content %}
+
+{% block extra_js %}
+<script>
+    // Get current page URL and title
+    const currentUrl = encodeURIComponent(window.location.href);
+    const currentTitle = encodeURIComponent(document.title);
+    
+    // Facebook Share
+    function shareOnFacebook() {
+        const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
+        window.open(fbUrl, '_blank', 'width=600,height=400');
+    }
+    
+    // Twitter Share
+    function shareOnTwitter() {
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${currentTitle}&url=${currentUrl}`;
+        window.open(twitterUrl, '_blank', 'width=600,height=400');
+    }
+    
+    // LinkedIn Share
+    function shareOnLinkedIn() {
+        const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
+        window.open(linkedinUrl, '_blank', 'width=600,height=400');
+    }
+    
+    // WhatsApp Share
+    function shareOnWhatsApp() {
+        const whatsappText = `${decodeURIComponent(currentTitle)} - ${decodeURIComponent(currentUrl)}`;
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappText)}`;
+        window.open(whatsappUrl, '_blank', 'width=600,height=400');
+    }
+    
+    // Copy to Clipboard
+    function copyToClipboard() {
+        const url = window.location.href;
+        
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function() {
+                showCopyMessage('✅ {% if current_language == "bn" %}লিংক কপি হয়েছে!{% else %}Link copied!{% endif %}');
+            }).catch(function() {
+                fallbackCopyToClipboard(url);
+            });
+        } else {
+            fallbackCopyToClipboard(url);
+        }
+    }
+    
+    // Fallback for older browsers
+    function fallbackCopyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        
+        try {
+            document.execCommand('copy');
+            showCopyMessage('✅ {% if current_language == "bn" %}লিংক কপি হয়েছে!{% else %}Link copied!{% endif %}');
+        } catch (err) {
+            showCopyMessage('❌ {% if current_language == "bn" %}কপি করতে ব্যর্থ হয়েছে{% else %}Failed to copy{% endif %}');
+        }
+        
+        document.body.removeChild(textarea);
+    }
+    
+    // Show temporary message
+    function showCopyMessage(message) {
+        const existingToast = document.querySelector('.copy-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = 'copy-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(function() {
+            toast.remove();
+        }, 2000);
+    }
+</script>
+{% endblock extra_js %}

@@ -5,6 +5,27 @@ def locations(request):
         'locations': Location.objects.all().order_by('id')
     }
 
+def top_news(request):
+    top_newses = News.objects.filter(is_breaking = True).order_by('-id')
+    trending_news = TrandingNews.objects.all().order_by('-id')
+    latest_news = News.objects.all().order_by('-id')[:10]
+    current_path = request.path
+    context = {
+        'top_newses': top_newses,
+        'trending_news': trending_news,
+        'latest_news': latest_news,
+        'current_path': current_path,
+    }
+
+    return context
+
+def company_info(request):
+    company_infos = CompanyInfo.objects.all()
+    context = {
+        'company_infos' : company_infos
+    } 
+    return context
+
 def category(request):
     return {
         'categories': Category.objects.all().order_by('id')
@@ -33,18 +54,6 @@ def get_translations(request):
             'bangla': 'বাংলা',
             'english': 'English',
 
-            # Navbar
-            'home': 'হোম',
-            'national': 'জাতীয়',
-            'politics': 'রাজনীতি',
-            'international': 'আন্তর্জাতিক',
-            'economy': 'অর্থ-বাণিজ্য',
-            'sports': 'খেলাধুলা',
-            'entertainment': 'বিনোদন',
-            'technology': 'প্রযুক্তি',
-            'opinion': 'মতামত',
-            'top_news': 'সবার শীর্ষে',
-            'country': 'সারা দেশ',
             'search': 'খুঁজুন...',
 
             # Footer
@@ -80,18 +89,6 @@ def get_translations(request):
             'bangla': 'বাংলা',
             'english': 'English',
 
-            # Navbar
-            'home': 'Home',
-            'national': 'National',
-            'politics': 'Politics',
-            'international': 'International',
-            'economy': 'Economy',
-            'sports': 'Sports',
-            'entertainment': 'Entertainment',
-            'technology': 'Technology',
-            'opinion': 'Opinion',
-            'top_news': 'Top News',
-            'country': 'Country',
             'search': 'Search...',
 
             # Footer

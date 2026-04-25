@@ -566,6 +566,7 @@ input, select, textarea {
     font-weight: 500;
     font-size: 1rem;
     font-weight: 600;
+    text-decoration: none;
 }
 
 .menu-link i {
@@ -619,7 +620,8 @@ input, select, textarea {
 
 .submenu li a {
     display: block;
-    padding: 10px 30px !important;
+    text-decoration: none;
+    padding: 10px 0px !important;
     color: var(--text-secondary);
     font-size: 0.95rem;
     border-radius: var(--radius-sm);
@@ -1483,98 +1485,3 @@ input, select, textarea {
     border-radius: 10px;
 }
 
-/* Footer */
-.footer {
-    background: var(--white);
-    border-top: 1px solid var(--border-color);
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.footer p {
-    font-size: 14px;
-    color: var(--text-secondary);
-}
-
-.footer-links {
-    display: flex;
-    gap: 24px;
-}
-
-.footer-links a {
-    font-size: 14px;
-    color: var(--text-secondary);
-    transition: var(--transition);
-}
-
-.footer-links a:hover {
-    color: var(--primary);
-}
-
-/* ========================================
-   THEME VARIANTS
-   ======================================== */
-body.theme-dark {
-    --light: #1e293b;
-    --light-1: #0f172a;
-    --light-2: #334155;
-    --white: #1e293b;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --border-color: #334155;
-}
-
-body.theme-blue {
-    --primary: #0d6efd;
-    --primary-dark: #0a58ca;
-    --primary-light: #3d8bfd;
-    --secondary: #6c757d;
-    --light: #eff6ff;
-    --light-1: #e0f2ff;
-    --light-2: #bee5ff;
-    --white: #ffffff;
-    --text-primary: #0f1c3f;
-    --text-secondary: #495057;
-    --text-muted: #6c757d;
-    --border-color: #cfe2ff;
-}
-
-body.theme-green {
-    --primary: #198754;
-    --primary-dark: #157347;
-    --primary-light: #20c997;
-    --secondary: #6c757d;
-    --light: #f0fff4;
-    --light-1: #dcfce7;
-    --light-2: #bbf7d0;
-    --white: #ffffff;
-    --text-primary: #0f3d0f;
-    --text-secondary: #495057;
-    --text-muted: #6c757d;
-    --border-color: #c3fae8;
-}
-
-body.theme-red {
-    --primary: #dc3545;
-    --primary-dark: #bb2d3b;
-    --primary-light: #e4606d;
-    --secondary: #6c757d;
-    --light: #fff5f5;
-    --light-1: #ffe3e3;
-    --light-2: #ffc9c9;
-    --white: #ffffff;
-    --text-primary: #3d0f0f;
-    --text-secondary: #495057;
-    --text-muted: #6c757d;
-    --border-color: #ffa8a8;
-} 
-
-.logo-img {
-    width: auto;
-    height: 50px;
-    object-fit: contain;
-    cursor: pointer;
-}

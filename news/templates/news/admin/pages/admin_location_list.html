@@ -1,628 +1,789 @@
 {% extends "news/admin/base/base.html" %}
+{% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-bg: #f9fafb;
+            --border-color: #e5e7eb;
+        }
 
-<style>
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-/* ✅ ONLY MAIN AREA FIX (NO SIDEBAR DAMAGE) */
-.main-wrapper {
-    background: #f5f7fb;
-    font-family: 'Segoe UI', sans-serif;
-}
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-/* ✅ SCOPED CARD */
-.main-wrapper .card {
-    background: #fff !important;
-    border: none !important;
-    border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.06) !important;
-}
+        .page-header h1 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2rem;
+        }
 
-/* HEADER */
-.card-header {
-    background: transparent !important;
-    border-bottom: 1px solid #eef0f5;
-    padding: 18px 20px;
-}
+        .page-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
 
-/* TABLE */
-#locationTable {
-    border-collapse: separate !important;
-    border-spacing: 0 10px;
-    width: 100% !important;
-}
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
 
-#locationTable tbody tr {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-    transition: 0.2s;
-}
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
 
-#locationTable tbody tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
+        .card-header {
+            background-color: white;
+            border-bottom: 2px solid var(--border-color);
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px 12px 0 0 !important;
+        }
 
-#locationTable td,
-#locationTable th {
-    padding: 14px 16px !important;
-    border: none !important;
-    vertical-align: middle;
-}
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-#locationTable thead th {
-    font-weight: 600;
-    color: #475569;
-    font-size: 14px;
-}
+        .card-body {
+            padding: 1.5rem;
+        }
 
-/* BUTTONS */
-.btn-sm {
-    border-radius: 8px !important;
-    padding: 6px 14px;
-    margin: 0 3px;
-}
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
 
-.btn-edit {
-    background: #3b82f6;
-    color: white;
-    border: none;
-}
+        .form-control {
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.625rem 0.875rem;
+            transition: all 0.2s;
+        }
 
-.btn-edit:hover {
-    background: #2563eb;
-    color: white;
-}
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
 
-.btn-delete {
-    background: #ef4444;
-    color: white;
-    border: none;
-}
+        /* Read-only English input style */
+        #name_en {
+            background-color: #f9fafb;
+            text-transform: capitalize;
+        }
 
-.btn-delete:hover {
-    background: #dc2626;
-    color: white;
-}
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
 
-/* DataTables */
-.dataTables_filter {
-    margin-bottom: 20px;
-}
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+        }
 
-.dataTables_filter input {
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    padding: 8px 12px;
-    outline: none;
-    width: 250px;
-    margin-left: 8px;
-}
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
 
-.dataTables_length select {
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    padding: 4px 8px;
-}
+        .btn-success {
+            background-color: var(--success-color);
+            border: none;
+        }
 
-.dataTables_paginate .paginate_button {
-    border-radius: 8px !important;
-    margin: 0 3px;
-    border: none !important;
-    padding: 6px 12px !important;
-}
+        .btn-success:hover {
+            background-color: #059669;
+        }
 
-.dataTables_paginate .paginate_button.current {
-    background: #16a34a !important;
-    color: #fff !important;
-}
+        .btn-danger {
+            background-color: var(--danger-color);
+            border: none;
+        }
 
-/* DRAWER */
-.drawer {
-    position: fixed;
-    top: 0;
-    right: -450px;
-    width: 420px;
-    height: 100%;
-    background: #fff;
-    box-shadow: -6px 0 25px rgba(0,0,0,0.15);
-    transition: 0.3s ease;
-    z-index: 2000;
-    padding: 25px;
-    overflow-y: auto;
-}
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
 
-.drawer.open {
-    right: 0;
-}
+        .btn-secondary {
+            background-color: #6b7280;
+            border: none;
+        }
 
-.drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f0f2f5;
-}
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
 
-.drawer-header h5 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-    color: #1f2937;
-}
+        .table {
+            margin: 0;
+        }
 
-.drawer-header button {
-    border: none;
-    background: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: #6b7280;
-    transition: 0.2s;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-}
+        .table thead th {
+            background-color: var(--light-bg);
+            color: var(--dark-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
 
-.drawer-header button:hover {
-    background: #f3f4f6;
-    color: #ef4444;
-    transform: rotate(90deg);
-}
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-.drawer-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    z-index: 1500;
-}
+        .table tbody tr {
+            transition: background-color 0.2s;
+        }
 
-.drawer-overlay.show {
-    display: block;
-}
+        .table tbody tr:hover {
+            background-color: #f3f4f6;
+        }
 
-/* Form Styling */
-.form-group {
-    margin-bottom: 20px;
-}
+        .badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
 
-.form-label {
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #4b5563;
-    margin-bottom: 8px;
-    display: block;
-}
+        .badge-slug {
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+        }
 
-.form-control {
-    width: 100%;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 10px 14px;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-}
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
 
-.form-control:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-}
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
 
-.lang-badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 20px;
-    margin-left: 8px;
-    font-weight: normal;
-}
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
 
-.badge-en {
-    background: #3b82f6;
-    color: white;
-}
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
 
-.badge-bn {
-    background: #10b981;
-    color: white;
-}
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
 
-.btn-save {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    border: none;
-    border-radius: 40px;
-    padding: 12px;
-    font-weight: 600;
-    transition: 0.2s;
-    width: 100%;
-    cursor: pointer;
-    font-size: 0.95rem;
-    margin-top: 10px;
-}
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
 
-.btn-save:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-}
+        .empty-state i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
 
-/* Messages */
-.messages-container {
-    margin-bottom: 20px;
-}
+        .empty-state h5 {
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
 
-.alert {
-    border-radius: 12px;
-    padding: 12px 16px;
-    border: none;
-    margin-bottom: 10px;
-}
+        .stats-badge {
+            background-color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
 
-.alert-success {
-    background: #d1fae5;
-    color: #065f46;
-}
+        .stats-badge i {
+            color: var(--primary-color);
+        }
 
-.alert-error {
-    background: #fee2e2;
-    color: #991b1b;
-}
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
 
-/* Empty state */
-.empty-state {
-    text-align: center;
-    padding: 40px 20px;
-}
+        /* Live translation badge */
+        .live-translate-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 8px;
+            animation: pulse 2s infinite;
+        }
 
-.empty-state i {
-    font-size: 48px;
-    color: #9ca3af;
-    margin-bottom: 15px;
-}
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
 
-.empty-state h5 {
-    font-size: 18px;
-    color: #374151;
-    margin-bottom: 8px;
-}
+        /* Translate indicator */
+        .translate-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-weight: 500;
+        }
 
-.empty-state p {
-    color: #6b7280;
-    font-size: 14px;
-}
+        .translate-indicator i {
+            font-size: 14px;
+        }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .drawer {
-        width: 100%;
-        right: -100%;
-    }
-    
-    .dataTables_filter input {
-        width: 180px;
-    }
-}
-</style>
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .table {
+                font-size: 0.875rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .card-header .btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal styling */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .modal-header {
+            background-color: var(--light-bg);
+            border-bottom: 2px solid var(--border-color);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        /* Character counter */
+        .char-counter {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+    </style>
 {% endblock css %}
 
 {% block main %}
 
-<div class="main-wrapper">
-<main class="page-content">
-
-    <!-- Messages -->
-    {% if messages %}
-    <div class="messages-container">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="card mb-3">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
-                <h3 class="mb-0">
-                    <i class="fas fa-map-marker-alt me-2" style="color: #3b82f6;"></i>
-                    Locations Management
-                </h3>
-                <p class="text-muted mb-0 mt-1 small">Manage districts with bilingual support</p>
-            </div>
-            <button class="btn btn-success btn-sm" onclick="openAddDrawer()">
-                <i class="fas fa-plus me-1"></i> Add Location
-            </button>
-        </div>
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="locationTable" class="table table-hover align-middle" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th style="width: 8%">#</th>
-                            <th style="width: 38%">English Name</th>
-                            <th style="width: 38%">বাংলা নাম</th>
-                            <th style="width: 16%">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for location in locations %}
-                        <tr>
-                            <td class="fw-bold">{{ forloop.counter }}</td>
-                            <td>
-                                <i class="fas fa-language me-1" style="color: #3b82f6;"></i>
-                                {{ location.name_en }}
-                            </td>
-                            <td>
-                                <i class="fas fa-language me-1" style="color: #10b981;"></i>
-                                {{ location.name_bn }}
-                            </td>
-                            <td>
-                                <button class="btn btn-edit btn-sm" onclick="openEditDrawer('{{ location.id }}', '{{ location.name_en|escapejs }}', '{{ location.name_bn|escapejs }}')">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </button>
-                                <button class="btn btn-delete btn-sm" onclick="confirmDelete('{{ location.id }}', '{{ location.name_en|escapejs }}')">
-                                    <i class="fas fa-trash me-1"></i> Delete
-                                </button>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <h5>No locations found</h5>
-                                    <p>Click "Add Location" to create your first district</p>
+        <div class="row">
+            <!-- Form Section (Hidden by default) -->
+            <div class="col-lg-4 col-md-12" id="formSection" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 id="form-title">
+                            <i class="bi bi-plus-circle"></i>
+                            <span id="form-mode-text">Add New Location</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" id="locationForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="location_id" id="location_id">
+                            
+                            <div class="mb-3">
+                                <label for="name_bn" class="form-label">
+                                    Location Name (বাংলা) 
+                                    <span class="live-translate-badge">
+                                        <i class="bi bi-chat-dots"></i> Live Translate
+                                    </span>
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control {% if errors.name_bn %}is-invalid{% endif %}" 
+                                    id="name_bn" 
+                                    name="name_bn" 
+                                    placeholder="বাংলায় স্থানের নাম লিখুন (e.g., ঢাকা)"
+                                    autocomplete="off">
+                                <div class="char-counter" id="bnCharCounter">
+                                    <i class="bi bi-text-paragraph"></i> Characters: 0
                                 </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                {% if errors.name_bn %}
+                                    <div class="invalid-feedback">{{ errors.name_bn }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="name_en" class="form-label">
+                                    Location Name (English) 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control {% if errors.name_en %}is-invalid{% endif %}" 
+                                    id="name_en" 
+                                    name="name_en" 
+                                    placeholder="Auto-translated from Bangla (Capitalized)"
+                                    readonly>
+                                <small class="text-muted">
+                                    <i class="bi bi-magic"></i> 
+                                    Automatically translated from Bangla & capitalized
+                                </small>
+                                {% if errors.name_en %}
+                                    <div class="invalid-feedback">{{ errors.name_en }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary flex-grow-1" id="submitBtn">
+                                    <i class="bi bi-check-circle"></i>
+                                    <span id="submit-text">Add Location</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="cancelBtn" onclick="cancelForm()">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- List Section -->
+            <div id="listSection" class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            All Locations
+                            <span class="badge bg-primary ms-2">{{ locations|length }}</span>
+                        </h5>
+                        <button class="btn btn-primary" onclick="showAddForm()">
+                            <i class="bi bi-plus-circle"></i> Add New Location
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if locations %}
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">#</th>
+                                            <th width="30%">English Name</th>
+                                            <th width="30%">বাংলা নাম</th>
+                                            <th width="20%" class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for location in locations %}
+                                            <tr id="location-row-{{ location.id }}">
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>
+                                                    <strong>{{ location.name_en }}</strong>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-light text-dark">
+                                                        <i class="bi bi-translate"></i> {{ location.name_bn }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button 
+                                                            class="btn btn-sm btn-primary" 
+                                                            onclick="editLocation({{ location.id }})"
+                                                            title="Edit">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                        <button 
+                                                            class="btn btn-sm btn-danger" 
+                                                            onclick="confirmDelete({{ location.id }}, '{{ location.name_en }}')"
+                                                            title="Delete">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="bi bi-geo-alt"></i>
+                                <h5>No Locations Yet</h5>
+                                <p class="mb-0">Add your first location using the form on the left.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-</main>
-</div>
-
-<!-- DRAWER -->
-<div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
-
-<div id="drawer" class="drawer">
-    <div class="drawer-header">
-        <h5>
-            <i class="fas fa-plus-circle me-2"></i>
-            <span id="drawerTitleText">Add Location</span>
-        </h5>
-        <button onclick="closeDrawer()">×</button>
+    <!-- Translating Indicator -->
+    <div id="translateIndicator" class="translate-indicator">
+        <i class="bi bi-arrow-repeat spinner"></i>
+        <span>Translating...</span>
     </div>
 
-    <form method="POST" id="locationForm" onsubmit="return validateForm()">
-        {% csrf_token %}
-
-        <input type="hidden" name="add_location" value="1">
-        <input type="hidden" id="editId" name="update_id">
-
-        <!-- English Name Field -->
-        <div class="form-group">
-            <label class="form-label">
-                <i class="fas fa-flag-usa"></i> English Name
-                <span class="lang-badge badge-en">EN</span>
-                <span class="text-danger">*</span>
-            </label>
-            <input type="text" 
-                   id="nameEn" 
-                   name="name_en" 
-                   class="form-control" 
-                   placeholder="e.g., Dhaka, Chittagong, Rajshahi"
-                   required>
-            <small class="text-muted d-block mt-1">Enter district name in English</small>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                        Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the location:</p>
+                    <p class="text-center"><strong id="deleteLocationName" class="text-danger"></strong></p>
+                    <p class="text-muted small mb-0">This action cannot be undone. Any news associated with this location will be affected.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </button>
+                    <form method="POST" id="deleteForm" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <!-- Bangla Name Field -->
-        <div class="form-group">
-            <label class="form-label">
-                <i class="fas fa-flag"></i> বাংলা নাম
-                <span class="lang-badge badge-bn">BN</span>
-                <span class="text-danger">*</span>
-            </label>
-            <input type="text" 
-                   id="nameBn" 
-                   name="name_bn" 
-                   class="form-control" 
-                   placeholder="যেমন: ঢাকা, চট্টগ্রাম, রাজশাহী"
-                   required>
-            <small class="text-muted d-block mt-1">বাংলায় জেলার নাম লিখুন</small>
-        </div>
-
-        <button type="submit" class="btn-save">
-            <i class="fas fa-save me-2"></i> Save Location
-        </button>
-    </form>
-</div>
-
 {% endblock main %}
 
 {% block js %}
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-let dataTable = null;
-
-$(document).ready(function () {
-    initializeDataTable();
-    
-    // Auto-dismiss messages
-    setTimeout(function() {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                alert.style.transition = 'opacity 0.5s';
-                alert.style.opacity = '0';
-                setTimeout(function() {
-                    alert.remove();
-                }, 500);
-            }, 3000);
-        });
-    }, 1000);
-});
-
-function initializeDataTable() {
-    const hasRealData = $('#locationTable tbody tr').length > 0 && 
-                        $('#locationTable tbody td[colspan]').length === 0;
-    
-    if (hasRealData) {
-        if ($.fn.DataTable.isDataTable('#locationTable')) {
-            $('#locationTable').DataTable().destroy();
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Translation variables
+        let translateTimeout;
+        
+        // Function to capitalize each word
+        function capitalizeEachWord(str) {
+            if (!str) return '';
+            return str.split(' ').map(word => {
+                if (word.length === 0) return word;
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }).join(' ');
         }
         
-        dataTable = $('#locationTable').DataTable({
-            pageLength: 10,
-            ordering: true,
-            searching: true,
-            language: {
-                search: "<i class='fas fa-search'></i> Search:",
-                lengthMenu: "Show _MENU_ entries",
-                info: "Showing _START_ to _END_ of _TOTAL_ locations",
-                paginate: {
-                    previous: "<",
-                    next: ">"
-                }
-            },
-            columnDefs: [
-                { orderable: false, targets: 3 }
-            ],
-            order: [[0, 'asc']]
-        });
-    }
-}
-
-/* ADD */
-function openAddDrawer() {
-    document.getElementById("drawerTitleText").innerText = "Add Location";
-    document.getElementById("editId").value = "";
-    document.getElementById("nameEn").value = "";
-    document.getElementById("nameBn").value = "";
-    openDrawer();
-}
-
-/* EDIT */
-function openEditDrawer(id, en, bn) {
-    document.getElementById("drawerTitleText").innerText = "Update Location";
-    document.getElementById("editId").value = id;
-    document.getElementById("nameEn").value = en;
-    document.getElementById("nameBn").value = bn;
-    openDrawer();
-}
-
-function openDrawer() {
-    document.getElementById("drawer").classList.add("open");
-    document.getElementById("drawerOverlay").classList.add("show");
-    document.body.style.overflow = "hidden";
-}
-
-function closeDrawer() {
-    document.getElementById("drawer").classList.remove("open");
-    document.getElementById("drawerOverlay").classList.remove("show");
-    document.body.style.overflow = "auto";
-}
-
-/* DELETE CONFIRMATION */
-function confirmDelete(locationId, locationName) {
-    Swal.fire({
-        title: 'Delete Location?',
-        html: `Are you sure you want to delete "<strong>${escapeHtml(locationName)}</strong>"?<br><small class="text-muted">This will also affect associated hero sections.</small>`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel',
-        background: 'white',
-        borderRadius: '20px'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.style.display = 'none';
-            
-            const csrfInput = document.createElement('input');
-            csrfInput.name = 'csrfmiddlewaretoken';
-            csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            form.appendChild(csrfInput);
-            
-            const deleteInput = document.createElement('input');
-            deleteInput.name = 'delete_id';
-            deleteInput.value = locationId;
-            form.appendChild(deleteInput);
-            
-            document.body.appendChild(form);
-            form.submit();
+        // Function to show/hide translating indicator
+        function showTranslatingIndicator(show) {
+            const indicator = document.getElementById('translateIndicator');
+            if (show) {
+                indicator.style.display = 'flex';
+            } else {
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 500);
+            }
         }
-    });
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-/* FORM VALIDATION */
-function validateForm() {
-    const nameEn = document.getElementById('nameEn').value.trim();
-    const nameBn = document.getElementById('nameBn').value.trim();
-    
-    if (!nameEn) {
-        Swal.fire('Validation Error', 'English name is required!', 'error');
-        document.getElementById('nameEn').focus();
-        return false;
-    }
-    
-    if (!nameBn) {
-        Swal.fire('Validation Error', 'Bangla name is required!', 'error');
-        document.getElementById('nameBn').focus();
-        return false;
-    }
-    
-    const submitBtn = document.querySelector('.btn-save');
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
-    submitBtn.disabled = true;
-    
-    return true;
-}
-
-// Close drawer on escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeDrawer();
-    }
-});
-</script>
-
+        
+        // Function to translate Bangla to English using Google Translate API
+        async function translateBanglaToEnglish(banglaText) {
+            if (!banglaText || banglaText.trim() === '') {
+                return '';
+            }
+            
+            try {
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(banglaText)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                let translatedText = '';
+                for (let i = 0; i < data[0].length; i++) {
+                    translatedText += data[0][i][0];
+                }
+                
+                // Apply capitalization to the translated text
+                return capitalizeEachWord(translatedText);
+                
+            } catch (error) {
+                console.error('Translation error:', error);
+                return capitalizeEachWord(banglaText);
+            }
+        }
+        
+        // Live translation setup
+        function setupLiveTranslation() {
+            const banglaInput = document.getElementById('name_bn');
+            const englishInput = document.getElementById('name_en');
+            
+            if (!banglaInput || !englishInput) return;
+            
+            let debounceTimer;
+            
+            banglaInput.addEventListener('input', function(e) {
+                const banglaText = e.target.value;
+                
+                // Update character counter
+                const charCounter = document.getElementById('bnCharCounter');
+                if (charCounter) {
+                    charCounter.innerHTML = `<i class="bi bi-text-paragraph"></i> Characters: ${banglaText.length}`;
+                }
+                
+                clearTimeout(debounceTimer);
+                
+                if (banglaText.trim() === '') {
+                    englishInput.value = '';
+                    return;
+                }
+                
+                showTranslatingIndicator(true);
+                
+                debounceTimer = setTimeout(async () => {
+                    try {
+                        const translatedText = await translateBanglaToEnglish(banglaText);
+                        englishInput.value = translatedText;
+                    } catch (error) {
+                        console.error('Translation failed:', error);
+                        englishInput.value = capitalizeEachWord(banglaText);
+                    } finally {
+                        showTranslatingIndicator(false);
+                    }
+                }, 500);
+            });
+        }
+        
+        // Handle paste event
+        function setupPasteTranslation() {
+            const banglaInput = document.getElementById('name_bn');
+            
+            if (banglaInput) {
+                banglaInput.addEventListener('paste', function() {
+                    setTimeout(async () => {
+                        const banglaText = banglaInput.value;
+                        if (banglaText.trim()) {
+                            showTranslatingIndicator(true);
+                            const translatedText = await translateBanglaToEnglish(banglaText);
+                            document.getElementById('name_en').value = translatedText;
+                            showTranslatingIndicator(false);
+                        }
+                    }, 100);
+                });
+            }
+        }
+        
+        // Show add form
+        function showAddForm() {
+            const formSection = document.getElementById('formSection');
+            const listSection = document.getElementById('listSection');
+            
+            formSection.style.display = 'block';
+            listSection.classList.remove('col-lg-12');
+            listSection.classList.add('col-lg-8');
+            
+            // Reset form
+            document.getElementById('locationForm').reset();
+            document.getElementById('location_id').value = '';
+            document.getElementById('form-mode-text').innerHTML = 'Add New Location';
+            document.getElementById('submit-text').textContent = 'Add Location';
+            document.getElementById('submitBtn').classList.remove('btn-success');
+            document.getElementById('submitBtn').classList.add('btn-primary');
+            
+            // Reset char counter
+            const charCounter = document.getElementById('bnCharCounter');
+            if (charCounter) {
+                charCounter.innerHTML = '<i class="bi bi-text-paragraph"></i> Characters: 0';
+            }
+            
+            // Scroll to form
+            formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Focus on Bangla input
+            setTimeout(() => {
+                document.getElementById('name_bn').focus();
+            }, 300);
+        }
+        
+        // Cancel form
+        function cancelForm() {
+            const formSection = document.getElementById('formSection');
+            const listSection = document.getElementById('listSection');
+            
+            formSection.style.display = 'none';
+            listSection.classList.remove('col-lg-8');
+            listSection.classList.add('col-lg-12');
+            document.getElementById('locationForm').reset();
+        }
+        
+        // Edit location
+        function editLocation(id) {
+            fetch(`/locations/get/${id}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Show form section
+                    const formSection = document.getElementById('formSection');
+                    const listSection = document.getElementById('listSection');
+                    
+                    formSection.style.display = 'block';
+                    listSection.classList.remove('col-lg-12');
+                    listSection.classList.add('col-lg-8');
+                    
+                    // Fill form
+                    document.getElementById('location_id').value = data.id;
+                    document.getElementById('name_bn').value = data.name_bn;
+                    document.getElementById('name_en').value = capitalizeEachWord(data.name_en);
+                    
+                    // Update char counter
+                    const charCounter = document.getElementById('bnCharCounter');
+                    if (charCounter && data.name_bn) {
+                        charCounter.innerHTML = `<i class="bi bi-text-paragraph"></i> Characters: ${data.name_bn.length}`;
+                    }
+                    
+                    // Update UI
+                    document.getElementById('form-mode-text').innerHTML = 'Edit Location';
+                    document.getElementById('submit-text').textContent = 'Update Location';
+                    document.getElementById('submitBtn').classList.remove('btn-primary');
+                    document.getElementById('submitBtn').classList.add('btn-success');
+                    
+                    // Scroll to form
+                    formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load location data');
+                });
+        }
+        
+        // Confirm delete
+        function confirmDelete(id, name) {
+            document.getElementById('deleteLocationName').textContent = name;
+            document.getElementById('deleteForm').action = `/locations/delete/${id}/`;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+        
+        // Auto-hide alerts
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Ensure English input is capitalized before form submission
+        function setupFormSubmission() {
+            const form = document.getElementById('locationForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const englishInput = document.getElementById('name_en');
+                    if (englishInput && englishInput.value) {
+                        englishInput.value = capitalizeEachWord(englishInput.value);
+                    }
+                });
+            }
+        }
+        
+        // Keyboard shortcut: Ctrl+Shift+T for manual translation
+        document.addEventListener('keydown', async function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                e.preventDefault();
+                const banglaText = document.getElementById('name_bn').value;
+                if (banglaText && banglaText.trim()) {
+                    showTranslatingIndicator(true);
+                    const translatedText = await translateBanglaToEnglish(banglaText);
+                    document.getElementById('name_en').value = translatedText;
+                    showTranslatingIndicator(false);
+                }
+            }
+        });
+        
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupLiveTranslation();
+            setupPasteTranslation();
+            setupFormSubmission();
+        });
+        
+        // Show form if there are errors
+        {% if errors %}
+        window.addEventListener('DOMContentLoaded', function() {
+            showAddForm();
+        });
+        {% endif %}
+    </script>
 {% endblock js %}

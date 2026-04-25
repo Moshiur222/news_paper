@@ -83,6 +83,8 @@ TEMPLATES = [
                 'news.context_processors.active_menu',
                 'news.context_processors.get_translations',
                 'news.context_processors.category',
+                'news.context_processors.top_news',
+                'news.context_processors.company_info',
             ],
         },
     },

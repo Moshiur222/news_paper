@@ -2,89 +2,466 @@
 
 <footer class="footer-modern">
   <div class="container">
-    <div class="row">
-
+    <div class="row g-4">
+      
       <!-- LOGO + CONTACT -->
       <div class="col-lg-4 mb-4">
-        <img src="{% static 'news/landing/images/logo.png' %}" class="img-fluid rounded" style="max-height:60px;">
-        <div class="mt-3">
-          <i class="fas fa-envelope me-2"></i> newsroom@inews24.com<br>
-          <i class="fas fa-phone-alt me-2"></i> +880 2 9876543
+        <div class="footer-brand">
+          <img src="{% static 'news/landing/images/logo.png' %}" alt="Logo" class="footer-logo-img" style="height: 50px; margin-bottom: 15px;">
+          <h3 class="footer-site-name"><span style="color: var(--primary-red);"></span></h3>
         </div>
+        <p class="footer-about mt-3" style="font-size: 0.85rem; line-height: 1.6; opacity: 0.8;">
+          {% if current_language == 'bn' %}
+            নির্ভরযোগ্য, দ্রুত এবং সঠিক সংবাদ পরিবেশনে প্রতিশ্রুতিবদ্ধ
+          {% else %}
+            Committed to delivering reliable, fast and accurate news
+          {% endif %}
+        </p>
+        {% for info in company_infos %}
+        <div class="footer-contact mt-3">
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i> 
+            <span>{{info.email}}</span>
+          </div>
+          <div class="contact-item mt-2">
+            <i class="fas fa-phone-alt"></i> 
+            <span>{% if current_language == 'bn' %}{{info.mobile_no_bn}}{% else %}{{info.mobile_no_en}}{% endif %}</span>
+          </div>
+          <div class="contact-item mt-2">
+            <i class="fas fa-map-marker-alt"></i> 
+            <span>{% if current_language == 'bn' %}{{info.location_bn}}{% else %}{{info.location_en}}{% endif %}</span>
+          </div>
+        </div>
+        {% endfor %}
       </div>
 
-      <!-- MAIN MENU -->
-      <div class="col-lg-2 col-6 mb-4 footer-links">
-        <h6>{{ t.main_sections }}</h6>
-        <ul class="list-unstyled">
-          <li><a href="#">{{ t.national }}</a></li>
-          <li><a href="#">{{ t.politics }}</a></li>
-          <li><a href="#">{{ t.economy }}</a></li>
-          <li><a href="#">{{ t.international }}</a></li>
-        </ul>
-      </div>
+     <div class="col-lg-2 col-6 mb-4 footer-links">
+  <h6 class="footer-heading">
+    {% if current_language == 'bn' %}প্রধান বিভাগ{% else %}Main Sections{% endif %}
+  </h6>
+  <ul class="list-unstyled">
+    {% for cat in categories|slice:":4" %}
+    <li>
+      <a href="{% url 'category_news' cat.slug %}">
+        <i class="fas fa-chevron-right"></i> 
+        {% if current_language == 'bn' %}{{ cat.name_bn }}{% else %}{{ cat.name_en }}{% endif %}
+      </a>
+    </li>
+    {% empty %}
+    <li>No categories found</li>
+    {% endfor %}
+  </ul>
+</div>
 
-      <!-- OTHER MENU -->
-      <div class="col-lg-2 col-6 mb-4 footer-links">
-        <h6>{{ t.others }}</h6>
-        <ul class="list-unstyled">
-          <li><a href="#">{{ t.sports }}</a></li>
-          <li><a href="#">{{ t.entertainment }}</a></li>
-          <li><a href="#">{{ t.technology }}</a></li>
-          <li><a href="#">{{ t.lifestyle }}</a></li>
-        </ul>
-      </div>
+<div class="col-lg-2 col-6 mb-4 footer-links">
+  <h6 class="footer-heading">
+    {% if current_language == 'bn' %}অন্যান্য{% else %}Others{% endif %}
+  </h6>
+  <ul class="list-unstyled">
+    {% for cat in categories|slice:"4:8" %}
+    <li>
+      <a href="{% url 'category_news' cat.slug %}">
+        <i class="fas fa-chevron-right"></i> 
+        {% if current_language == 'bn' %}{{ cat.name_bn }}{% else %}{{ cat.name_en }}{% endif %}
+      </a>
+    </li>
+    {% empty %}
+    <li>No categories found</li>
+    {% endfor %}
+  </ul>
+</div>
 
       <!-- NEWSLETTER -->
       <div class="col-lg-4 mb-4">
-        <h6>{{ t.newsletter }}</h6>
-        <div class="input-group">
-          <input type="email"
-                 class="form-control form-control-sm bg-dark text-white border-secondary"
-                 placeholder="{{ t.email_placeholder }}">
-          <button class="btn btn-sm btn-danger" type="button">
-            {{ t.subscribe }}
-          </button>
-        </div>
+        <h6 class="footer-heading">{% if current_language == 'bn' %}নিউজলেটার{% else %}Newsletter{% endif %}</h6>
+        <p class="newsletter-text" style="font-size: 0.85rem; opacity: 0.8;">
+          {% if current_language == 'bn' %}
+            সাপ্তাহিক আপডেট পেতে আপনার ইমেইল দিন
+          {% else %}
+            Subscribe to get weekly updates
+          {% endif %}
+        </p>
+        <form method="POST" action="{% url 'subscribe' %}">
+          {% csrf_token %}
 
-        <div class="mt-3 d-flex gap-3">
-          <a href="#" class="text-white-50"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="text-white-50"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="text-white-50"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="text-white-50"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
+          <div class="input-group">
+            <input type="email" 
+                  name="email"
+                  required
+                  class="form-control form-control-sm newsletter-input" 
+                  placeholder="{% if current_language == 'bn' %}আপনার ইমেইল{% else %}Your email{% endif %}">
 
-    </div>
-
-    <!-- FOOTER BOTTOM -->
-    <div class="footer-bottom">
-      <div class="footer-inner-container">
-        <div class="footer-bottom-content">
-
-          <span class="copyright-text">
-            © {% now "Y" %} SISPAB. {{ t.copyright }}
-          </span>
-
-          <div class="info-row">
-            <span>
-              <a href="https://iglweb.com/web/domains-services.php" target="_blank">Domain</a> by IGL
-            </span>
-            <span>
-              <a href="https://iglweb.com/web/hosting-regular-shared.php" target="_blank">Hosting</a> by IGL
-            </span>
-            <span>
-              <a href="https://iglweb.com/web/web-development.php" target="_blank">Development</a> by IGL
-            </span>
+            <button class="btn btn-sm btn-danger newsletter-btn" type="submit">
+              <i class="fas fa-paper-plane"></i> 
+              {% if current_language == 'bn' %}সাবস্ক্রাইব{% else %}Subscribe{% endif %}
+            </button>
           </div>
 
-        </div>
+        </form>
+
+       <div class="social-links mt-4">
+    {% for info in company_infos %}
+    <h6 class="footer-heading">
+        {% if current_language == 'bn' %}সামাজিক মাধ্যমে{% else %}Follow Us{% endif %}
+    </h6>
+    <div class="d-flex gap-3 mt-2">
+        {% if info.facebook %}
+            <a href="{{ info.facebook }}" target="_blank" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+        {% endif %}
+        
+        {% if info.twitter %}
+            <a href="{{ info.twitter }}" target="_blank" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+        {% endif %}
+        
+        {% if info.instagram %}
+            <a href="{{ info.instagram }}" target="_blank" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+        {% endif %}
+        
+        {% if info.youtube %}
+            <a href="{{ info.youtube }}" target="_blank" class="social-icon youtube"><i class="fab fa-youtube"></i></a>
+        {% endif %}
+        
+        {% if info.linkedin %}
+            <a href="{{ info.linkedin }}" target="_blank" class="social-icon linkedin"><i class="fab fa-linkedin-in"></i></a>
+        {% endif %}
+    </div>
+    {% endfor %}
+ </div>
       </div>
     </div>
-
   </div>
 </footer>
 
+<div class="top-footer-bar">
+  <div class="container text-center">
+    <p class="copyright-text">
+      Copyright © 2026 iNews24. All Rights Reserved
+    </p>
+
+    <p class="credit-text">
+      <a href="https://iglweb.com/web/domains-services.php" target="_blank">Domain Registration</a> by: <a href="https://iglweb.com/web/domains-services.php" target="_blank">IGL Web Ltd.</a>
+      <span class="separator">|</span>
+      <a href="https://iglweb.com/web/hosting-regular-shared.php" target="_blank">Web Hosting</a> by: <a href="https://iglweb.com/web/hosting-regular-shared.php" target="_blank">IGL Web Ltd.</a>
+      <span class="separator">|</span>
+     <a href="https://iglweb.com/web/web-development.php" target="_blank"> Web Design & Development</a> by: <a href="https://iglweb.com/web/web-development.php" target="_blank">IGL Web Ltd.</a>
+    </p>
+  </div>
+</div>
+
+<!-- Scroll to Top Button -->
 <button class="scroll-top" id="scrollTopBtn">
   <i class="fas fa-arrow-up"></i>
 </button>
+
+<!-- Additional Footer Styles -->
+<style>
+  .top-footer-bar {
+  background-color: #1e2f47; /* dark navy blue */
+  padding: 12px 0;
+  font-family: Arial, sans-serif;
+}
+
+.top-footer-bar p {
+  margin: 0;
+}
+
+.copyright-text {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.credit-text {
+  color: #cbd5e1;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.credit-text a {
+  color: #cbd5e1;
+  text-decoration: none;
+}
+
+.credit-text a:hover {
+  text-decoration: underline;
+}
+
+.separator {
+  margin: 0 10px;
+  color: #94a3b8;
+}
+.footer-modern {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #cbd5e6;
+  margin-top: 60px;
+  padding: 50px 0 20px;
+  position: relative;
+  border-top: 3px solid var(--primary-red);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-site-name {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(135deg, #fff 0%, #cbd5e6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.footer-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-heading:after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--primary-red);
+  border-radius: 2px;
+}
+
+.footer-links ul {
+  padding-left: 0;
+}
+
+.footer-links li {
+  margin-bottom: 12px;
+}
+
+.footer-links a {
+  color: #cbd5e6;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-links a i {
+  font-size: 10px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: var(--primary-red);
+  transform: translateX(5px);
+}
+
+.footer-links a:hover i {
+  opacity: 1;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.contact-item i {
+  width: 25px;
+  color: var(--primary-red);
+}
+
+.newsletter-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.newsletter-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--primary-red);
+  box-shadow: none;
+  color: white;
+}
+
+.newsletter-input::placeholder {
+  color: #94a3b8;
+}
+
+.newsletter-btn {
+  padding: 0.4rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.newsletter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #cbd5e6;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: translateY(-3px);
+  color: white;
+}
+
+.social-icon.facebook:hover {
+  background: #1877f2;
+}
+
+.social-icon.twitter:hover {
+  background: #1da1f2;
+}
+
+.social-icon.instagram:hover {
+  background: #e4405f;
+}
+
+.social-icon.youtube:hover {
+  background: #ff0000;
+}
+
+.social-icon.linkedin:hover {
+  background: #0077b5;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.copyright-text {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.credits {
+  font-size: 0.7rem;
+}
+
+.credit-item a {
+  color: #cbd5e6;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.credit-item a:hover {
+  color: var(--primary-red);
+}
+
+.credit-separator {
+  margin: 0 8px;
+  opacity: 0.3;
+}
+
+/* Scroll button enhancement */
+.scroll-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--primary-red);
+  color: white;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 999;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-modern {
+    padding: 40px 0 20px;
+  }
+  
+  .footer-heading:after {
+    width: 30px;
+  }
+  
+  .credits {
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .credit-separator {
+    margin: 0 4px;
+  }
+  
+  .scroll-top {
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .credits {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .credit-separator {
+    display: none;
+  }
+}
+</style>
+
+<script>
+// Scroll to top functionality
+(function() {
+  const scrollBtn = document.getElementById('scrollTopBtn');
+  if (scrollBtn) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        scrollBtn.classList.add('show');
+      } else {
+        scrollBtn.classList.remove('show');
+      }
+    });
+    
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+})();
+</script>

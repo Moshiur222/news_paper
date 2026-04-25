@@ -1,0 +1,168 @@
+{% extends "news/admin/base/base.html" %}
+
+{% block main %}
+<style>
+    /* ... (আপনার আগের সব CSS ডিজাইন এখানে থাকবে) ... */
+    :root {
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --bg-gray: #f8fafc;
+        --border-color: #e2e8f0;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+    }
+
+    .admin-wrapper { padding: 40px 20px; background-color: var(--bg-gray); min-height: 100vh; }
+    .content-container { max-width: 900px; margin: auto; }
+    .settings-card { background: white; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden; }
+    .card-section { padding: 32px; border-bottom: 1px solid var(--border-color); }
+    .section-title { font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .section-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-main); margin-bottom: 6px; }
+    .input-field { width: 100%; padding: 11px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; }
+    .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+    .btn-save { background-color: var(--primary); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    #action-bar { display: none; background: #fcfcfd; text-align: right; padding: 20px 32px; border-top: 1px solid var(--border-color); animation: slideUp 0.3s ease-out; }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* ট্রান্সলেশন লোডার স্টাইল */
+    .translating { opacity: 0.5; pointer-events: none; }
+</style>
+
+<div class="admin-wrapper">
+    <div class="content-container">
+        <form method="POST" id="companyForm">
+            {% csrf_token %}
+
+            <div class="settings-card">
+                <div class="card-section">
+                    <div class="section-title">📧 Contact Information</div>
+                    <p class="section-desc">টাইপ করলে অটোমেটিক অনুবাদ হবে (Live Translation enabled)</p>
+
+                    <div class="form-group">
+                        <label>Business Email *</label>
+                        <input type="email" name="email" class="input-field" value="{{ company.email|default:'' }}" required>
+                    </div>
+
+                    <div class="social-grid">
+                        <div class="form-group">
+                            <label>Mobile No (English)</label>
+                            <input type="text" id="mobile_en" name="mobile_no_en" class="input-field" 
+                                   placeholder="Type in English..." value="{{ company.mobile_no_en|default:'' }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile No (Bangla)</label>
+                            <input type="text" id="mobile_bn" name="mobile_no_bn" class="input-field" 
+                                   placeholder="অটোমেটিক আসবে..." value="{{ company.mobile_no_bn|default:'' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Location (English)</label>
+                            <input type="text" id="loc_en" name="location_en" class="input-field" 
+                                   placeholder="Type location in English..." value="{{ company.location_en|default:'' }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Location (Bangla)</label>
+                            <input type="text" id="loc_bn" name="location_bn" class="input-field" 
+                                   placeholder="অটোমেটিক আসবে..." value="{{ company.location_bn|default:'' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-section">
+                    <div class="section-title">🌐 Social Media Profiles</div>
+                    <div class="social-grid">
+                        <div class="form-group"><label>Facebook</label><input type="url" name="facebook" class="input-field" value="{{ company.facebook|default:'' }}"></div>
+                        <div class="form-group"><label>Twitter</label><input type="url" name="twitter" class="input-field" value="{{ company.twitter|default:'' }}"></div>
+                        <div class="form-group"><label>Instagram</label><input type="url" name="instagram" class="input-field" value="{{ company.instagram|default:'' }}"></div>
+                        <div class="form-group"><label>LinkedIn</label><input type="url" name="linkedin" class="input-field" value="{{ company.linkedin|default:'' }}"></div>
+                        <div class="form-group"><label>YouTube</label><input type="url" name="youtube" class="input-field" value="{{ company.youtube|default:'' }}"></div>
+                    </div>
+                </div>
+                
+                <div id="action-bar">
+                    <span style="color: var(--text-muted); margin-right: 15px; font-size: 0.9rem;">You have unsaved changes</span>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('companyForm');
+    const actionBar = document.getElementById('action-bar');
+
+    // বাটন শো করা
+    form.addEventListener('input', () => { actionBar.style.display = 'block'; });
+
+    // ইংরেজি ডিজিট থেকে বাংলা ডিজিটে রূপান্তরের নিখুঁত ফাংশন
+    function convertToBanglaDigit(text) {
+        if (!text) return "";
+        const banglaDigits = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+        
+        // এখানে প্রতিটি ক্যারেক্টার চেক করা হচ্ছে, যদি নম্বর হয় তবে বাংলা হবে, 
+        // আর + বা অন্য কিছু হলে তা অপরিবর্তিত থাকবে।
+        return text.toString().split('').map(char => {
+            return banglaDigits[char] ? banglaDigits[char] : char;
+        }).join('');
+    }
+
+    // লাইভ ট্রান্সলেশন ফাংশন
+    async function translateText(text, sourceLang, targetLang, targetElementId) {
+        if (!text.trim()) return;
+        const targetElement = document.getElementById(targetElementId);
+        
+        try {
+            // যদি এটি মোবাইল নম্বর ফিল্ড হয় (যাতে সাধারণত শুধু নম্বর এবং + থাকে)
+            if (targetElementId.includes('mobile')) {
+                let result = "";
+                if (targetLang === 'bn') {
+                    result = convertToBanglaDigit(text);
+                } else {
+                    // বাংলা থেকে ইংরেজিতে নম্বর কনভার্ট করার জন্য (উল্টোটা)
+                    const englishDigits = {'০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9'};
+                    result = text.toString().split('').map(char => englishDigits[char] ? englishDigits[char] : char).join('');
+                }
+                targetElement.value = result;
+                return; // নম্বরের জন্য গুগল ট্রান্সলেট API দরকার নেই, সরাসরি কনভার্ট হবে
+            }
+
+            // লোকেশন বা অন্যান্য টেক্সটের জন্য গুগল ট্রান্সলেট API
+            const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURI(text)}`);
+            const data = await response.json();
+            
+            if (data[0] && data[0][0][0]) {
+                let translated = data[0][0][0];
+                if (targetLang === 'bn') {
+                    translated = convertToBanglaDigit(translated);
+                }
+                targetElement.value = translated;
+            }
+        } catch (error) {
+            console.error("Translation Error:", error);
+        }
+    }
+
+    function setupAutoTranslate(sourceId, targetId, sourceLang, targetLang) {
+        let timeout = null;
+        document.getElementById(sourceId).addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                translateText(e.target.value, sourceLang, targetLang, targetId);
+            }, 500); // দ্রুত রেসপন্সের জন্য টাইম কমিয়ে ৫০০ করা হয়েছে
+        });
+    }
+
+    // English to Bangla
+    setupAutoTranslate('mobile_en', 'mobile_bn', 'en', 'bn');
+    setupAutoTranslate('loc_en', 'loc_bn', 'en', 'bn');
+
+    // Bangla to English
+    setupAutoTranslate('mobile_bn', 'mobile_en', 'bn', 'en');
+    setupAutoTranslate('loc_bn', 'loc_en', 'bn', 'en');
+</script>
+{% endblock %}

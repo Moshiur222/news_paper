@@ -3,513 +3,777 @@
 
 {% block extra_css %}
 <style>
-    /* News Cards */
-    .news-card {
-      background: var(--soft-bg);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.25s ease;
-      box-shadow: var(--card-shadow);
-      height: 100%;
-      border: none;
-      margin-bottom: 25px;
+    :root {
+        --newspaper-border: #e5e7eb;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --accent-red: #dc2626;
     }
-    .row>* {
-        padding-bottom: 15px
+
+    body {
+        background: #f9fafb;
+        font-family: 'Noto Sans', 'Noto Sans Bengali', sans-serif;
     }
-    .news-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.1);
-    }
-    .news-img {
-      height: 200px;
-      object-fit: cover;
-      width: 100%;
-      transition: transform 0.3s;
-    }
-    .news-card:hover .news-img {
-      transform: scale(1.02);
-    }
-    .card-body {
-      padding: 1.2rem;
-    }
-    .card-category {
-      color: var(--primary-red);
-      font-weight: 700;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      display: inline-block;
-    }
-    .card-title {
-      font-weight: 800;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-    .card-title a {
-      color: inherit;
-      text-decoration: none;
-    }
-    .card-title a:hover {
-      color: var(--primary-red);
-    }
-    .card-text {
-      color: #4a5568;
-      font-size: 0.85rem;
-    }
-    .card-date {
-      font-size: 0.7rem;
-      color: #8a99b4;
-      margin-top: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+
+    /* Breaking News Ticker */
+    .breaking-news-ticker {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border-bottom: 3px solid #991b1b;
     }
     
+    .breaking-badge {
+        background: #fff;
+        color: #dc2626;
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    /* Main Container */
+    .newspaper-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+    }
+
+    /* Top Stories Grid */
+    .top-stories-section {
+        border-bottom: 3px solid var(--newspaper-border);
+        padding: 20px 0;
+    }
+
+    .lead-story {
+        border-right: 1px solid var(--newspaper-border);
+        padding-right: 20px;
+    }
+
+    .lead-story-img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 1px solid var(--newspaper-border);
+    }
+
+    .lead-story-title {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1.3;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+    }
+
+    .lead-story-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .lead-story-title a:hover {
+        color: var(--accent-red);
+    }
+
+    .lead-story-excerpt {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        margin-bottom: 10px;
+    }
+
+    /* Secondary Stories */
+    .secondary-stories {
+        padding-left: 20px;
+    }
+
+    .story-item {
+        border-bottom: 1px solid var(--newspaper-border);
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .story-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .story-item-horizontal {
+        display: flex;
+        gap: 15px;
+    }
+
+    .story-thumbnail {
+        width: 140px;
+        height: 100px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid var(--newspaper-border);
+    }
+
+    .story-content {
+        flex: 1;
+    }
+
+    .story-category {
+        color: var(--accent-red);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+
+    .story-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1.4;
+        margin-bottom: 6px;
+        color: var(--text-primary);
+    }
+
+    .story-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .story-title a:hover {
+        color: var(--accent-red);
+    }
+
+    .story-meta {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
     /* Section Headers */
-    .section-header {
-      border-left: 5px solid var(--primary-red);
-      padding-left: 15px;
-      margin: 35px 0 20px;
+    .section-divider {
+        border-top: 3px solid var(--accent-red);
+        border-bottom: 1px solid var(--newspaper-border);
+        padding: 12px 0;
+        margin: 30px 0 20px;
+        position: relative;
     }
-    .section-header h2 {
-      font-weight: 800;
-      font-size: 1.7rem;
-      margin-bottom: 5px;
+
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-block;
+        background: white;
+        padding-right: 15px;
     }
-    .section-header span {
-      font-size: 0.8rem;
-      color: #5b6e8c;
+
+    .section-link {
+        float: right;
+        color: var(--accent-red);
+        font-size: 0.8rem;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 4px 0;
     }
-    .section-header a {
-      color: var(--primary-red);
-      text-decoration: none;
-      font-size: 0.85rem;
+
+    .section-link:hover {
+        text-decoration: underline;
     }
-    
-    /* Sidebar widgets */
-    .sidebar-widget {
-      background: white;
-      border-radius: 20px;
-      padding: 1.2rem;
-      margin-bottom: 30px;
-      box-shadow: var(--card-shadow);
+
+    /* Category Grid */
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
     }
-    .widget-title {
-      font-weight: 800;
-      border-bottom: 2px solid #eef2f6;
-      padding-bottom: 10px;
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+
+    .news-item {
+        border: 1px solid var(--newspaper-border);
+        background: white;
+        transition: box-shadow 0.2s;
     }
-    .trending-list {
-      list-style: none;
-      padding-left: 0;
+
+    .news-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .trending-list li {
-      margin-bottom: 18px;
-      border-bottom: 1px dashed #edf2f7;
-      padding-bottom: 12px;
-      display: flex;
-      gap: 12px;
+
+    .news-item-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 1px solid var(--newspaper-border);
     }
-    .trend-number {
-      font-weight: 800;
-      font-size: 1.4rem;
-      color: var(--primary-red);
-      opacity: 0.7;
-      min-width: 35px;
+
+    .news-item-body {
+        padding: 12px;
     }
-    .trend-title {
-      font-weight: 600;
-      font-size: 0.9rem;
+
+    .news-item-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.4;
+        margin-bottom: 8px;
+        color: var(--text-primary);
     }
-    .trend-title a {
-      text-decoration: none;
-      color: inherit;
+
+    .news-item-title a {
+        color: inherit;
+        text-decoration: none;
     }
-    .trend-title a:hover {
-      color: var(--primary-red);
+
+    .news-item-title a:hover {
+        color: var(--accent-red);
     }
-    .latest-item {
-      margin-bottom: 15px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #edf2f7;
+
+    .news-item-excerpt {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin-bottom: 8px;
     }
-    .latest-item:last-child {
-      border-bottom: none;
+
+    /* Sidebar */
+    .sidebar-section {
+        position: sticky;
+        top: 20px;
     }
-    .latest-item p {
-      font-size: 0.85rem;
-      margin-bottom: 5px;
+
+    .sidebar-box {
+        background: white;
+        border: 2px solid var(--newspaper-border);
+        margin-bottom: 20px;
+        overflow: hidden;
     }
-    .latest-item a {
-      text-decoration: none;
-      color: inherit;
-      font-weight: 600;
+
+    .sidebar-header {
+        background: var(--accent-red);
+        color: white;
+        padding: 10px 15px;
+        font-weight: 800;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-    .latest-item a:hover {
-      color: var(--primary-red);
+
+    .sidebar-content {
+        padding: 15px;
     }
-    .latest-time {
-      font-size: 0.7rem;
-      color: #8a99b4;
+
+    /* Trending List */
+    .trending-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px dashed var(--newspaper-border);
     }
-    
+
+    .trending-item:last-child {
+        border-bottom: none;
+    }
+
+    .trending-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-red);
+        min-width: 30px;
+        line-height: 1;
+    }
+
+    .trending-title {
+        flex: 1;
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .trending-title a {
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .trending-title a:hover {
+        color: var(--accent-red);
+    }
+
+    /* Latest News Compact */
+    .latest-compact-item {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--newspaper-border);
+    }
+
+    .latest-compact-item:last-child {
+        border-bottom: none;
+    }
+
+    .latest-compact-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: 4px;
+    }
+
+    .latest-compact-title a {
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .latest-compact-title a:hover {
+        color: var(--accent-red);
+    }
+
+    .latest-compact-time {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+    }
+
+    /* Newsletter Box */
+    .newsletter-box {
+        background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+        color: white;
+        padding: 20px;
+    }
+
+    .newsletter-box h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .newsletter-box p {
+        font-size: 0.8rem;
+        opacity: 0.9;
+        margin-bottom: 15px;
+    }
+
+    .newsletter-input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        font-size: 0.85rem;
+    }
+
+    .newsletter-btn {
+        width: 100%;
+        padding: 10px;
+        background: var(--accent-red);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .newsletter-btn:hover {
+        background: #b91c1c;
+    }
+
+    /* Social Buttons */
+    .social-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .social-btn {
+        padding: 10px;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: opacity 0.2s;
+    }
+
+    .social-btn:hover {
+        opacity: 0.9;
+        color: white;
+    }
+
+    .social-facebook {
+        background: #1877f2;
+    }
+
+    .social-twitter {
+        background: #1da1f2;
+    }
+
+    .social-instagram {
+        background: #e4405f;
+    }
+
+    .social-youtube {
+        background: #ff0000;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
-      .section-header h2 {
-        font-size: 1.3rem;
-      }
-      .news-img {
-        height: 180px;
-      }
+        .lead-story {
+            border-right: none;
+            padding-right: 0;
+            margin-bottom: 20px;
+        }
+
+        .lead-story-img {
+            height: 250px;
+        }
+
+        .lead-story-title {
+            font-size: 1.5rem;
+        }
+
+        .secondary-stories {
+            padding-left: 0;
+        }
+
+        .category-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar-section {
+            position: static;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .story-item-horizontal {
+            flex-direction: column;
+        }
+
+        .story-thumbnail {
+            width: 100%;
+            height: 200px;
+        }
+
+        .social-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock extra_css %}
 
 {% block main_content %}
-<div class="container my-4">
-  <div class="row g-4">
-    <!-- Left column: Main content -->
-    <div class="col-lg-8">
-      
 <!-- BREAKING NEWS TICKER -->
-<div class="bg-dark text-white py-2 overflow-hidden" style="background: #0f172a;">
-  <div class="container">
-    <div class="d-flex align-items-center">
-      <span class="bg-danger px-3 py-1 rounded-pill me-3 fw-bold">{% if current_language == 'bn' %}ব্রেকিং{% else %}BREAKING{% endif %}</span>
-      <marquee behavior="scroll" direction="left" scrollamount="4" onmouseover="this.stop();" onmouseout="this.start();" class="small">
-        {% if current_language == 'bn' %}
-          কোটা বাতিলের পরিপত্র জারি || খুলনা যাচ্ছেন রাষ্ট্রপতি || পুঁজিবাজারের উন্নয়নে আগ্রাসী পদক্ষেপ || শীতে মেটো মাশরুম স্যুপ স্বাস্থ্যকর || প্রশ্নপত্র ফাঁসের ঘটনায় ৩ শিক্ষক গ্রেফতার || বিশ্ববাজারে সোনার দাম রেকর্ড উচ্চতায়
-        {% else %}
-          Quota abolition circular issued || President heading to Khulna || Aggressive steps for capital market development || Healthy winter mushroom soup || 3 teachers arrested for question paper leak || Gold prices at record high in global market
-        {% endif %}
-      </marquee>
+<div class="breaking-news-ticker py-2">
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <span class="breaking-badge">
+                {% if current_language == 'bn' %}ব্রেকিং নিউজ{% else %}BREAKING NEWS{% endif %}
+            </span>
+            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();" class="text-white ms-3 small fw-bold">
+                {% for t in top_newses %}
+                    {% if current_language == 'bn' %}
+                        {{ t.title_bn }}
+                    {% else %}
+                        {{ t.title_en }}
+                    {% endif %}
+                    {% if not forloop.last %} &nbsp;&nbsp;||&nbsp;&nbsp; {% endif %}
+                {% empty %}
+                    {% if current_language == 'bn' %}কোন ব্রেকিং নিউজ নেই{% else %}No breaking news available{% endif %}
+                {% endfor %}
+            </marquee>
+        </div>
     </div>
-  </div>
 </div>
 
-      
-      <!-- শীর্ষ সংবাদ / Top News Section (4 news) -->
-      <div class="section-header d-flex justify-content-between align-items-center">
-        <div>
-          <h2>{% if current_language == 'bn' %}শীর্ষ সংবাদ{% else %}Top News{% endif %}</h2>
-          <span>{% if current_language == 'bn' %}সর্বাধিক পঠিত{% else %}Most Read{% endif %}</span>
-        </div>
-        <a href="#">{% if current_language == 'bn' %}সব দেখুন →{% else %}View All →{% endif %}</a>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/15/400/240" class="news-img" alt="Top News">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}শীর্ষ{% else %}Top{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}বাজেট অধিবেশন শুরু আজ, কী কী সিদ্ধান্ত আসছে?{% else %}Budget Session Begins Today, What Decisions Are Coming?{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}আজ থেকে শুরু হচ্ছে জাতীয় সংসদের বাজেট অধিবেশন। নতুন অর্থবছরে কি কি কর বৃদ্ধি বা কমানো হতে পারে, তা নিয়ে ইতিমধ্যেই জোর আলোচনা চলছে।{% else %}The budget session of the National Parliament begins today. There is already intense discussion about which taxes may be increased or decreased.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}২ ঘণ্টা আগে{% else %}2 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/1/400/240" class="news-img" alt="Top News">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}শীর্ষ{% else %}Top{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}নির্বাচন কমিশনের বড় সিদ্ধান্ত, নতুন ভোটার তালিকা প্রকাশ{% else %}Election Commission's Major Decision, New Voter List Released{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}দেশব্যাপী ভোটার তালিকা হালনাগাদ করা হয়েছে। নতুন করে ৫০ লাখ ভোটার যোগ দিয়েছেন।{% else %}Voter list has been updated across the country. 5 million new voters have been added.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৫ ঘণ্টা আগে{% else %}5 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/2/400/240" class="news-img" alt="Top News">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}শীর্ষ{% else %}Top{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}ডলার সংকট কাটিয়ে উঠতে কেন্দ্রীয় ব্যাংকের নতুন উদ্যোগ{% else %}Central Bank's New Initiative to Overcome Dollar Crisis{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}রেমিট্যান্স বাড়াতে বিশেষ প্রণোদনা ঘোষণা করেছে বাংলাদেশ ব্যাংক।{% else %}Bangladesh Bank has announced special incentives to increase remittances.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৮ ঘণ্টা আগে{% else %}8 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/3/400/240" class="news-img" alt="Top News">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}শীর্ষ{% else %}Top{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}বাংলাদেশের প্রথম স্যাটেলাইটের সফল উৎক্ষেপণ{% else %}Successful Launch of Bangladesh's First Satellite{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}বঙ্গবন্ধু স্যাটেলাইট-২ এর উৎক্ষেপণ সফলভাবে সম্পন্ন হয়েছে। টেলিযোগাযোগ খাতে বৈপ্লবিক পরিবর্তন আসবে।{% else %}Bangabandhu Satellite-2 has been successfully launched. Revolutionary changes will come in the telecom sector.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১০ ঘণ্টা আগে{% else %}10 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="newspaper-container">
+    <div class="container py-4">
+        <div class="row">
+            <!-- Main Content Area -->
+            <div class="col-lg-9">
+                
+                <!-- TOP STORIES SECTION -->
+                {% for category in categories %}
+                    {% if category.name_en == 'Top News' and category.news.all %}
+                        <div class="top-stories-section">
+                            <div class="row">
+                                <!-- Lead Story -->
+                                <div class="col-lg-7 lead-story">
+                                    {% with category.news.all.0 as lead %}
+                                        {% if lead.image %}
+                                            <img src="{{ lead.image.url }}" class="lead-story-img" alt="{{ lead.title_en }}">
+                                        {% else %}
+                                            <img src="{% static 'images/default-news.jpg' %}" class="lead-story-img" alt="default">
+                                        {% endif %}
+                                        
+                                        <span class="story-category">
+                                            {% if current_language == 'bn' %}{{ category.name_bn }}{% else %}{{ category.name_en }}{% endif %}
+                                        </span>
+                                        
+                                        <h1 class="lead-story-title">
+                                            <a href="{% url 'news_home' lead.slug %}">
+                                                {% if current_language == 'bn' %}{{ lead.title_bn }}{% else %}{{ lead.title_en }}{% endif %}
+                                            </a>
+                                        </h1>
+                                        
+                                        <p class="lead-story-excerpt">
+                                            {% if current_language == 'bn' %}
+                                                {{ lead.description_bn|safe|striptags|truncatewords:30 }}
+                                            {% else %}
+                                                {{ lead.description_en|safe|striptags|truncatewords:30 }}
+                                            {% endif %}
+                                        </p>
+                                        
+                                        <div class="story-meta">
+                                            <i class="far fa-clock"></i>
+                                            {% if current_language == 'bn' %}
+                                                {{ lead.created_at|timesince }} আগে
+                                            {% else %}
+                                                {{ lead.created_at|timesince }} ago
+                                            {% endif %}
+                                        </div>
+                                    {% endwith %}
+                                </div>
+                                
+                                <!-- Secondary Stories -->
+                                <div class="col-lg-5 secondary-stories">
+                                    {% for news in category.news.all|slice:"1:5" %}
+                                        <div class="story-item">
+                                            <div class="story-item-horizontal">
+                                                {% if news.image %}
+                                                    <img src="{{ news.image.url }}" class="story-thumbnail" alt="{{ news.title_en }}">
+                                                {% else %}
+                                                    <img src="{% static 'images/default-news.jpg' %}" class="story-thumbnail" alt="default">
+                                                {% endif %}
+                                                
+                                                <div class="story-content">
+                                                    <span class="story-category">
+                                                        {% if current_language == 'bn' %}{{ category.name_bn }}{% else %}{{ category.name_en }}{% endif %}
+                                                    </span>
+                                                    
+                                                    <h3 class="story-title">
+                                                        <a href="{% url 'news_home' news.slug %}">
+                                                            {% if current_language == 'bn' %}
+                                                                {{ news.title_bn|truncatewords:12 }}
+                                                            {% else %}
+                                                                {{ news.title_en|truncatewords:12 }}
+                                                            {% endif %}
+                                                        </a>
+                                                    </h3>
+                                                    
+                                                    <div class="story-meta">
+                                                        <i class="far fa-clock"></i>
+                                                        {% if current_language == 'bn' %}
+                                                            {{ news.created_at|timesince }} আগে
+                                                        {% else %}
+                                                            {{ news.created_at|timesince }} ago
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
 
-      <!-- জাতীয় বিভাগ / National Section (4 news) -->
-      <div class="section-header d-flex justify-content-between align-items-center">
-        <div>
-          <h2>{% if current_language == 'bn' %}জাতীয় সংবাদ{% else %}National News{% endif %}</h2>
-          <span>{% if current_language == 'bn' %}সর্বশেষ আপডেট{% else %}Latest Updates{% endif %}</span>
-        </div>
-        <a href="#">{% if current_language == 'bn' %}সব দেখুন →{% else %}View All →{% endif %}</a>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/29/400/240" class="news-img" alt="news">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}রাজনীতি{% else %}Politics{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}মন্ত্রিসভার বৈঠকে গুরুত্বপূর্ণ ৭ সিদ্ধান্ত গৃহীত{% else %}7 Important Decisions Taken in Cabinet Meeting{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}বৈঠকে বিভিন্ন মন্ত্রণালয়ের প্রস্তাব অনুমোদন ও আগামী বাজেট নিয়ে বিস্তারিত আলোচনা হয়েছে।{% else %}The meeting approved proposals from various ministries and discussed the upcoming budget in detail.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৪ ঘণ্টা আগে{% else %}4 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/33/400/240" class="news-img" alt="news">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}অর্থনীতি{% else %}Economy{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}রপ্তানি আয়ে রেকর্ড প্রবৃদ্ধি অর্জন করেছে বাংলাদেশ{% else %}Bangladesh Achieves Record Export Growth{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}পোশাক ও কৃষি পণ্য রপ্তানি উল্লেখযোগ্য হারে বেড়েছে, বৈদেশিক মুদ্রার রিজার্ভ বাড়ছে।{% else %}Garment and agricultural exports have increased significantly, boosting foreign currency reserves.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৭ ঘণ্টা আগে{% else %}7 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/40/400/240" class="news-img" alt="news">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}শিক্ষা{% else %}Education{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}শিক্ষাক্ষেত্রে বড় সংস্কার আনার পরিকল্পনা সরকারের{% else %}Government Plans Major Reforms in Education Sector{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}নতুন শিক্ষাক্রম বাস্তবায়নে আগামী বছর থেকে প্রাথমিক স্তরে শুরু হবে পাইলট প্রকল্প।{% else %}Pilot project will start at primary level from next year to implement new curriculum.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১০ ঘণ্টা আগে{% else %}10 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/41/400/240" class="news-img" alt="news">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}স্বাস্থ্য{% else %}Health{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}সরকারি হাসপাতালে বিনামূল্যে চিকিৎসা সেবা চালু{% else %}Free Healthcare Launched in Government Hospitals{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}দেশের সব সরকারি হাসপাতালে দরিদ্র রোগীদের জন্য বিনামূল্যে চিকিৎসা সেবা প্রদান শুরু হয়েছে।{% else %}Free medical services have been launched for poor patients in all government hospitals.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১২ ঘণ্টা আগে{% else %}12 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+                <!-- OTHER CATEGORY SECTIONS -->
+                {% for category in categories %}
+                    {% if category.name_en != 'Top News' and category.news.all %}
+                        <div class="section-divider">
+                            <h2 class="section-title">
+                                {% if current_language == 'bn' %}{{ category.name_bn }}{% else %}{{ category.name_en }}{% endif %}
+                            </h2>
+                            <a href="{% url 'category_news' category.slug %}" class="section-link">
+                                {% if current_language == 'bn' %}আরও দেখুন »{% else %}View More »{% endif %}
+                            </a>
+                        </div>
+                        
+                        <div class="category-grid">
+                            {% for news in category.news.all|slice:":6" %}
+                                <div class="news-item">
+                                    {% if news.image %}
+                                        <img src="{{ news.image.url }}" class="news-item-img" alt="{{ news.title_en }}">
+                                    {% else %}
+                                        <img src="{% static 'images/default-news.jpg' %}" class="news-item-img" alt="default">
+                                    {% endif %}
+                                    
+                                    <div class="news-item-body">
+                                        <span class="story-category">
+                                            {% if current_language == 'bn' %}{{ category.name_bn }}{% else %}{{ category.name_en }}{% endif %}
+                                        </span>
+                                        
+                                        <h3 class="news-item-title">
+                                            <a href="{% url 'news_home' news.slug %}">
+                                                {% if current_language == 'bn' %}
+                                                    {{ news.title_bn|truncatewords:12 }}
+                                                {% else %}
+                                                    {{ news.title_en|truncatewords:12 }}
+                                                {% endif %}
+                                            </a>
+                                        </h3>
+                                        
+                                        <p class="news-item-excerpt">
+                                            {% if current_language == 'bn' %}
+                                                {{ news.description_bn|safe|striptags|truncatewords:15 }}
+                                            {% else %}
+                                                {{ news.description_en|safe|striptags|truncatewords:15 }}
+                                            {% endif %}
+                                        </p>
+                                        
+                                        <div class="story-meta">
+                                            <i class="far fa-clock"></i>
+                                            {% if current_language == 'bn' %}
+                                                {{ news.created_at|timesince }} আগে
+                                            {% else %}
+                                                {{ news.created_at|timesince }} ago
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
 
-      <!-- আন্তর্জাতিক বিভাগ / International Section (4 news) -->
-      <div class="section-header d-flex justify-content-between align-items-center">
-        <div>
-          <h2>{% if current_language == 'bn' %}আন্তর্জাতিক{% else %}International{% endif %}</h2>
-          <span>{% if current_language == 'bn' %}বিশ্ব জুড়ে{% else %}Around the World{% endif %}</span>
-        </div>
-        <a href="#">{% if current_language == 'bn' %}সব দেখুন →{% else %}View All →{% endif %}</a>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/31/400/240" class="news-img" alt="international">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}বিশ্ব{% else %}World{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}যুক্তরাষ্ট্র-চীন সম্পর্কের নতুন অধ্যায় শুরু{% else %}New Chapter in US-China Relations Begins{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}দুই দেশের মধ্যে বাণিজ্য চুক্তি সই, বিশ্ব অর্থনীতিতে ইতিবাচক প্রভাব পড়বে।{% else %}Trade agreement signed between two countries, will have positive impact on global economy.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১২ ঘণ্টা আগে{% else %}12 hours ago{% endif %}</div>
             </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/32/400/240" class="news-img" alt="international">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}মধ্যপ্রাচ্য{% else %}Middle East{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}তেল উৎপাদনে বড় সিদ্ধান্ত ওপেকের{% else %}OPEC's Major Decision on Oil Production{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}তেলের দাম স্থিতিশীল রাখতে উৎপাদন কমানোর ঘোষণা দিয়েছে ওপেক প্লাস জোট।{% else %}OPEC Plus alliance announces production cut to stabilize oil prices.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১৫ ঘণ্টা আগে{% else %}15 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/4/400/240" class="news-img" alt="international">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}ইউরোপ{% else %}Europe{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}রাশিয়া-ইউক্রেন যুদ্ধে যুদ্ধবিরতি আলোচনা শুরু{% else %}Ceasefire Negotiations Begin in Russia-Ukraine War{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}জাতিসংঘের মধ্যস্থতায় শান্তি আলোচনা শুরু হয়েছে, বিশ্ব নেতৃবৃন্দ আশাবাদী।{% else %}Peace talks have begun under UN mediation, world leaders optimistic.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১৮ ঘণ্টা আগে{% else %}18 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/5/400/240" class="news-img" alt="international">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}এশিয়া{% else %}Asia{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}ভারতে সাধারণ নির্বাচন, ভোটগ্রহণ চলছে{% else %}General Elections in India, Voting Underway{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}৭ ধাপে অনুষ্ঠিত হচ্ছে বিশ্বের বৃহত্তম নির্বাচন, ফল আসবে জুনে।{% else %}World's largest election being held in 7 phases, results in June.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}২০ ঘণ্টা আগে{% else %}20 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- খেলাধুলা বিভাগ / Sports Section (4 news) -->
-      <div class="section-header d-flex justify-content-between align-items-center">
-        <div>
-          <h2>{% if current_language == 'bn' %}খেলাধুলা{% else %}Sports{% endif %}</h2>
-          <span>{% if current_language == 'bn' %}সর্বশেষ খবর{% else %}Latest News{% endif %}</span>
-        </div>
-        <a href="#">{% if current_language == 'bn' %}সব দেখুন →{% else %}View All →{% endif %}</a>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/26/400/240" class="news-img" alt="sports">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}ক্রিকেট{% else %}Cricket{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}বাংলাদেশ দলের অস্ট্রেলিয়া সফর নিয়ে বিসিবির বড় ঘোষণা{% else %}BCB's Big Announcement on Bangladesh Team's Australia Tour{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}আগামী মাসে অনুষ্ঠেয় সিরিজের সূচি চূড়ান্ত, দল ঘোষণা শীঘ্রই।{% else %}Schedule finalized for next month's series, team announcement soon.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}২ ঘণ্টা আগে{% else %}2 hours ago{% endif %}</div>
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar-section">
+                    
+                    <!-- TRENDING NEWS -->
+                    <div class="sidebar-box">
+                        <div class="sidebar-header">
+                            <i class="fas fa-fire"></i>
+                            {% if current_language == 'bn' %}জনপ্রিয় সংবাদ{% else %}Trending News{% endif %}
+                        </div>
+                        <div class="sidebar-content">
+                            {% for trending in trending_news|slice:":7" %}
+                                <div class="trending-item">
+                                    <div class="trending-number">{{ forloop.counter }}</div>
+                                    <div class="trending-title">
+                                        <a href="{% url 'trending_news' trending.slug %}">
+                                            {% if current_language == 'bn' %}
+                                                {{ trending.title_bn|truncatewords:10 }}
+                                            {% else %}
+                                                {{ trending.title_en|truncatewords:10 }}
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="trending-item">
+                                    <div class="trending-title">
+                                        {% if current_language == 'bn' %}কোন ট্রেন্ডিং নিউজ নেই{% else %}No trending news{% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- LATEST NEWS -->
+                    <div class="sidebar-box">
+                        <div class="sidebar-header">
+                            <i class="fas fa-newspaper"></i>
+                            {% if current_language == 'bn' %}সর্বশেষ{% else %}Latest News{% endif %}
+                        </div>
+                        <div class="sidebar-content">
+                            {% for news in latest_news|slice:":8" %}
+                                <div class="latest-compact-item">
+                                    <div class="latest-compact-title">
+                                        <a href="{% url 'news_home' news.slug %}">
+                                            {% if current_language == 'bn' %}
+                                                {{ news.title_bn|truncatewords:10 }}
+                                            {% else %}
+                                                {{ news.title_en|truncatewords:10 }}
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="latest-compact-time">
+                                        <i class="far fa-clock"></i>
+                                        {% if current_language == 'bn' %}
+                                            {{ news.created_at|timesince }} আগে
+                                        {% else %}
+                                            {{ news.created_at|timesince }} ago
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="latest-compact-item">
+                                    {% if current_language == 'bn' %}কোন সংবাদ নেই{% else %}No news available{% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- NEWSLETTER -->
+                    <div class="sidebar-box">
+                        <div class="newsletter-box">
+                            <h4>
+                                <i class="fas fa-envelope"></i>
+                                {% if current_language == 'bn' %}নিউজলেটার{% else %}Newsletter{% endif %}
+                            </h4>
+                            <p>
+                                {% if current_language == 'bn' %}
+                                    প্রতিদিনের খবর পেতে সাবস্ক্রাইব করুন
+                                {% else %}
+                                    Subscribe for daily news updates
+                                {% endif %}
+                            </p>
+                            <form method="POST" action="{% url 'subscribe' %}">
+                                {% csrf_token %}
+                                <input type="email" 
+                                       name="email" 
+                                       class="newsletter-input" 
+                                       placeholder="{% if current_language == 'bn' %}ইমেইল ঠিকানা{% else %}Email address{% endif %}"
+                                       required>
+                                <button type="submit" class="newsletter-btn">
+                                    {% if current_language == 'bn' %}সাবস্ক্রাইব করুন{% else %}Subscribe Now{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- SOCIAL MEDIA -->
+                    <div class="sidebar-box">
+                        <div class="sidebar-header">
+                            <i class="fas fa-share-alt"></i>
+                            {% if current_language == 'bn' %}সোশ্যাল মিডিয়া{% else %}Follow Us{% endif %}
+                        </div>
+                        <div class="sidebar-content">
+                            <div class="social-grid">
+                                {% for info in company_infos %}
+                                    {% if info.facebook %}
+                                        <a href="{{ info.facebook }}" target="_blank" class="social-btn social-facebook">
+                                            <i class="fab fa-facebook"></i> Facebook
+                                        </a>
+                                    {% endif %}
+                                    {% if info.twitter %}
+                                        <a href="{{ info.twitter }}" target="_blank" class="social-btn social-twitter">
+                                            <i class="fab fa-twitter"></i> Twitter
+                                        </a>
+                                    {% endif %}
+                                    {% if info.instagram %}
+                                        <a href="{{ info.instagram }}" target="_blank" class="social-btn social-instagram">
+                                            <i class="fab fa-instagram"></i> Instagram
+                                        </a>
+                                    {% endif %}
+                                    {% if info.youtube %}
+                                        <a href="{{ info.youtube }}" target="_blank" class="social-btn social-youtube">
+                                            <i class="fab fa-youtube"></i> YouTube
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-          </div>
         </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/30/400/240" class="news-img" alt="sports">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}ফুটবল{% else %}Football{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}বাংলাদেশ প্রিমিয়ার লিগের চ্যাম্পিয়ন নির্ধারণ আজ{% else %}Bangladesh Premier League Champion to be Decided Today{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}ফাইনাল ম্যাচে মুখোমুখি হচ্ছে শীর্ষ দুই দল, উপস্থিত থাকবেন প্রধানমন্ত্রী।{% else %}Top two teams face off in final match, Prime Minister to attend.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৫ ঘণ্টা আগে{% else %}5 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/6/400/240" class="news-img" alt="sports">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}টেনিস{% else %}Tennis{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}উইম্বলডনে ইতিহাস গড়লেন তরুণ টেনিস তারকা{% else %}Young Tennis Star Makes History at Wimbledon{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}বাংলাদেশের প্রথম টেনিস খেলোয়াড় হিসেবে গ্র্যান্ড স্ল্যামের কোয়ার্টার ফাইনালে।{% else %}First Bangladeshi tennis player to reach Grand Slam quarter-finals.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১৫ ঘণ্টা আগে{% else %}15 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="news-card">
-            <img src="https://picsum.photos/id/7/400/240" class="news-img" alt="sports">
-            <div class="card-body">
-              <span class="card-category">{% if current_language == 'bn' %}অ্যাথলেটিক্স{% else %}Athletics{% endif %}</span>
-              <h5 class="card-title"><a href="#">{% if current_language == 'bn' %}অলিম্পিক প্রস্তুতিতে বিশেষ ক্যাম্প শুরু{% else %}Special Camp Begins for Olympic Preparation{% endif %}</a></h5>
-              <p class="card-text">{% if current_language == 'bn' %}প্যারিস অলিম্পিককে সামনে রেখে ৩০ জন ক্রীড়াবিদ নিয়ে প্রশিক্ষণ শুরু।{% else %}Training begins with 30 athletes ahead of Paris Olympics.{% endif %}</p>
-              <div class="card-date"><i class="far fa-clock"></i> {% if current_language == 'bn' %}২২ ঘণ্টা আগে{% else %}22 hours ago{% endif %}</div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-
-    <!-- Right column: Sidebar -->
-    <div class="col-lg-4">
-      <!-- Trending Widget -->
-      <div class="sidebar-widget">
-        <div class="widget-title">
-          <i class="fas fa-fire" style="color: var(--primary-red);"></i>
-          <span>{% if current_language == 'bn' %}ট্রেন্ডিং{% else %}Trending{% endif %}</span>
-        </div>
-        <ul class="trending-list">
-          <li>
-            <span class="trend-number">০১</span>
-            <span class="trend-title"><a href="#">{% if current_language == 'bn' %}নির্বাচন কমিশনের বড় সিদ্ধান্ত, নতুন ভোটার তালিকা প্রকাশ{% else %}Election Commission's Major Decision, New Voter List Released{% endif %}</a></span>
-          </li>
-          <li>
-            <span class="trend-number">০২</span>
-            <span class="trend-title"><a href="#">{% if current_language == 'bn' %}বাজেট অধিবেশন শুরু, কী আছে সবার জন্য?{% else %}Budget Session Begins, What's in Store for Everyone?{% endif %}</a></span>
-          </li>
-          <li>
-            <span class="trend-number">০৩</span>
-            <span class="trend-title"><a href="#">{% if current_language == 'bn' %}শেয়ারবাজারে রেকর্ড লেনদেন, লাভবান হচ্ছেন বিনিয়োগকারীরা{% else %}Record Transaction in Stock Market, Investors Benefiting{% endif %}</a></span>
-          </li>
-          <li>
-            <span class="trend-number">০৪</span>
-            <span class="trend-title"><a href="#">{% if current_language == 'bn' %}বিশ্ববিদ্যালয়ের ভর্তি পরীক্ষার তারিখ ঘোষণা, আবেদন শুরু{% else %}University Admission Test Dates Announced, Application Begins{% endif %}</a></span>
-          </li>
-          <li>
-            <span class="trend-number">০৫</span>
-            <span class="trend-title"><a href="#">{% if current_language == 'bn' %}প্রযুক্তি মেলায় অংশ নিচ্ছে ৫০ দেশ, উদ্বোধন কাল{% else %}50 Countries Participating in Tech Fair, Inauguration Tomorrow{% endif %}</a></span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Latest News Widget -->
-      <div class="sidebar-widget">
-        <div class="widget-title">
-          <i class="fas fa-newspaper" style="color: var(--primary-red);"></i>
-          <span>{% if current_language == 'bn' %}সর্বশেষ{% else %}Latest{% endif %}</span>
-        </div>
-        <div class="latest-item">
-          <p><a href="#">{% if current_language == 'bn' %}সড়ক দুর্ঘটনায় আহত ৩, হাসপাতালে ভর্তি{% else %}3 Injured in Road Accident, Hospitalized{% endif %}</a></p>
-          <div class="latest-time"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৩০ মিনিট আগে{% else %}30 minutes ago{% endif %}</div>
-        </div>
-        <div class="latest-item">
-          <p><a href="#">{% if current_language == 'bn' %}আবহাওয়ার সতর্ক সংকেত, বৃষ্টির সম্ভাবনা{% else %}Weather Warning Signal, Rain Likely{% endif %}</a></p>
-          <div class="latest-time"><i class="far fa-clock"></i> {% if current_language == 'bn' %}১ ঘণ্টা আগে{% else %}1 hour ago{% endif %}</div>
-        </div>
-        <div class="latest-item">
-          <p><a href="#">{% if current_language == 'bn' %}বিদ্যুৎ বিভ্রাটের সময়সূচি প্রকাশ, কোথায় কখন{% else %}Power Outage Schedule Released, Where and When{% endif %}</a></p>
-          <div class="latest-time"><i class="far fa-clock"></i> {% if current_language == 'bn' %}২ ঘণ্টা আগে{% else %}2 hours ago{% endif %}</div>
-        </div>
-        <div class="latest-item">
-          <p><a href="#">{% if current_language == 'bn' %}কৃষকদের জন্য ভর্তুকি বাড়ানোর সিদ্ধান্ত{% else %}Decision to Increase Subsidies for Farmers{% endif %}</a></p>
-          <div class="latest-time"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৩ ঘণ্টা আগে{% else %}3 hours ago{% endif %}</div>
-        </div>
-        <div class="latest-item">
-          <p><a href="#">{% if current_language == 'bn' %}নতুন নিয়োগ বিজ্ঞপ্তি প্রকাশ, আবেদন চলছে{% else %}New Job Circular Released, Application Ongoing{% endif %}</a></p>
-          <div class="latest-time"><i class="far fa-clock"></i> {% if current_language == 'bn' %}৪ ঘণ্টা আগে{% else %}4 hours ago{% endif %}</div>
-        </div>
-      </div>
-
-      <!-- Subscribe Widget -->
-      <div class="sidebar-widget" style="background: linear-gradient(135deg, var(--primary-red) 0%, #c0392b 100%); color: white;">
-        <div class="widget-title" style="border-bottom-color: rgba(255,255,255,0.3); color: white;">
-          <i class="fas fa-envelope"></i>
-          <span>{% if current_language == 'bn' %}নিউজলেটার{% else %}Newsletter{% endif %}</span>
-        </div>
-        <p style="font-size: 0.85rem; margin-bottom: 15px; opacity: 0.95;">{% if current_language == 'bn' %}সর্বশেষ সংবাদ পেতে সাবস্ক্রাইব করুন{% else %}Subscribe to get latest news{% endif %}</p>
-        <div class="input-group">
-          <input type="email" class="form-control" placeholder="{% if current_language == 'bn' %}আপনার ইমেইল{% else %}Your email{% endif %}" style="border: none;">
-          <button class="btn btn-dark" type="button">{% if current_language == 'bn' %}সাবস্ক্রাইব{% else %}Subscribe{% endif %}</button>
-        </div>
-      </div>
-
-      <!-- Social Media Widget -->
-      <div class="sidebar-widget">
-        <div class="widget-title">
-          <i class="fas fa-share-alt" style="color: var(--primary-red);"></i>
-          <span>{% if current_language == 'bn' %}আমাদের সাথে থাকুন{% else %}Stay Connected{% endif %}</span>
-        </div>
-        <div class="d-flex justify-content-between gap-2">
-          <a href="#" class="btn btn-primary" style="flex: 1; background: #1877f2;"><i class="fab fa-facebook"></i> Facebook</a>
-          <a href="#" class="btn btn-info" style="flex: 1; background: #1da1f2;"><i class="fab fa-twitter"></i> Twitter</a>
-          <a href="#" class="btn btn-danger" style="flex: 1; background: #e4405f;"><i class="fab fa-instagram"></i> Insta</a>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
+
 {% endblock main_content %}

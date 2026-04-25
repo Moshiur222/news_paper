@@ -1,680 +1,619 @@
 {% extends "news/admin/base/base.html" %}
+{% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
 <style>
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #6366f1;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --light-bg: #f9fafb;
+    --border-color: #e5e7eb;
+}
+
 body {
-    background: #f5f7fb !important;
-    font-family: 'Segoe UI', sans-serif;
+    background: var(--light-bg);
 }
 
-/* MAIN CARD */
 .card {
-    background: #fff !important;
-    border: none !important;
-    border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.06) !important;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* HEADER */
 .card-header {
-    background: transparent !important;
-    border-bottom: 1px solid #eef0f5;
-    padding: 18px 20px;
+    background: white;
+    border-bottom: 2px solid var(--border-color);
 }
 
-/* TABLE STYLE */
-#categoryTable {
-    border-collapse: separate !important;
-    border-spacing: 0 10px;
-    width: 100% !important;
-}
-
-/* ROW CARD LOOK */
-#categoryTable tbody tr {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-    transition: 0.2s;
-}
-
-#categoryTable tbody tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-/* CELLS */
-#categoryTable td,
-#categoryTable th {
-    padding: 14px 16px !important;
-    border: none !important;
-    vertical-align: middle;
-}
-
-/* HEADER */
-#categoryTable thead tr {
-    background: #f1f5f9;
-    border-radius: 12px;
-}
-
-#categoryTable thead th {
-    font-weight: 600;
-    color: #475569;
-    font-size: 14px;
-}
-
-/* BUTTONS */
-.btn-sm {
-    border-radius: 8px !important;
-    padding: 6px 14px;
-    margin: 0 3px;
-}
-
-.btn-edit {
-    background: #3b82f6;
-    color: white;
-    border: none;
-}
-
-.btn-edit:hover {
-    background: #2563eb;
-    color: white;
-    transform: translateY(-1px);
-}
-
-.btn-delete {
-    background: #ef4444;
-    color: white;
-    border: none;
-}
-
-.btn-delete:hover {
-    background: #dc2626;
-    color: white;
-    transform: translateY(-1px);
-}
-
-/* SEARCH BOX */
-.dataTables_filter {
-    margin-bottom: 20px;
-}
-
-.dataTables_filter input {
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    padding: 8px 12px;
-    outline: none;
-    width: 250px;
-    margin-left: 8px;
-}
-
-.dataTables_filter input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.1);
-}
-
-.dataTables_length select {
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    padding: 4px 8px;
-}
-
-/* PAGINATION */
-.dataTables_paginate {
-    margin-top: 20px;
-}
-
-.dataTables_paginate .paginate_button {
-    border-radius: 8px !important;
-    margin: 0 3px;
-    border: none !important;
-    padding: 6px 12px !important;
-}
-
-.dataTables_paginate .paginate_button.current {
-    background: #16a34a !important;
-    color: #fff !important;
-}
-
-.dataTables_paginate .paginate_button:hover {
-    background: #e5e7eb !important;
-}
-
-/* DRAWER */
-.drawer {
-    position: fixed;
-    top: 0;
-    right: -450px;
-    width: 420px;
-    height: 100%;
-    background: #fff;
-    box-shadow: -6px 0 25px rgba(0,0,0,0.15);
-    transition: 0.3s ease;
-    z-index: 2000;
-    padding: 25px;
-    overflow-y: auto;
-}
-
-.drawer.open {
-    right: 0;
-}
-
-.drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f0f2f5;
-}
-
-.drawer-header h5 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-    color: #1f2937;
-}
-
-.drawer-header h5 i {
-    color: #3b82f6;
-}
-
-.drawer-header button {
-    border: none;
-    background: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: #6b7280;
-    transition: 0.2s;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.form-control {
     border-radius: 8px;
 }
 
-.drawer-header button:hover {
+.btn {
+    border-radius: 8px;
+}
+
+.table thead th {
     background: #f3f4f6;
-    color: #ef4444;
-    transform: rotate(90deg);
-}
-
-/* BACKDROP */
-.drawer-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    z-index: 1500;
-}
-
-.drawer-overlay.show {
-    display: block;
-}
-
-/* Form Styling */
-.form-group {
-    margin-bottom: 25px;
-}
-
-.form-label {
-    font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #4b5563;
-    margin-bottom: 8px;
-    display: block;
 }
 
-.form-label i {
-    margin-right: 6px;
+.action-buttons {
+    display: flex;
+    gap: 6px;
 }
 
-.input-bilingual {
-    width: 100%;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 10px 14px;
-    font-size: 0.95rem;
-    transition: all 0.2s;
+.badge-slug {
+    background: #e0e7ff;
+    color: var(--primary-color);
 }
 
-.input-bilingual:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-}
-
-.lang-badge {
-    display: inline-block;
-    font-size: 0.7rem;
+/* Live translation styles */
+.live-translate-badge {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 10px;
     padding: 2px 8px;
     border-radius: 20px;
     margin-left: 8px;
-    font-weight: normal;
+    animation: pulse 2s infinite;
 }
 
-.badge-en {
-    background: #3b82f6;
+@keyframes pulse {
+    0% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0.7; transform: scale(1); }
+}
+
+.translate-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary-color);
     color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-weight: 500;
 }
 
-.badge-bn {
-    background: #10b981;
-    color: white;
-}
-
-.btn-save {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    border: none;
-    border-radius: 40px;
-    padding: 12px;
-    font-weight: 600;
-    transition: 0.2s;
-    width: 100%;
-    cursor: pointer;
-    font-size: 0.95rem;
-}
-
-.btn-save:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-}
-
-/* Messages styling */
-.messages-container {
-    margin-bottom: 20px;
-}
-
-.alert {
-    border-radius: 12px;
-    padding: 12px 16px;
-    border: none;
-    margin-bottom: 10px;
-}
-
-.alert-success {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.alert-error {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-/* Empty state */
-.empty-state {
-    text-align: center;
-    padding: 40px 20px;
-}
-
-.empty-state i {
-    font-size: 48px;
-    color: #9ca3af;
-    margin-bottom: 15px;
-}
-
-.empty-state h5 {
-    font-size: 18px;
-    color: #374151;
-    margin-bottom: 8px;
-}
-
-.empty-state p {
-    color: #6b7280;
+.translate-indicator i {
     font-size: 14px;
 }
 
-/* DataTables info text */
-.dataTables_info {
-    color: #6b7280;
-    font-size: 13px;
-    margin-top: 15px;
+/* Form transition */
+#formSection {
+    transition: all 0.3s ease;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .drawer {
-        width: 100%;
-        right: -100%;
-    }
-    
-    .dataTables_filter input {
-        width: 180px;
-    }
-    
-    #categoryTable thead th {
-        font-size: 12px;
-    }
-    
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 11px;
-    }
+.input-group-text {
+    background: #f3f4f6;
+    border-radius: 8px 0 0 8px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}
+
+/* Navigation styles */
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.nav-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.nav-btn-primary:hover {
+    background: #4338ca;
+    color: white;
+}
+
+.nav-btn-outline {
+    border: 1px solid var(--border-color);
+    color: #374151;
+}
+
+.nav-btn-outline:hover {
+    background: #f3f4f6;
+}
+
+/* Capitalized text style for English input */
+#name_en {
+    text-transform: capitalize;
 }
 </style>
 {% endblock css %}
 
 {% block main %}
 
-<div class="main-wrapper">
-<main class="page-content">
+<div class="container-fluid mt-4">
 
-    <div class="card mb-3">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
-                <h3 class="mb-0">
-                    <i class="fas fa-tags me-2" style="color: #3b82f6;"></i>
-                    Category Management
-                </h3>
-                <p class="text-muted mb-0 mt-1 small">Manage news categories with bilingual support</p>
-            </div>
-            <button class="btn btn-success btn-sm" onclick="openAddDrawer()">
-                <i class="fas fa-plus me-1"></i> Add Category
-            </button>
-        </div>
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="categoryTable" class="table table-hover align-middle" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th style="width: 8%">#</th>
-                            <th style="width: 38%">English Name</th>
-                            <th style="width: 38%">বাংলা নাম</th>
-                            <th style="width: 16%">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for cat in categories %}
-                        <tr>
-                            <td class="fw-bold">{{ forloop.counter }}</td>
-                            <td>
-                                <div class="category-name-en">
-                                    <i class="fas fa-language me-1" style="color: #3b82f6; font-size: 0.8rem;"></i>
-                                    {{ cat.name_en }}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="category-name-bn">
-                                    <i class="fas fa-language me-1" style="color: #10b981; font-size: 0.8rem;"></i>
-                                    {{ cat.name_bn }}
-                                </div>
-                            </td>
-                            <td>
-                                <button class="btn btn-edit btn-sm" onclick="openEditDrawer('{{ cat.id }}', '{{ cat.name_en|escapejs }}', '{{ cat.name_bn|escapejs }}')">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </button>
-                                <button class="btn btn-delete btn-sm" onclick="confirmDelete('{{ cat.id }}', '{{ cat.name_en|escapejs }}')">
-                                    <i class="fas fa-trash me-1"></i> Delete
-                                </button>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr class="empty-state-row">
-                            <td colspan="4" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-tags fa-3x"></i>
-                                    <h5>No categories found</h5>
-                                    <p>Click "Add Category" to create your first category</p>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <!-- Navigation Bar -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-grid-3x3-gap-fill text-primary"></i>
+                            <strong class="ms-2">Dashboard Navigation</strong>
+                        </div>
+                        <div class="nav-buttons">
+                            <a href="/news/admin/dashboard/" class="nav-btn nav-btn-outline">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                            <a href="/news/admin/categories/" class="nav-btn nav-btn-primary">
+                                <i class="bi bi-tags"></i> Categories
+                            </a>
+                            <a href="/news/admin/locations/" class="nav-btn nav-btn-outline">
+                                <i class="bi bi-geo-alt"></i> Locations
+                            </a>
+                            <a href="/news/admin/news/" class="nav-btn nav-btn-outline">
+                                <i class="bi bi-newspaper"></i> News
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-</main>
+    <div class="row">
+
+        <!-- FORM SECTION -->
+        <div class="col-lg-4" id="formSection" style="display:none;">
+            <div class="card">
+                <div class="card-header">
+                    <h5 id="formTitle">
+                        <i class="bi bi-plus-circle"></i>
+                        Add Category
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <form method="POST" id="categoryForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="category_id" id="category_id">
+
+                        <div class="mb-3">
+                            <label>
+                                <i class="bi bi-translate"></i> Bangla Name 
+                                <span class="live-translate-badge">
+                                    <i class="bi bi-chat-dots"></i> Live Translate
+                                </span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">বাংলা</span>
+                                <input type="text" name="name_bn" id="name_bn"
+                                    class="form-control" 
+                                    placeholder="বাংলা নাম লিখুন (Type Bangla name)"
+                                    autocomplete="off">
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i> 
+                                ইংরেজি নাম automatically translate এবং capitalized হবে
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label><i class="bi bi-translate"></i> English Name (Auto-translated & Capitalized)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">EN</span>
+                                <input type="text" name="name_en" id="name_en"
+                                    class="form-control" 
+                                    placeholder="English name will appear automatically with capital letters"
+                                    readonly style="background-color: #f9fafb;">
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-magic"></i> 
+                                Automatically translated from Bangla &nbsp;
+                                <i class="bi bi-fonts"></i> First letter of each word capitalized
+                            </small>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-3">
+                            <button type="button" class="btn btn-secondary w-50" onclick="cancelForm()">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary w-50" id="submitBtn">
+                                <i class="bi bi-save"></i> Save Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIST SECTION -->
+        <div class="col-lg-12" id="listSection">
+
+            <div class="card">
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>
+                        <i class="bi bi-tags"></i> All Categories
+                    </h5>
+
+                    <button class="btn btn-primary" onclick="showForm()">
+                        <i class="bi bi-plus-circle"></i> Add Category
+                    </button>
+                </div>
+
+                <div class="card-body p-0">
+
+                    {% if categories %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>English Name</th>
+                                    <th>Bangla Name</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for cat in categories %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <strong>{{ cat.name_en }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">
+                                            <i class="bi bi-translate"></i> {{ cat.name_bn }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="action-buttons justify-content-end">
+                                            <button class="btn btn-sm btn-primary"
+                                                onclick="editCategory({{ cat.id }})">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="deleteCategory({{ cat.id }}, '{{ cat.name_en }}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% else %}
+                        <div class="text-center p-5">
+                            <i class="bi bi-folder2-open" style="font-size: 48px; color: #cbd5e1;"></i>
+                            <h5 class="mt-3">No Category Found</h5>
+                            <p class="text-muted">Click "Add Category" to create your first category.</p>
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
-<!-- BACKDROP -->
-<div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<!-- Translating Indicator -->
+<div id="translateIndicator" class="translate-indicator">
+    <i class="bi bi-arrow-repeat spinner"></i>
+    <span>Translating...</span>
+</div>
 
-<!-- DRAWER -->
-<div id="drawer" class="drawer">
-    <div class="drawer-header">
-        <h5>
-            <i class="fas fa-plus-circle me-2"></i>
-            <span id="drawerTitleText">Add Category</span>
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+            <i class="bi bi-exclamation-triangle text-danger"></i> 
+            Confirm Delete
         </h5>
-        <button onclick="closeDrawer()">×</button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <i class="bi bi-question-circle" style="font-size: 48px; color: #ef4444;"></i>
+        <p class="mt-3">Are you sure you want to delete <strong id="deleteName"></strong>?</p>
+        <p class="text-muted small">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <form method="POST" id="deleteForm">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="bi bi-x-circle"></i> Cancel
+            </button>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete
+            </button>
+        </form>
+      </div>
     </div>
-
-    <form method="POST" id="categoryForm" onsubmit="return validateForm()">
-        {% csrf_token %}
-
-        <input type="hidden" id="formMode" name="add_category" value="add">
-        <input type="hidden" id="editId" name="update_id">
-
-        <!-- English Name Field -->
-        <div class="form-group">
-            <label class="form-label">
-                <i class="fas fa-flag-usa"></i> English Name 
-                <span class="lang-badge badge-en">EN</span>
-                <span class="text-danger">*</span>
-            </label>
-            <input type="text" 
-                   name="name_en" 
-                   id="nameEn" 
-                   class="input-bilingual" 
-                   placeholder="e.g., Politics, Technology, Sports"
-                   required>
-            <small class="text-muted d-block mt-1">Enter category name in English</small>
-        </div>
-
-        <!-- Bangla Name Field -->
-        <div class="form-group">
-            <label class="form-label">
-                <i class="fas fa-flag"></i> বাংলা নাম
-                <span class="lang-badge badge-bn">BN</span>
-                <span class="text-danger">*</span>
-            </label>
-            <input type="text" 
-                   name="name_bn" 
-                   id="nameBn" 
-                   class="input-bilingual" 
-                   placeholder="যেমন: রাজনীতি, প্রযুক্তি, খেলাধুলা"
-                   required>
-            <small class="text-muted d-block mt-1">বাংলায় ক্যাটাগরির নাম লিখুন</small>
-        </div>
-
-        <button type="submit" class="btn-save">
-            <i class="fas fa-save me-2"></i> Save Category
-        </button>
-    </form>
+  </div>
 </div>
 
 {% endblock main %}
 
 {% block js %}
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Global DataTable variable
-let dataTable = null;
+// Live translation variables
+let translateTimeout;
+let isTranslating = false;
 
-$(document).ready(function () {
-    initializeDataTable();
-});
-
-function initializeDataTable() {
-    // Check if there's actual data (not the empty state row)
-    const hasRealData = $('#categoryTable tbody tr').length > 0 && 
-                        $('#categoryTable tbody tr.empty-state-row').length === 0;
+// Function to capitalize first letter of each word
+function capitalizeEachWord(str) {
+    if (!str) return '';
     
-    if (hasRealData) {
-        // Destroy existing DataTable if it exists
-        if ($.fn.DataTable.isDataTable('#categoryTable')) {
-            $('#categoryTable').DataTable().destroy();
+    // Split by space and capitalize first letter of each word
+    return str.split(' ').map(word => {
+        if (word.length === 0) return word;
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
+}
+
+// Function to show/hide translating indicator
+function showTranslatingIndicator(show) {
+    const indicator = document.getElementById('translateIndicator');
+    if (show) {
+        indicator.style.display = 'flex';
+    } else {
+        setTimeout(() => {
+            indicator.style.display = 'none';
+        }, 500);
+    }
+}
+
+// Function to translate Bangla to English using Google Translate API
+async function translateBanglaToEnglish(banglaText) {
+    if (!banglaText || banglaText.trim() === '') {
+        return '';
+    }
+    
+    try {
+        // Using Google Translate API (free, no API key needed for demo)
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(banglaText)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Extract translated text from response
+        let translatedText = '';
+        for (let i = 0; i < data[0].length; i++) {
+            translatedText += data[0][i][0];
         }
         
-        // Initialize DataTable
-        dataTable = $('#categoryTable').DataTable({
-            pageLength: 10,
-            ordering: true,
-            searching: true,
-            language: {
-                search: "<i class='fas fa-search'></i> Search:",
-                lengthMenu: "Show _MENU_ entries",
-                info: "Showing _START_ to _END_ of _TOTAL_ categories",
-                infoEmpty: "Showing 0 to 0 of 0 categories",
-                infoFiltered: "(filtered from _MAX_ total categories)",
-                paginate: {
-                    previous: "<",
-                    next: ">"
-                }
-            },
-            columnDefs: [
-                { orderable: false, targets: 3 } // Disable sorting on Actions column
-            ],
-            order: [[0, 'asc']]
-        });
+        // Apply capitalization to the translated text
+        return capitalizeEachWord(translatedText);
+        
+    } catch (error) {
+        console.error('Translation error:', error);
+        return capitalizeEachWord(banglaText) + ' (Translation failed)';
     }
 }
 
-/* ADD */
-function openAddDrawer() {
-    document.getElementById("drawerTitleText").innerText = "Add Category";
-    document.getElementById("formMode").value = "add";
-    document.getElementById("editId").value = "";
-    document.getElementById("nameEn").value = "";
-    document.getElementById("nameBn").value = "";
-    openDrawer();
-}
-
-/* EDIT */
-function openEditDrawer(id, nameEn, nameBn) {
-    document.getElementById("drawerTitleText").innerText = "Update Category";
-    document.getElementById("formMode").value = "update";
-    document.getElementById("editId").value = id;
-    document.getElementById("nameEn").value = nameEn;
-    document.getElementById("nameBn").value = nameBn;
-    openDrawer();
-}
-
-/* OPEN DRAWER */
-function openDrawer() {
-    document.getElementById("drawer").classList.add("open");
-    document.getElementById("drawerOverlay").classList.add("show");
-    document.body.style.overflow = "hidden";
-}
-
-/* CLOSE DRAWER */
-function closeDrawer() {
-    document.getElementById("drawer").classList.remove("open");
-    document.getElementById("drawerOverlay").classList.remove("show");
-    document.body.style.overflow = "auto";
-}
-
-/* DELETE CONFIRMATION WITH SWEETALERT */
-function confirmDelete(categoryId, categoryName) {
-    Swal.fire({
-        title: 'Delete Category?',
-        html: `Are you sure you want to delete "<strong>${escapeHtml(categoryName)}</strong>"?<br><small class="text-muted">This will also affect associated news articles.</small>`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel',
-        background: 'white',
-        borderRadius: '20px'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Create and submit form
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.style.display = 'none';
-            
-            const csrfInput = document.createElement('input');
-            csrfInput.name = 'csrfmiddlewaretoken';
-            csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            form.appendChild(csrfInput);
-            
-            const deleteInput = document.createElement('input');
-            deleteInput.name = 'delete_id';
-            deleteInput.value = categoryId;
-            form.appendChild(deleteInput);
-            
-            document.body.appendChild(form);
-            form.submit();
+// Live translation for Bangla to English with capitalization
+function setupLiveTranslation() {
+    const banglaInput = document.getElementById('name_bn');
+    const englishInput = document.getElementById('name_en');
+    
+    if (!banglaInput || !englishInput) return;
+    
+    let debounceTimer;
+    
+    banglaInput.addEventListener('input', function(e) {
+        const banglaText = e.target.value;
+        
+        // Clear previous timer
+        clearTimeout(debounceTimer);
+        
+        if (banglaText.trim() === '') {
+            englishInput.value = '';
+            return;
         }
+        
+        // Show translating indicator
+        showTranslatingIndicator(true);
+        
+        // Set new timer - translate after user stops typing for 500ms
+        debounceTimer = setTimeout(async () => {
+            try {
+                const translatedText = await translateBanglaToEnglish(banglaText);
+                englishInput.value = translatedText;
+            } catch (error) {
+                console.error('Translation failed:', error);
+                englishInput.value = capitalizeEachWord(banglaText);
+            } finally {
+                showTranslatingIndicator(false);
+            }
+        }, 500); // 500ms delay for better user experience
     });
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-/* FORM VALIDATION */
-function validateForm() {
-    const nameEn = document.getElementById('nameEn').value.trim();
-    const nameBn = document.getElementById('nameBn').value.trim();
+// Also translate when pasting content
+function setupPasteTranslation() {
+    const banglaInput = document.getElementById('name_bn');
     
-    if (!nameEn) {
-        Swal.fire('Validation Error', 'English name is required!', 'error');
-        document.getElementById('nameEn').focus();
-        return false;
-    }
-    
-    if (!nameBn) {
-        Swal.fire('Validation Error', 'Bangla name is required!', 'error');
-        document.getElementById('nameBn').focus();
-        return false;
-    }
-    
-    // Show loading state on button
-    const submitBtn = document.querySelector('.btn-save');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
-    submitBtn.disabled = true;
-    
-    return true;
-}
-
-// Close drawer on escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeDrawer();
-    }
-});
-
-// Auto-dismiss messages
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                alert.style.transition = 'opacity 0.5s';
-                alert.style.opacity = '0';
-                setTimeout(function() {
-                    alert.remove();
-                }, 500);
-            }, 3000);
+    if (banglaInput) {
+        banglaInput.addEventListener('paste', function(e) {
+            setTimeout(async () => {
+                const banglaText = e.target.value;
+                if (banglaText.trim()) {
+                    showTranslatingIndicator(true);
+                    const translatedText = await translateBanglaToEnglish(banglaText);
+                    document.getElementById('name_en').value = translatedText;
+                    showTranslatingIndicator(false);
+                }
+            }, 100);
         });
-    }, 1000);
-});
-</script>
+    }
+}
 
+// Form display functions
+function showForm(){
+    document.getElementById('formSection').style.display = 'block';
+    document.getElementById('listSection').className = 'col-lg-8';
+    
+    // Scroll to form smoothly
+    document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function cancelForm(){
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('listSection').className = 'col-lg-12';
+    
+    // Reset form
+    document.getElementById('categoryForm').reset();
+    document.getElementById('category_id').value = '';
+    document.getElementById('formTitle').innerHTML = '<i class="bi bi-plus-circle"></i> Add Category';
+}
+
+function editCategory(id){
+    fetch(`/categories/get/${id}/`)
+    .then(res => res.json())
+    .then(data => {
+        showForm();
+        
+        document.getElementById('category_id').value = data.id;
+        document.getElementById('name_bn').value = data.name_bn;
+        // Apply capitalization to existing English name when editing
+        document.getElementById('name_en').value = capitalizeEachWord(data.name_en);
+        
+        document.getElementById('formTitle').innerHTML = '<i class="bi bi-pencil-square"></i> Edit Category';
+        
+        // Optional: Focus on Bangla input for editing
+        document.getElementById('name_bn').focus();
+    })
+    .catch(error => {
+        console.error('Error fetching category:', error);
+        alert('Error loading category data');
+    });
+}
+
+function deleteCategory(id, name){
+    document.getElementById('deleteName').innerText = name;
+    document.getElementById('deleteForm').action = `/categories/delete/${id}/`;
+    
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+// Function to ensure English input is always capitalized before form submission
+function setupFormSubmission() {
+    const form = document.getElementById('categoryForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const englishInput = document.getElementById('name_en');
+            if (englishInput && englishInput.value) {
+                englishInput.value = capitalizeEachWord(englishInput.value);
+            }
+        });
+    }
+}
+
+// Initialize live translation when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setupLiveTranslation();
+    setupPasteTranslation();
+    setupFormSubmission();
+});
+
+// If there are form errors, show the form
+{% if errors %}
+window.onload = function(){
+    showForm();
+    
+    // Focus on the field with error
+    {% if errors.name_bn %}
+        document.getElementById('name_bn').focus();
+    {% elif errors.name_en %}
+        document.getElementById('name_en').focus();
+    {% endif %}
+}
+{% endif %}
+
+// Keyboard shortcut: Ctrl+Shift+T to manually translate and capitalize
+document.addEventListener('keydown', async function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+        e.preventDefault();
+        const banglaText = document.getElementById('name_bn').value;
+        if (banglaText.trim()) {
+            showTranslatingIndicator(true);
+            const translatedText = await translateBanglaToEnglish(banglaText);
+            document.getElementById('name_en').value = translatedText;
+            showTranslatingIndicator(false);
+        }
+    }
+});
+
+// Add character counter for Bangla input
+const banglaInput = document.getElementById('name_bn');
+if (banglaInput) {
+    banglaInput.addEventListener('input', function() {
+        const count = this.value.length;
+        let counterElement = document.getElementById('charCounter');
+        if (!counterElement) {
+            counterElement = document.createElement('small');
+            counterElement.id = 'charCounter';
+            counterElement.className = 'text-muted d-block mt-1';
+            this.parentNode.appendChild(counterElement);
+        }
+        counterElement.innerHTML = `<i class="bi bi-text-paragraph"></i> Characters: ${count}`;
+    });
+}
+
+// Live preview of capitalized text (optional - shows how it will look)
+function addCapitalizationPreview() {
+    const englishInput = document.getElementById('name_en');
+    if (englishInput) {
+        const previewSpan = document.createElement('small');
+        previewSpan.className = 'text-success d-block mt-1';
+        previewSpan.id = 'capitalizePreview';
+        previewSpan.innerHTML = '<i class="bi bi-check-circle"></i> Will be saved as: ';
+        englishInput.parentNode.appendChild(previewSpan);
+        
+        englishInput.addEventListener('input', function() {
+            const preview = document.getElementById('capitalizePreview');
+            if (preview && this.value) {
+                preview.innerHTML = '<i class="bi bi-check-circle"></i> Will be saved as: <strong>' + 
+                    capitalizeEachWord(this.value) + '</strong>';
+            }
+        });
+    }
+}
+
+// Call this after DOM is loaded
+setTimeout(addCapitalizationPreview, 500);
+</script>
 {% endblock js %}

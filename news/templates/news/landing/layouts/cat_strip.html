@@ -29,6 +29,7 @@
   text-decoration: none;
   white-space: nowrap;
   border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
 }
 
 .cat-item i {
@@ -43,38 +44,55 @@
 .cat-item:hover i {
   color: #fff;
 }
+
+/* Active state for current location */
+.cat-item.active {
+  background: var(--primary-red);
+  color: #fff;
+  border-color: var(--primary-red);
+}
+.cat-item.active i {
+  color: #fff;
+}
+
+/* Debug styles - remove after fixing */
+.debug-info {
+  font-size: 10px;
+  color: red;
+  margin-left: 5px;
+}
 </style>
 
 <div class="cat-strip">
   <div class="container-xl px-0 px-md-3">
-
     <div class="category-scroll">
-
-        <!-- LOCATION (AUTO TRANSLATE) -->
+      
+      <!-- LOCATION LINKS -->
+      {% if locations %}
         {% for location in locations %}
-          <a href="#" class="cat-item">
+          <a href="{% url 'location_news' location.slug %}" class="cat-item {% if active_url == location.slug %}active{% endif %}">
             <i class="fas fa-map-marker-alt"></i>
-
             {% if current_language == 'en' %}
               {{ location.name_en }}
             {% else %}
               {{ location.name_bn }}
             {% endif %}
-            
           </a>
         {% endfor %}
-
-      <!-- STATIC CATEGORIES (AUTO TRANSLATE) -->
-      <a href="#" class="cat-item"><i class="fas fa-globe-asia"></i> {% trans "World" %}</a>
-      <a href="#" class="cat-item"><i class="fas fa-coins"></i> {% trans "Trade" %}</a>
-      <a href="#" class="cat-item"><i class="fas fa-heartbeat"></i> {% trans "Health" %}</a>
-      <a href="#" class="cat-item"><i class="fas fa-gavel"></i> {% trans "Law & Court" %}</a>
-      <a href="#" class="cat-item"><i class="fas fa-graduation-cap"></i> {% trans "Education" %}</a>
-      <a href="#" class="cat-item"><i class="fas fa-leaf"></i> {% trans "Climate" %}</a>
-      <a href="#" class="cat-item"><i class="fas fa-car"></i> {% trans "Transport" %}</a>
-      <a href="#" class="cat-item"><i class="fas fa-microchip"></i> {% trans "Tech" %}</a>
-
+      {% else %}
+        <span class="text-muted small">No locations found</span>
+      {% endif %}
+      
     </div>
-
   </div>
 </div>
+
+<!-- Debug Info (remove in production) -->
+{% if not locations %}
+<div class="container mt-2">
+  <div class="alert alert-warning alert-sm small">
+    <i class="fas fa-exclamation-triangle"></i> 
+    No locations found in database. Please add locations.
+  </div>
+</div>
+{% endif %}

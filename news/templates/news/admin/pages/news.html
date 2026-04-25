@@ -1,1326 +1,607 @@
 {% extends "news/admin/base/base.html" %}
-{% load static %}
-
-{% block css %}
-<!-- Quill CSS -->
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-<!-- DataTables -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-/* Modern Professional Styling */
-:root {
-    --primary-color: #3b82f6;
-    --primary-dark: #2563eb;
-    --success-color: #10b981;
-    --success-dark: #059669;
-    --danger-color: #ef4444;
-    --danger-dark: #dc2626;
-    --warning-color: #f59e0b;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
-}
-
-/* RIGHT SIDE SLIDE-IN MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: auto;
-    z-index: 1055;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    outline: 0;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.modal.show {
-    display: block !important;
-}
-
-.modal-dialog {
-    position: relative;
-    width: 100%;
-    max-width: 750px;
-    margin: 0;
-    margin-left: auto;
-    pointer-events: auto;
-    height: 100%;
-    min-height: 100vh;
-}
-
-.modal.fade .modal-dialog {
-    transition: transform 0.3s ease-out;
-    transform: translateX(100%);
-}
-
-.modal.show .modal-dialog {
-    transform: translateX(0);
-}
-
-.modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100vh;
-    pointer-events: auto;
-    background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
-    background-clip: padding-box;
-    border-radius: 0;
-    border: none;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-    overflow: hidden;
-}
-
-/* Modal Header */
-.modal-header {
-    background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
-    border-bottom: 2px solid var(--gray-100);
-    padding: 1.5rem 2rem;
-    position: relative;
-    flex-shrink: 0;
-    z-index: 10;
-}
-
-.modal-header .modal-title {
-    font-weight: 700;
-    font-size: 1.35rem;
-    color: var(--gray-800);
-    letter-spacing: -0.3px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.modal-title i {
-    font-size: 1.6rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.btn-close {
-    background: transparent;
-    width: 32px;
-    height: 32px;
-    border-radius: 12px;
-    transition: all 0.2s;
-    opacity: 0.6;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-close:hover {
-    background: var(--gray-100);
-    opacity: 1;
-    transform: rotate(90deg);
-}
-
-/* Modal Body */
-.modal-body {
-    padding: 2rem;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-/* Modal Footer */
-.modal-footer {
-    background: var(--gray-50);
-    border-top: 2px solid var(--gray-100);
-    padding: 1.25rem 2rem;
-    gap: 12px;
-    flex-shrink: 0;
-    position: sticky;
-    bottom: 0;
-    width: 100%;
-    z-index: 10;
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* Language Tabs */
-.language-tabs {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--gray-200);
-    padding-bottom: 0;
-}
-
-.lang-tab {
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border: none;
-    background: none;
-    color: var(--gray-600);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s;
-    border-radius: 12px 12px 0 0;
-}
-
-.lang-tab:hover {
-    color: var(--primary-color);
-    background: var(--gray-50);
-}
-
-.lang-tab.active {
-    color: var(--primary-color);
-    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05));
-}
-
-.lang-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--primary-color);
-    border-radius: 2px;
-}
-
-.lang-panel {
-    display: none;
-    animation: fadeIn 0.3s ease;
-}
-
-.lang-panel.active-panel {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Form Groups */
-.form-group-modern {
-    margin-bottom: 1.75rem;
-}
-
-.form-label-modern {
-    display: block;
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--gray-700);
-    margin-bottom: 0.65rem;
-}
-
-.form-label-modern .required-star {
-    color: var(--danger-color);
-    margin-left: 4px;
-}
-
-.input-modern, .select-modern {
-    width: 100%;
-    border: 2px solid var(--gray-200);
-    border-radius: 16px;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    transition: all 0.25s;
-    background: #ffffff;
-}
-
-.input-modern:focus, .select-modern:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
-}
-
-/* Quill Editor */
-.quill-editor-wrapper {
-    border: 2px solid var(--gray-200);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.25s;
-}
-
-.quill-editor-wrapper:focus-within {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
-}
-
-.quill-editor {
-    height: 180px;
-    background: white;
-}
-
-.ql-toolbar.ql-snow {
-    border: none;
-    border-bottom: 1px solid var(--gray-200);
-    background: var(--gray-50);
-    border-radius: 14px 14px 0 0;
-}
-
-.ql-container.ql-snow {
-    border: none;
-    font-size: 0.95rem;
-}
-
-.ql-editor {
-    min-height: 150px;
-    font-size: 0.95rem;
-}
-
-/* Image Upload Area */
-.image-upload-area {
-    border: 2px dashed var(--gray-300);
-    border-radius: 20px;
-    padding: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.25s;
-    background: var(--gray-50);
-    position: relative;
-}
-
-.image-upload-area:hover {
-    border-color: var(--primary-color);
-    background: rgba(59,130,246,0.02);
-}
-
-.image-upload-area.drag-over {
-    border-color: var(--primary-color);
-    background: #eff6ff;
-}
-
-.image-upload-label {
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-}
-
-.image-upload-label i {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    opacity: 0.7;
-}
-
-.image-upload-label span {
-    font-size: 0.9rem;
-    color: var(--gray-600);
-    font-weight: 500;
-}
-
-.image-upload-label small {
-    font-size: 0.75rem;
-    color: var(--gray-500);
-}
-
-#image {
-    display: none;
-}
-
-.image-preview-wrapper {
-    margin-top: 1rem;
-    text-align: center;
-    background: var(--gray-50);
-    border-radius: 16px;
-    padding: 1rem;
-    display: none;
-}
-
-.image-preview-wrapper.show {
-    display: block;
-}
-
-.preview-img {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    object-fit: cover;
-}
-
-.remove-image-btn {
-    background: none;
-    border: none;
-    color: var(--danger-color);
-    font-size: 0.75rem;
-    margin-top: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.remove-image-btn:hover {
-    color: var(--danger-dark);
-    text-decoration: underline;
-}
-
-/* Buttons */
-.btn-premium {
-    border-radius: 40px;
-    padding: 0.6rem 1.8rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-cancel {
-    background: #ffffff;
-    color: var(--gray-700);
-    border: 1.5px solid var(--gray-200);
-}
-
-.btn-cancel:hover {
-    background: var(--gray-100);
-    transform: translateY(-1px);
-}
-
-.btn-save {
-    background: linear-gradient(135deg, var(--success-color), var(--success-dark));
-    color: white;
-    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
-}
-
-.btn-save:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(16,185,129,0.4);
-}
-
-.btn-save:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Card styling */
-.card {
-    border: none;
-    border-radius: 28px;
-    box-shadow: 0 10px 35px -12px rgba(0,0,0,0.1);
-    overflow: hidden;
-    background: white;
-}
-
-.card-header {
-    background: white;
-    border-bottom: 1px solid var(--gray-100);
-    padding: 1.5rem 2rem;
-}
-
-.card-header h4 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--gray-800);
-}
-
-.btn-success-premium {
-    background: linear-gradient(135deg, var(--success-color), var(--success-dark));
-    border-radius: 40px;
-    padding: 0.6rem 1.5rem;
-    font-weight: 600;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-.btn-success-premium:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(16,185,129,0.35);
-}
-
-.news-img {
-    width: 80px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.table thead th {
-    background: var(--gray-50);
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    padding: 1rem;
-    text-align: center;
-}
-
-.table tbody td {
-    vertical-align: middle;
-    text-align: center;
-}
-
-.table tbody td:nth-child(3),
-.table tbody td:nth-child(4) {
-    text-align: left;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 0.6rem;
-    justify-content: center;
-}
-
-.btn-sm-rounded {
-    border-radius: 40px;
-    padding: 0.4rem 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-}
-
-/* Badges */
-.badge-lang {
-    font-size: 0.65rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 20px;
-    margin-left: 6px;
-}
-
-.badge-category {
-    background: var(--primary-color);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    display: inline-block;
-}
-
-/* Messages */
-.messages-container {
-    margin-bottom: 20px;
-}
-
-.alert {
-    border-radius: 12px;
-    padding: 12px 16px;
-    border: none;
-    margin-bottom: 10px;
-}
-
-.alert-success {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.alert-error {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-/* Empty state */
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-}
-
-.empty-state i {
-    font-size: 64px;
-    color: #9ca3af;
-    margin-bottom: 20px;
-}
-
-/* DataTables */
-.dataTables_filter {
-    margin-bottom: 20px;
-}
-
-.dataTables_filter input {
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    padding: 8px 12px;
-    outline: none;
-    width: 250px;
-    margin-left: 8px;
-}
-
-.dataTables_paginate .paginate_button.current {
-    background: #16a34a !important;
-    color: #fff !important;
-}
-
-/* Scrollbar */
-.modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: var(--gray-100);
-    border-radius: 10px;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: var(--gray-400);
-    border-radius: 10px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .modal-dialog {
-        max-width: 100%;
-    }
-    
-    .modal-header, .modal-body, .modal-footer {
-        padding: 1rem;
-    }
-    
-    .btn-premium {
-        padding: 0.5rem 1.2rem;
-    }
-    
-    .news-img {
-        width: 60px;
-        height: 50px;
-    }
-}
-</style>
-{% endblock css %}
 
 {% block main %}
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-<div class="main-wrapper">
-<main class="page-content">
+<style>
+:root {
+    --primary: #2563eb;
+    --danger: #dc2626;
+    --dark: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #f1f5f9;
+}
 
-<!-- Messages -->
-{% if messages %}
-<div class="messages-container">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+body {
+    background: var(--bg);
+    font-family: system-ui;
+}
+
+.admin-header {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-outline { border: 1px solid var(--border); background: white; }
+.btn-outline:hover { background: #f8fafc; }
+
+.input, .select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.upload-box {
+    border: 2px dashed var(--border);
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.upload-box:hover {
+    background: #f1f5f9;
+    border-color: var(--primary);
+}
+
+.container { padding: 20px; }
+.flex { display: flex; gap: 10px; }
+
+/* Quill editor customizations */
+.ql-editor {
+    min-height: 250px !important;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Live translation indicator */
+.live-translate-badge {
+    background: #10b981;
+    color: white;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 10px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.translating-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+</style>
+
+<!-- HEADER -->
+<div class="admin-header">
+    <div>
+        <h3>News Manager</h3>
+        <small style="color:var(--muted)">Create and manage articles</small>
     </div>
-    {% endfor %}
-</div>
-{% endif %}
 
+    <button class="btn btn-primary" onclick="openEditor()">
+        <i class="fas fa-plus"></i> News
+    </button>
+</div>
+
+<div class="container">
+
+<!-- EDITOR -->
+<div id="editorSection" style="display:none;">
 <div class="card">
+<form method="POST" enctype="multipart/form-data" id="newsForm">
+    {% csrf_token %}
 
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h4><i class="fas fa-newspaper me-2" style="color: var(--primary-color);"></i>News Management</h4>
-            <p class="text-muted mb-0 small">Create, edit and manage news articles with bilingual support</p>
-        </div>
-        <button type="button" class="btn btn-success-premium" onclick="openAddNewsModal()">
-            <i class="fas fa-plus me-2"></i>Add News
-        </button>
-    </div>
+    <input type="hidden" name="news_id" id="news_id">
+    <input type="hidden" name="description_en" id="hidden_desc_en">
+    <input type="hidden" name="description_bn" id="hidden_desc_bn">
 
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table id="newsTable" class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th width="5%">#</th>
-                        <th width="10%">Image</th>
-                        <th width="20%">Title (EN)</th>
-                        <th width="20%">Title (BN)</th>
-                        <th width="12%">Category</th>
-                        <th width="12%">Location</th>
-                        <th width="11%">Date</th>
-                        <th width="10%">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for news in news_list %}
-                    <tr>
-                        <td class="fw-bold">{{ forloop.counter }}</td>
-                        <td>
-                            {% if news.image %}
-                            <img src="{{ news.image.url }}" class="news-img" alt="{{ news.title_en }}">
-                            {% else %}
-                            <div class="news-img bg-light d-flex align-items-center justify-content-center">
-                                <i class="fas fa-image text-secondary"></i>
-                            </div>
-                            {% endif %}
-                        </td>
-                        <td class="fw-medium text-start">
-                            {{ news.title_en|truncatechars:50 }}
-                            <span class="badge-lang bg-primary text-white">EN</span>
-                        </td>
-                        <td class="text-start">
-                            {{ news.title_bn|truncatechars:50 }}
-                            <span class="badge-lang bg-success text-white">BN</span>
-                        </td>
-                        <td>
-                            <span class="badge-category">
-                                <i class="fas fa-tag me-1"></i>
-                                {{ news.category.name_en }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
-                                <i class="fas fa-map-marker-alt me-1 text-primary"></i>
-                                {{ news.location.name_en }}
-                            </span>
-                        </td>
-                        <td>
-                            <small class="text-muted">
-                                <i class="far fa-calendar-alt me-1"></i>
-                                {{ news.created_at|date:"d M, Y" }}
-                            </small>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button type="button" class="btn btn-primary btn-sm-rounded"
-                                        onclick="openEditNewsModal(
-                                            '{{ news.id }}',
-                                            '{{ news.title_en|escapejs }}',
-                                            '{{ news.title_bn|escapejs }}',
-                                            '{{ news.description_en|escapejs }}',
-                                            '{{ news.description_bn|escapejs }}',
-                                            '{{ news.category.id }}',
-                                            '{{ news.location.id }}'
-                                        )">
-                                    <i class="fas fa-edit me-1"></i>Edit
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm-rounded" onclick="confirmDeleteNews('{{ news.id }}', '{{ news.title_en|escapejs }}')">
-                                    <i class="fas fa-trash me-1"></i>Delete
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8">
-                            <div class="empty-state">
-                                <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
-                                <h5>No news articles found</h5>
-                                <p class="text-muted">Click "Add News" to create your first article</p>
-                            </div>
-                        </td>
-                    </tr>
+    <div style="padding:20px">
+
+        <div class="flex">
+            <div style="flex:2">
+                <label>Title BN</label>
+                <input class="input" name="title_bn" id="title_bn" placeholder="বাংলা শিরোনাম (Bangla Title)" onkeyup="liveTranslateTitle()">
+
+                <label>Title EN <span class="live-translate-badge">Live Translate</span></label>
+                <input class="input" name="title_en" id="title_en" placeholder="English title" readonly style="background:#f8fafc;">
+            </div>
+
+            <div style="flex:1">
+                <label>Category</label>
+                <select class="select" name="category">
+                    {% for c in categories %}
+                    <option value="{{ c.id }}">{{ c.name_en }}</option>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                </select>
 
-</main>
-</div>
+                <label>Location</label>
+                <select class="select" name="location">
+                    {% for l in locations %}
+                    <option value="{{ l.id }}">{{ l.name_en }}</option>
+                    {% endfor %}
+                </select>
 
-<!-- ================= RIGHT SIDE SLIDE-IN MODAL ================= -->
-<div class="modal fade" id="newsModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <form method="POST" enctype="multipart/form-data" id="newsForm">
-        {% csrf_token %}
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTitle">
-            <i class="fas fa-plus-circle"></i>
-            <span id="modalTitleText">Create New News</span>
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
-        </div>
-
-        <div class="modal-body">
-            <input type="hidden" name="update_id" id="editId">
-            
-            <!-- Category & Location Row -->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group-modern">
-                        <label class="form-label-modern">
-                            Category <span class="required-star">*</span>
-                        </label>
-                        <select name="category" id="category" class="select-modern" required>
-                            <option value="" disabled selected>— Select Category —</option>
-                            {% for cat in categories %}
-                            <option value="{{ cat.id }}">{{ cat.name_en }} ({{ cat.name_bn }})</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group-modern">
-                        <label class="form-label-modern">
-                            Location <span class="required-star">*</span>
-                        </label>
-                        <select name="location" id="location" class="select-modern" required>
-                            <option value="" disabled selected>— Select Location —</option>
-                            {% for loc in locations %}
-                            <option value="{{ loc.id }}">{{ loc.name_en }} ({{ loc.name_bn }})</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Language Tabs -->
-            <div class="language-tabs">
-                <button type="button" class="lang-tab active" data-lang="en">
-                    <i class="fas fa-language me-1"></i> English
-                </button>
-                <button type="button" class="lang-tab" data-lang="bn">
-                    <i class="fas fa-language me-1"></i> বাংলা (Bangla)
-                </button>
-            </div>
-
-            <!-- English Panel -->
-            <div id="lang-en" class="lang-panel active-panel">
-                <div class="form-group-modern">
-                    <label class="form-label-modern">
-                        News Title (English) <span class="required-star">*</span>
-                    </label>
-                    <input type="text" name="title_en" id="title_en" class="input-modern" 
-                           placeholder="e.g., New Government Policy Announced" required>
-                    <small class="text-muted mt-1 d-block">A compelling headline that grabs attention</small>
-                </div>
-                
-                <div class="form-group-modern">
-                    <label class="form-label-modern">
-                        Description (English) <span class="required-star">*</span>
-                    </label>
-                    <div class="quill-editor-wrapper">
-                        <div id="descriptionEditorEn" class="quill-editor"></div>
-                    </div>
-                    <small class="text-muted mt-2 d-block">
-                        <i class="fas fa-info-circle"></i> Write detailed news content.
-                    </small>
-                </div>
-            </div>
-
-            <!-- Bangla Panel -->
-            <div id="lang-bn" class="lang-panel">
-                <div class="form-group-modern">
-                    <label class="form-label-modern">
-                        খবরের শিরোনাম (বাংলা) <span class="required-star">*</span>
-                    </label>
-                    <input type="text" name="title_bn" id="title_bn" class="input-modern" 
-                           placeholder="যেমন: নতুন সরকারি নীতি ঘোষণা" required>
-                    <small class="text-muted mt-1 d-block">একটি আকর্ষণীয় শিরোনাম</small>
-                </div>
-                
-                <div class="form-group-modern">
-                    <label class="form-label-modern">
-                        বিবরণ (বাংলা) <span class="required-star">*</span>
-                    </label>
-                    <div class="quill-editor-wrapper">
-                        <div id="descriptionEditorBn" class="quill-editor"></div>
-                    </div>
-                    <small class="text-muted mt-2 d-block">
-                        <i class="fas fa-info-circle"></i> বিস্তারিত খবরের বিবরণ লিখুন।
-                    </small>
-                </div>
-            </div>
-            
-            <!-- Image Upload Section -->
-            <div class="form-group-modern">
-                <label class="form-label-modern">
-                    News Image <span class="required-star" id="imageRequiredStar">*</span>
+                <label style="margin-top:10px;">
+                    <input type="checkbox" name="is_breaking"> Breaking News
                 </label>
-                
-                <!-- Upload Area -->
-                <div class="image-upload-area" id="imageUploadArea">
-                    <div class="image-upload-label">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span id="uploadText">Click to upload or drag & drop</span>
-                        <small>PNG, JPG, JPEG up to 5MB</small>
-                    </div>
-                    <input type="file" name="image" id="image" accept="image/*" onchange="handleImagePreview(this)">
-                </div>
-                
-                <!-- Preview Area -->
-                <div id="imagePreviewWrapper" class="image-preview-wrapper">
-                    <img id="previewImg" class="preview-img" alt="Preview">
-                    <button type="button" class="remove-image-btn" onclick="clearImagePreview()">
-                        <i class="fas fa-times"></i> Remove image
-                    </button>
-                </div>
-                
-                <small class="text-muted mt-2 d-block" id="imageHintMsg">
-                    <i class="fas fa-info-circle"></i> Recommended: 1200x800px
-                </small>
             </div>
         </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn-premium btn-cancel" data-bs-dismiss="modal">
-              <i class="fas fa-times me-1"></i> Cancel
-          </button>
-          <button type="submit" class="btn-premium btn-save" id="saveBtn">
-              <i class="fas fa-check-circle me-1"></i> Publish News
-          </button>
+        <br>
+
+        <label>Feature Image</label>
+        <div class="upload-box" onclick="document.getElementById('imageInput').click()">
+            <i class="fas fa-cloud-upload-alt"></i> Click or drag to upload image
+            <input type="file" id="imageInput" name="image" hidden onchange="previewImage(this)">
         </div>
 
-      </form>
+        <div id="imagePreview"></div>
+
+        <br>
+
+        <!-- Content BN - User writes here -->
+        <label>Content BN (Write in Bangla)</label>
+        <div id="editor_bn"></div>
+        <small style="color: var(--muted); font-size: 11px;">
+            <i class="fas fa-arrow-right"></i> Type in Bangla - English translation appears above instantly
+        </small>       
+
+        <br><br>
+
+         <!-- Content EN - Live translated output -->
+        <label>Content EN <span class="live-translate-badge">Live Translate (Bangla → English)</span></label>
+        <div id="editor_en" style="background:#fafafa;"></div>
+        <small style="color: var(--muted); font-size: 11px;">
+            <i class="fas fa-language"></i> This field updates automatically as you type in Bangla below
+        </small>
+
+        <br>
+
+        <div style="display:flex;justify-content:space-between">
+            <button type="button" class="btn btn-outline" onclick="closeEditor()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Publish</button>
+        </div>
 
     </div>
-  </div>
+</form>
+</div>
 </div>
 
-{% endblock main %}
+<!-- LIST -->
+<div id="listSection">
+<div class="card">
+<table>
+<thead>
+<tr>
+<th>SL</th>
+<th>Title BN</th>
+<th>Title EN</th>
+<th>Description BN</th>
+<th>Description EN</th>
+<th>Breaking</th>
+<th>Actions</th>
+</tr>
+</thead>
 
-{% block js %}
+<tbody>
+{% for n in news_list %}
+<tr>
+<td>{{ forloop.counter }}</td>
+<td>{{ n.title_bn|truncatewords:8 }}</td>
+<td>{{ n.title_en|truncatewords:8 }}</td>
+<td>{{ n.description_bn|safe|truncatewords:8 }}</td>
+<td>{{ n.description_en|safe|truncatewords:8 }}</td>
+<td>{% if n.is_breaking %} 🔴 Yes {% else %} No {% endif %}</td>
+<td>
+<button class="btn btn-outline" onclick="editNews({{ n.id }})">Edit</button>
+<button class="btn btn-danger" onclick="deleteNews({{ n.id }})">Delete</button>
+</td>
+</tr>
+{% endfor %}
+</tbody>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+</table>
+</div>
+</div>
+
+</div>
+
+<!-- Translating Indicator -->
+<div id="translatingIndicator" class="translating-indicator">
+    <i class="fas fa-sync-alt fa-spin"></i>
+    <span>Translating live...</span>
+</div>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
 <script>
-// Global variables
-let bsModal = null;
-let quillEditorEn = null;
-let quillEditorBn = null;
-let currentLang = 'en';
-let dataTable = null;
+// Custom alignments for Quill (including justify)
+const AlignStyle = Quill.import('attributors/style/align');
+AlignStyle.whitelist = ['left', 'center', 'right', 'justify'];
+Quill.register(AlignStyle, true);
 
-$(document).ready(function() {
-    initializeDataTable();
-    
-    // Auto-dismiss messages
-    setTimeout(function() {
-        $('.alert').fadeOut(500, function() {
-            $(this).remove();
-        });
-    }, 3000);
+// Toolbar with justify and image options
+const toolbarOptions = [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'align': ['left', 'center', 'right', 'justify'] }],  // Justify option included
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['link', 'image', 'video'],
+    ['clean']
+];
+
+// Initialize Quill editors
+const quillEn = new Quill('#editor_en', { 
+    theme: 'snow',
+    modules: {
+        toolbar: toolbarOptions
+    },
+    placeholder: 'English translation will appear here automatically as you type Bangla...',
+    readOnly: false
 });
 
-function initializeDataTable() {
-    const hasRealData = $('#newsTable tbody tr').length > 0 && 
-                        $('#newsTable tbody td[colspan]').length === 0;
-    
-    if (hasRealData) {
-        if ($.fn.DataTable.isDataTable('#newsTable')) {
-            $('#newsTable').DataTable().destroy();
-        }
-        
-        dataTable = $('#newsTable').DataTable({
-            pageLength: 10,
-            ordering: true,
-            searching: true,
-            language: {
-                search: "<i class='fas fa-search'></i> Search:",
-                lengthMenu: "Show _MENU_ entries",
-                info: "Showing _START_ to _END_ of _TOTAL_ news articles",
-                paginate: {
-                    previous: "<",
-                    next: ">"
-                }
-            },
-            columnDefs: [
-                { orderable: false, targets: [1, 7] }
-            ],
-            order: [[0, 'desc']]
-        });
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap modal
-    const modalElement = document.getElementById('newsModal');
-    if (modalElement) {
-        bsModal = new bootstrap.Modal(modalElement, {
-            backdrop: 'static',
-            keyboard: true
-        });
-    }
-    
-    // Initialize Quill editors
-    if (document.getElementById('descriptionEditorEn')) {
-        quillEditorEn = new Quill('#descriptionEditorEn', {
-            theme: 'snow',
-            placeholder: 'Write detailed news content here...',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'align': [] }],
-                    ['link', 'clean']
-                ]
-            }
-        });
-    }
-    
-    if (document.getElementById('descriptionEditorBn')) {
-        quillEditorBn = new Quill('#descriptionEditorBn', {
-            theme: 'snow',
-            placeholder: 'বিস্তারিত খবরের বিবরণ লিখুন...',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'align': [] }],
-                    ['link', 'clean']
-                ]
-            }
-        });
-    }
-    
-    // Language tab switching
-    document.querySelectorAll('.lang-tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            switchLanguage(this.getAttribute('data-lang'));
-        });
-    });
-    
-    // Setup drag and drop
-    setupDragAndDrop();
+const quillBn = new Quill('#editor_bn', { 
+    theme: 'snow',
+    modules: {
+        toolbar: toolbarOptions
+    },
+    placeholder: 'এখানে বাংলায় লিখুন... (Type your Bangla content here)'
 });
 
-function switchLanguage(lang) {
-    currentLang = lang;
-    
-    document.querySelectorAll('.lang-tab').forEach(tab => {
-        if (tab.getAttribute('data-lang') === lang) {
-            tab.classList.add('active');
-        } else {
-            tab.classList.remove('active');
-        }
-    });
-    
-    document.querySelectorAll('.lang-panel').forEach(panel => {
-        if (panel.id === `lang-${lang}`) {
-            panel.classList.add('active-panel');
-        } else {
-            panel.classList.remove('active-panel');
-        }
-    });
-}
+// Make English editor readable but not directly editable
+// Users can still edit if needed, but it's auto-filled
+quillEn.enable(true);
 
-function openAddNewsModal() {
-    resetFormToAdd();
-    if (bsModal) {
-        bsModal.show();
-    }
-}
+// Translation function using Google Translate API
+let translationTimeout;
+let isTranslating = false;
 
-function openEditNewsModal(id, titleEn, titleBn, descriptionEn, descriptionBn, categoryId, locationId) {
-    resetFormToEdit();
-    
-    document.getElementById("editId").value = id;
-    document.getElementById("title_en").value = titleEn;
-    document.getElementById("title_bn").value = titleBn;
-    document.getElementById("category").value = categoryId;
-    document.getElementById("location").value = locationId;
-    
-    if (quillEditorEn && descriptionEn && descriptionEn !== 'None') {
-        quillEditorEn.root.innerHTML = descriptionEn;
-    }
-    
-    if (quillEditorBn && descriptionBn && descriptionBn !== 'None') {
-        quillEditorBn.root.innerHTML = descriptionBn;
-    }
-    
-    document.getElementById("modalTitleText").innerHTML = 'Update News Article';
-    document.querySelector("#modalTitle i").className = "fas fa-edit";
-    
-    // Make image optional for update
-    document.getElementById("image").required = false;
-    document.getElementById("imageRequiredStar").style.display = 'none';
-    document.getElementById("imageHintMsg").innerHTML = '<i class="fas fa-info-circle"></i> Leave empty to keep current image. New image will replace old one.';
-    
-    clearImagePreview();
-    
-    if (bsModal) {
-        bsModal.show();
-    }
-}
-
-function resetFormToAdd() {
-    document.getElementById("newsForm").reset();
-    document.getElementById("editId").value = "";
-    document.getElementById("title_en").value = "";
-    document.getElementById("title_bn").value = "";
-    document.getElementById("category").value = "";
-    document.getElementById("location").value = "";
-    
-    if (quillEditorEn) quillEditorEn.root.innerHTML = '';
-    if (quillEditorBn) quillEditorBn.root.innerHTML = '';
-    
-    document.getElementById("modalTitleText").innerHTML = 'Create New News Article';
-    document.querySelector("#modalTitle i").className = "fas fa-plus-circle";
-    
-    // Make image required for new article
-    document.getElementById("image").required = true;
-    document.getElementById("imageRequiredStar").style.display = 'inline';
-    document.getElementById("imageHintMsg").innerHTML = '<i class="fas fa-info-circle"></i> Required for new article. Recommended: 1200x800px';
-    
-    clearImagePreview();
-    document.getElementById("uploadText").innerText = "Click to upload or drag & drop";
-    
-    switchLanguage('en');
-}
-
-function resetFormToEdit() {
-    document.getElementById("image").required = false;
-    document.getElementById("image").value = "";
-    document.getElementById("imageHintMsg").innerHTML = '<i class="fas fa-info-circle"></i> Optional: upload new image to replace existing.';
-    clearImagePreview();
-}
-
-function handleImagePreview(input) {
-    const file = input.files[0];
-    const previewWrapper = document.getElementById("imagePreviewWrapper");
-    const previewImg = document.getElementById("previewImg");
-    const uploadText = document.getElementById("uploadText");
-    
-    if (file) {
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            Swal.fire('Error', 'Image size should be less than 5MB', 'error');
-            input.value = '';
-            return;
-        }
-        
-        // Validate file type
-        if (!file.type.match('image.*')) {
-            Swal.fire('Error', 'Please select an image file (PNG, JPG, JPEG)', 'error');
-            input.value = '';
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            previewImg.src = event.target.result;
-            previewWrapper.classList.add('show');
-            uploadText.innerText = file.name;
-        };
-        reader.readAsDataURL(file);
+function showTranslatingIndicator(show) {
+    const indicator = document.getElementById('translatingIndicator');
+    if (show) {
+        indicator.style.display = 'flex';
     } else {
-        clearImagePreview();
+        setTimeout(() => {
+            indicator.style.display = 'none';
+        }, 500);
     }
 }
 
-function clearImagePreview() {
-    const previewWrapper = document.getElementById("imagePreviewWrapper");
-    const previewImg = document.getElementById("previewImg");
-    const fileInput = document.getElementById("image");
-    const uploadText = document.getElementById("uploadText");
-    
-    previewWrapper.classList.remove('show');
-    previewImg.src = "";
-    fileInput.value = "";
-    uploadText.innerText = "Click to upload or drag & drop";
-}
-
-function setupDragAndDrop() {
-    const uploadArea = document.getElementById('imageUploadArea');
-    const fileInput = document.getElementById('image');
-    
-    if (!uploadArea) return;
-    
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
+async function translateBanglaToEnglish(banglaText) {
+    if (!banglaText || banglaText.trim() === '' || banglaText === '<p><br></p>') {
+        return '';
     }
     
-    ['dragenter', 'dragover'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, unhighlight, false);
-    });
-    
-    function highlight(e) {
-        uploadArea.classList.add('drag-over');
-    }
-    
-    function unhighlight(e) {
-        uploadArea.classList.remove('drag-over');
-    }
-    
-    uploadArea.addEventListener('drop', handleDrop, false);
-    
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
+    try {
+        // Remove HTML tags for translation, but we'll preserve structure
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = banglaText;
+        const plainText = tempDiv.textContent || tempDiv.innerText || '';
         
-        if (files.length) {
-            fileInput.files = files;
-            handleImagePreview(fileInput);
+        if (!plainText.trim()) {
+            return '';
         }
+        
+        // Using Google Translate API
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(plainText)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const translatedText = data[0].map(item => item[0]).join('');
+        
+        // Preserve basic HTML structure (paragraphs)
+        if (banglaText.includes('<p>') || banglaText.includes('<div>') || banglaText.includes('<br>')) {
+            // Split by double newlines or paragraphs
+            const paragraphs = translatedText.split(/\n+/);
+            let htmlResult = '';
+            for (let para of paragraphs) {
+                if (para.trim()) {
+                    htmlResult += `<p>${para.trim()}</p>`;
+                }
+            }
+            return htmlResult || `<p>${translatedText}</p>`;
+        }
+        
+        return `<p>${translatedText}</p>`;
+        
+    } catch (error) {
+        console.error('Translation error:', error);
+        return `<p>[Translation error] ${banglaText.replace(/<[^>]*>/g, '')}</p>`;
     }
-    
-    uploadArea.addEventListener('click', () => fileInput.click());
 }
 
-function confirmDeleteNews(newsId, newsTitle) {
-    Swal.fire({
-        title: 'Delete News Article?',
-        html: `Are you sure you want to delete "<strong>${escapeHtml(newsTitle)}</strong>"?<br><small class="text-muted">This action cannot be undone.</small>`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel',
-        background: 'white',
-        borderRadius: '20px'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.style.display = 'none';
+// Live title translation
+async function liveTranslateTitle() {
+    const banglaTitle = document.getElementById('title_bn').value;
+    if (!banglaTitle.trim()) {
+        document.getElementById('title_en').value = '';
+        return;
+    }
+    
+    try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(banglaTitle)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const translatedTitle = data[0].map(item => item[0]).join('');
+        document.getElementById('title_en').value = translatedTitle;
+    } catch (error) {
+        console.error('Title translation error:', error);
+    }
+}
+
+// Live content translation with debouncing
+function setupLiveTranslation() {
+    let debounceTimer;
+    
+    quillBn.on('text-change', function(delta, oldDelta, source) {
+        if (source === 'user') {
+            // Clear previous timer
+            clearTimeout(debounceTimer);
             
-            const csrfInput = document.createElement('input');
-            csrfInput.name = 'csrfmiddlewaretoken';
-            csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            form.appendChild(csrfInput);
+            // Show indicator that translation is pending
+            showTranslatingIndicator(true);
             
-            const deleteInput = document.createElement('input');
-            deleteInput.name = 'delete_id';
-            deleteInput.value = newsId;
-            form.appendChild(deleteInput);
-            
-            document.body.appendChild(form);
-            form.submit();
+            // Set new timer - translate after user stops typing for 500ms
+            debounceTimer = setTimeout(async () => {
+                const banglaContent = quillBn.root.innerHTML;
+                const banglaText = quillBn.getText();
+                
+                if (banglaText.trim()) {
+                    const translatedHtml = await translateBanglaToEnglish(banglaContent);
+                    
+                    // Store current cursor position
+                    const selection = quillEn.getSelection();
+                    
+                    // Update English editor
+                    quillEn.root.innerHTML = translatedHtml || '<p><br></p>';
+                    
+                    // Restore cursor position if possible
+                    if (selection) {
+                        try {
+                            quillEn.setSelection(selection.index, selection.length);
+                        } catch(e) {}
+                    }
+                } else {
+                    quillEn.root.innerHTML = '<p><br></p>';
+                }
+                
+                showTranslatingIndicator(false);
+            }, 500); // 500ms delay for live typing feel
         }
     });
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
+// Also translate when content is pasted
+quillBn.on('editor-change', function(eventName, ...args) {
+    if (eventName === 'text-change') {
+        // Already handled by text-change
+    }
+});
+
+// Setup live title translation on input
+document.getElementById('title_bn').addEventListener('input', liveTranslateTitle);
+
+// Initialize live translation
+setupLiveTranslation();
+
+// Custom image upload handler for Quill editors
+function addImageUploadHandler(quillInstance) {
+    const toolbar = quillInstance.getModule('toolbar');
+    toolbar.addHandler('image', () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+        
+        input.onchange = async () => {
+            const file = input.files[0];
+            if (file) {
+                const range = quillInstance.getSelection(true);
+                quillInstance.insertText(range.index, '📷 Uploading...', 'api');
+                
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+                
+                try {
+                    const response = await fetch('/news/upload-image/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        }
+                    });
+                    const data = await response.json();
+                    
+                    if (data.url) {
+                        quillInstance.deleteText(range.index, 13, 'api');
+                        quillInstance.insertEmbed(range.index, 'image', data.url, 'api');
+                    } else {
+                        quillInstance.deleteText(range.index, 13, 'api');
+                        quillInstance.insertText(range.index, '❌ Upload failed', 'api');
+                    }
+                } catch (error) {
+                    quillInstance.deleteText(range.index, 13, 'api');
+                    quillInstance.insertText(range.index, '❌ Error', 'api');
+                }
+            }
+        };
     });
 }
 
-// Form submission handler
-document.getElementById("newsForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+// Add image handlers to both editors
+addImageUploadHandler(quillEn);
+addImageUploadHandler(quillBn);
+
+function openEditor() {
+    document.getElementById('newsForm').reset();
+    document.getElementById('news_id').value = "";
     
-    const titleEn = document.getElementById("title_en").value.trim();
-    const titleBn = document.getElementById("title_bn").value.trim();
-    const category = document.getElementById("category").value;
-    const location = document.getElementById("location").value;
-    const image = document.getElementById("image");
-    const editId = document.getElementById("editId").value;
+    quillEn.root.innerHTML = "<p><br></p>";
+    quillBn.root.innerHTML = "<p><br></p>";
+    document.getElementById('title_en').value = "";
+    document.getElementById('title_bn').value = "";
     
-    // Get Quill content
-    let descriptionEn = quillEditorEn ? quillEditorEn.root.innerHTML : '';
-    let descriptionBn = quillEditorBn ? quillEditorBn.root.innerHTML : '';
+    document.getElementById('imagePreview').innerHTML = "";
+    const breakingCheckbox = document.querySelector('[name="is_breaking"]');
+    if (breakingCheckbox) breakingCheckbox.checked = false;
     
-    // Validate description
-    if (!descriptionEn || descriptionEn === '<p><br></p>' || descriptionEn.trim() === '') {
-        switchLanguage('en');
-        Swal.fire('Validation Error', 'English description is required', 'error');
-        return false;
-    }
+    setTimeout(() => {
+        quillEn.root.style.minHeight = "250px";
+        quillBn.root.style.minHeight = "250px";
+    }, 50);
     
-    if (!descriptionBn || descriptionBn === '<p><br></p>' || descriptionBn.trim() === '') {
-        switchLanguage('bn');
-        Swal.fire('Validation Error', 'Bangla description is required', 'error');
-        return false;
-    }
-    
-    // Add hidden fields for descriptions
-    let hiddenDescEn = document.getElementById('descriptionEnHidden');
-    if (!hiddenDescEn) {
-        hiddenDescEn = document.createElement('input');
-        hiddenDescEn.type = 'hidden';
-        hiddenDescEn.name = 'description_en';
-        hiddenDescEn.id = 'descriptionEnHidden';
-        this.appendChild(hiddenDescEn);
-    }
-    hiddenDescEn.value = descriptionEn;
-    
-    let hiddenDescBn = document.getElementById('descriptionBnHidden');
-    if (!hiddenDescBn) {
-        hiddenDescBn = document.createElement('input');
-        hiddenDescBn.type = 'hidden';
-        hiddenDescBn.name = 'description_bn';
-        hiddenDescBn.id = 'descriptionBnHidden';
-        this.appendChild(hiddenDescBn);
-    }
-    hiddenDescBn.value = descriptionBn;
-    
-    // Validate required fields
-    if (!titleEn) {
-        switchLanguage('en');
-        Swal.fire('Validation Error', 'English news title is required', 'error');
-        return false;
-    }
-    
-    if (!titleBn) {
-        switchLanguage('bn');
-        Swal.fire('Validation Error', 'Bangla news title is required', 'error');
-        return false;
-    }
-    
-    if (!category) {
-        Swal.fire('Validation Error', 'Please select a category', 'error');
-        return false;
-    }
-    
-    if (!location) {
-        Swal.fire('Validation Error', 'Please select a location', 'error');
-        return false;
-    }
-    
-    if (!editId && (!image || image.files.length === 0)) {
-        Swal.fire('Image Required', 'Please upload an image for the news article', 'error');
-        return false;
-    }
-    
-    // Show loading state
-    const saveBtn = document.getElementById("saveBtn");
-    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Publishing...';
-    saveBtn.disabled = true;
-    
-    this.submit();
+    document.getElementById('editorSection').style.display = 'block';
+    document.getElementById('listSection').style.display = 'none';
+}
+
+function closeEditor() {
+    document.getElementById('editorSection').style.display = 'none';
+    document.getElementById('listSection').style.display = 'block';
+}
+
+document.getElementById('newsForm').addEventListener('submit', function() {
+    document.getElementById('hidden_desc_en').value = quillEn.root.innerHTML;
+    document.getElementById('hidden_desc_bn').value = quillBn.root.innerHTML;
 });
 
-// Reset modal on close
-document.getElementById('newsModal').addEventListener('hidden.bs.modal', function() {
-    resetFormToAdd();
-    if (quillEditorEn) quillEditorEn.root.innerHTML = '';
-    if (quillEditorBn) quillEditorBn.root.innerHTML = '';
-    clearImagePreview();
-    document.getElementById("editId").value = "";
-    document.getElementById("saveBtn").innerHTML = '<i class="fas fa-check-circle me-1"></i> Publish News';
-    document.getElementById("saveBtn").disabled = false;
-    switchLanguage('en');
-});
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    if (input.files && input.files[0]) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(input.files[0]);
+        img.style.maxWidth = '150px';
+        img.style.marginTop = '10px';
+        img.style.borderRadius = '8px';
+        img.style.border = '1px solid var(--border)';
+        preview.appendChild(img);
+    }
+}
 
-// Close on escape key
+function editNews(id) {
+    fetch(`/news/get/${id}/`)
+        .then(r => r.json())
+        .then(data => {
+            openEditor();
+            
+            document.getElementById('news_id').value = data.id;
+            document.getElementById('title_en').value = data.title_en || '';
+            document.getElementById('title_bn').value = data.title_bn || '';
+            
+            quillEn.root.innerHTML = data.description_en || '<p><br></p>';
+            quillBn.root.innerHTML = data.description_bn || '<p><br></p>';
+            
+            const categorySelect = document.querySelector('[name="category"]');
+            if (categorySelect) categorySelect.value = data.category;
+            
+            const locationSelect = document.querySelector('[name="location"]');
+            if (locationSelect) locationSelect.value = data.location;
+            
+            const breakingCheckbox = document.querySelector('[name="is_breaking"]');
+            if (breakingCheckbox) breakingCheckbox.checked = data.is_breaking;
+            
+            if (data.image) {
+                document.getElementById('imagePreview').innerHTML = 
+                    `<img src="${data.image}" style="max-width:150px;margin-top:10px;border-radius:8px;border:1px solid var(--border);">`;
+            }
+        })
+        .catch(error => console.error('Error loading news:', error));
+}
+
+function deleteNews(id) {
+    if (confirm("Delete this news?")) {
+        fetch(`/news/delete/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete news');
+        });
+    }
+}
+
+// Add keyboard shortcut for manual translation (Ctrl+Shift+T)
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && bsModal) {
-        bsModal.hide();
+    if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+        e.preventDefault();
+        // Force manual translation
+        const banglaContent = quillBn.root.innerHTML;
+        if (banglaContent && banglaContent !== '<p><br></p>') {
+            showTranslatingIndicator(true);
+            translateBanglaToEnglish(banglaContent).then(translated => {
+                quillEn.root.innerHTML = translated || '<p><br></p>';
+                showTranslatingIndicator(false);
+            });
+        }
     }
 });
 </script>
 
-{% endblock js %}
+{% endblock %}

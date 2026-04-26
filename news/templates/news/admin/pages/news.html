@@ -3,6 +3,7 @@
 {% block main %}
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <style>
 :root {
@@ -48,6 +49,10 @@ body {
 .btn-danger:hover { background: #b91c1c; }
 .btn-outline { border: 1px solid var(--border); background: white; }
 .btn-outline:hover { background: #f8fafc; }
+.btn-success { background: #10b981; color: white; }
+.btn-success:hover { background: #059669; }
+.btn-warning { background: #f59e0b; color: white; }
+.btn-warning:hover { background: #d97706; }
 
 .input, .select {
     width: 100%;
@@ -56,9 +61,33 @@ body {
     border-radius: 8px;
 }
 
+/* Multi-select styling */
+select[multiple] {
+    min-height: 120px;
+    padding: 8px;
+}
+
+select[multiple] option {
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin: 2px 0;
+    cursor: pointer;
+}
+
+select[multiple] option:hover {
+    background: #e2e8f0;
+}
+
+select[multiple] option:checked {
+    background: var(--primary);
+    color: white;
+}
+
 label {
     font-size: 13px;
     font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
 }
 
 table {
@@ -88,6 +117,11 @@ th, td {
 
 .container { padding: 20px; }
 .flex { display: flex; gap: 10px; }
+.flex-wrap { flex-wrap: wrap; }
+.mt-2 { margin-top: 10px; }
+.mb-2 { margin-bottom: 10px; }
+.w-100 { width: 100%; }
+.d-none { display: none; }
 
 /* Quill editor customizations */
 .ql-editor {
@@ -128,13 +162,132 @@ th, td {
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
+/* Poll Section Styles */
+.poll-section {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 12px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.poll-header-toggle {
+    background: #fef9c3;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.poll-header-toggle:hover {
+    background: #fde047;
+}
+
+.poll-header-toggle h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.poll-header-toggle i {
+    color: #eab308;
+}
+
+.toggle-icon {
+    transition: transform 0.3s;
+}
+
+.poll-body {
+    padding: 16px;
+    display: none;
+}
+
+.poll-body.show {
+    display: block;
+}
+
+.poll-option-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.poll-option-row input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.poll-option-row .remove-option {
+    background: #fee2e2;
+    color: var(--danger);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.poll-option-row .remove-option:hover {
+    background: #fecaca;
+}
+
+.add-option-btn {
+    background: #f3f4f6;
+    border: 1px dashed var(--border);
+    padding: 8px;
+    border-radius: 8px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.add-option-btn:hover {
+    background: #e5e7eb;
+}
+
+.help-text {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+/* Bangla first indicator */
+.bangla-first-badge {
+    background: #8b5cf6;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+/* Tag badge styling */
+.tag-badge {
+    display: inline-block;
+    background: #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    margin: 2px;
+}
 </style>
 
 <!-- HEADER -->
 <div class="admin-header">
     <div>
         <h3>News Manager</h3>
-        <small style="color:var(--muted)">Create and manage articles</small>
     </div>
 
     <button class="btn btn-primary" onclick="openEditor()">
@@ -145,7 +298,7 @@ th, td {
 <div class="container">
 
 <!-- EDITOR -->
-<div id="editorSection" style="display:none;">
+<div id="editorSection" class="d-none">
 <div class="card">
 <form method="POST" enctype="multipart/form-data" id="newsForm">
     {% csrf_token %}
@@ -158,25 +311,87 @@ th, td {
 
         <div class="flex">
             <div style="flex:2">
-                <label>Title BN</label>
+                <!-- বাংলা টাইটেল প্রথমে -->
+                <label>Title BN <span class="bangla-first-badge">Bangla First</span></label>
                 <input class="input" name="title_bn" id="title_bn" placeholder="বাংলা শিরোনাম (Bangla Title)" onkeyup="liveTranslateTitle()">
 
-                <label>Title EN <span class="live-translate-badge">Live Translate</span></label>
-                <input class="input" name="title_en" id="title_en" placeholder="English title" readonly style="background:#f8fafc;">
+                <label>Title EN (Auto Translated)</label>
+                <input class="input" name="title_en" id="title_en" placeholder="English title (auto)" readonly style="background:#f8fafc;">
+                
+                <br><br>
+
+                <!-- ========== POLL SECTION (OPTIONAL - TOGGLE) ========== -->
+                <div class="poll-section" id="pollSection">
+                    <div class="poll-header-toggle" onclick="togglePollSection()">
+                        <h4>
+                            <i class="fas fa-chart-pie"></i>
+                            Add Poll / Survey (Optional)
+                        </h4>
+                        <i class="fas fa-chevron-down toggle-icon" id="pollToggleIcon"></i>
+                    </div>
+                    <div class="poll-body" id="pollBody">
+                        <!-- Poll Question - বাংলা প্রথমে -->
+                        <div class="flex" style="gap: 15px; margin-bottom: 15px;">
+                            <div style="flex:1">
+                                <label>Poll Question (Bangla) <span class="bangla-first-badge">Bangla First</span></label>
+                                <input type="text" name="poll_question_bn" id="poll_question_bn" class="input" placeholder="বাংলায় প্রশ্ন" onkeyup="autoTranslatePollQuestion()">
+                            </div>
+                            <div style="flex:1">
+                                <label>Poll Question (English)</label>
+                                <input type="text" name="poll_question_en" id="poll_question_en" class="input" placeholder="English question" readonly style="background:#f8fafc;">
+                            </div>
+                        </div>
+
+                        <!-- Poll Options Container - বাংলা প্রথমে -->
+                        <label>Poll Options <span class="bangla-first-badge">Bangla First</span></label>
+                        <div id="pollOptionsContainer">
+                            <div class="poll-option-row" data-option-index="0">
+                                <input type="text" name="option_bn[]" class="option-bn" placeholder="Option BN" onkeyup="autoTranslateOption(this, 0)">
+                                <input type="text" name="option_en[]" class="option-en" placeholder="Option EN (auto)" readonly style="background:#f8fafc;">
+                                <button type="button" class="remove-option" onclick="removeOptionRow(this)" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <div class="poll-option-row" data-option-index="1">
+                                <input type="text" name="option_bn[]" class="option-bn" placeholder="Option BN" onkeyup="autoTranslateOption(this, 1)">
+                                <input type="text" name="option_en[]" class="option-en" placeholder="Option EN (auto)" readonly style="background:#f8fafc;">
+                                <button type="button" class="remove-option" onclick="removeOptionRow(this)" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="add-option-btn" onclick="addOptionRow()">
+                            <i class="fas fa-plus"></i> Add Option
+                        </div>
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i> Poll is completely optional. Leave empty if you don't want to add a poll.
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div style="flex:1">
                 <label>Category</label>
                 <select class="select" name="category">
+                    <option value="">Select Category</option>
                     {% for c in categories %}
-                    <option value="{{ c.id }}">{{ c.name_en }}</option>
+                    <option value="{{ c.id }}">{{ c.name_en }} ({{ c.name_bn }})</option>
                     {% endfor %}
                 </select>
 
                 <label>Location</label>
                 <select class="select" name="location">
+                    <option value="">Select Location</option>
                     {% for l in locations %}
-                    <option value="{{ l.id }}">{{ l.name_en }}</option>
+                    <option value="{{ l.id }}">{{ l.name_en }} ({{ l.name_bn }})</option>
+                    {% endfor %}
+                </select>
+
+                <label>Tags (Hold Ctrl/Cmd to select multiple)</label>
+                <select class="select" name="tags" multiple size="5">
+                    {% for t in tags %}
+                    <option value="{{ t.id }}">{{ t.name_en }} ({{ t.name_bn }})</option>
                     {% endfor %}
                 </select>
 
@@ -185,7 +400,6 @@ th, td {
                 </label>
             </div>
         </div>
-
         <br>
 
         <label>Feature Image</label>
@@ -198,21 +412,15 @@ th, td {
 
         <br>
 
-        <!-- Content BN - User writes here -->
-        <label>Content BN (Write in Bangla)</label>
-        <div id="editor_bn"></div>
-        <small style="color: var(--muted); font-size: 11px;">
-            <i class="fas fa-arrow-right"></i> Type in Bangla - English translation appears above instantly
-        </small>       
+        <!-- ========== বাংলা কন্টেন্ট প্রথমে ========== -->
+        <label>Content BN (Write in Bangla) <span class="bangla-first-badge">Bangla First</span></label>
+        <div id="editor_bn"></div>    
 
         <br><br>
 
-         <!-- Content EN - Live translated output -->
-        <label>Content EN <span class="live-translate-badge">Live Translate (Bangla → English)</span></label>
+        <!-- ========== ইংরেজি কন্টেন্ট (স্বয়ংক্রিয় অনুবাদ) ========== -->
+        <label>Content EN (Auto Translated)</label>
         <div id="editor_en" style="background:#fafafa;"></div>
-        <small style="color: var(--muted); font-size: 11px;">
-            <i class="fas fa-language"></i> This field updates automatically as you type in Bangla below
-        </small>
 
         <br>
 
@@ -238,6 +446,8 @@ th, td {
 <th>Description BN</th>
 <th>Description EN</th>
 <th>Breaking</th>
+<th>Tags</th>
+<th>Poll</th>
 <th>Actions</th>
 </tr>
 </thead>
@@ -252,13 +462,26 @@ th, td {
 <td>{{ n.description_en|safe|truncatewords:8 }}</td>
 <td>{% if n.is_breaking %} 🔴 Yes {% else %} No {% endif %}</td>
 <td>
-<button class="btn btn-outline" onclick="editNews({{ n.id }})">Edit</button>
-<button class="btn btn-danger" onclick="deleteNews({{ n.id }})">Delete</button>
+    {% for tag in n.tags.all %}
+    <span class="tag-badge">{{ tag.name_en }}</span>
+    {% empty %}
+    <span style="color:#9ca3af;">No tags</span>
+    {% endfor %}
+</td>
+<td>
+    {% if n.has_poll %}
+        <i class="fas fa-check-circle" style="color:#10b981"></i> Yes
+    {% else %}
+        <i class="fas fa-times-circle" style="color:#9ca3af"></i> No
+    {% endif %}
+</td>
+<td>
+    <button class="btn btn-outline" onclick="editNews({{ n.id }})">Edit</button>
+    <button class="btn btn-danger" onclick="deleteNews({{ n.id }})">Delete</button>
 </td>
 </tr>
 {% endfor %}
 </tbody>
-
 </table>
 </div>
 </div>
@@ -272,48 +495,57 @@ th, td {
 </div>
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-// Custom alignments for Quill (including justify)
+// Initialize Select2 for tags
+$(document).ready(function() {
+    $('[name="tags"]').select2({
+        placeholder: "Select tags (multiple allowed)",
+        allowClear: true,
+        width: '100%',
+        closeOnSelect: false,
+        language: {
+            noResults: function() {
+                return "No tags found";
+            }
+        }
+    });
+});
+
+// Custom alignments for Quill
 const AlignStyle = Quill.import('attributors/style/align');
 AlignStyle.whitelist = ['left', 'center', 'right', 'justify'];
 Quill.register(AlignStyle, true);
 
-// Toolbar with justify and image options
 const toolbarOptions = [
     [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
     ['bold', 'italic', 'underline', 'strike'],
-    [{ 'align': ['left', 'center', 'right', 'justify'] }],  // Justify option included
+    [{ 'align': ['left', 'center', 'right', 'justify'] }],
     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
     ['link', 'image', 'video'],
     ['clean']
 ];
 
 // Initialize Quill editors
-const quillEn = new Quill('#editor_en', { 
-    theme: 'snow',
-    modules: {
-        toolbar: toolbarOptions
-    },
-    placeholder: 'English translation will appear here automatically as you type Bangla...',
-    readOnly: false
-});
-
 const quillBn = new Quill('#editor_bn', { 
     theme: 'snow',
-    modules: {
-        toolbar: toolbarOptions
-    },
+    modules: { toolbar: toolbarOptions },
     placeholder: 'এখানে বাংলায় লিখুন... (Type your Bangla content here)'
 });
 
-// Make English editor readable but not directly editable
-// Users can still edit if needed, but it's auto-filled
+const quillEn = new Quill('#editor_en', { 
+    theme: 'snow',
+    modules: { toolbar: toolbarOptions },
+    placeholder: 'English translation will appear here automatically...',
+    readOnly: false
+});
+
 quillEn.enable(true);
 
-// Translation function using Google Translate API
 let translationTimeout;
-let isTranslating = false;
+let optionTranslationTimeouts = {};
 
 function showTranslatingIndicator(show) {
     const indicator = document.getElementById('translatingIndicator');
@@ -326,13 +558,13 @@ function showTranslatingIndicator(show) {
     }
 }
 
+// Translate Bangla to English
 async function translateBanglaToEnglish(banglaText) {
     if (!banglaText || banglaText.trim() === '' || banglaText === '<p><br></p>') {
         return '';
     }
     
     try {
-        // Remove HTML tags for translation, but we'll preserve structure
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = banglaText;
         const plainText = tempDiv.textContent || tempDiv.innerText || '';
@@ -341,15 +573,12 @@ async function translateBanglaToEnglish(banglaText) {
             return '';
         }
         
-        // Using Google Translate API
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(plainText)}`;
         const response = await fetch(url);
         const data = await response.json();
         const translatedText = data[0].map(item => item[0]).join('');
         
-        // Preserve basic HTML structure (paragraphs)
         if (banglaText.includes('<p>') || banglaText.includes('<div>') || banglaText.includes('<br>')) {
-            // Split by double newlines or paragraphs
             const paragraphs = translatedText.split(/\n+/);
             let htmlResult = '';
             for (let para of paragraphs) {
@@ -368,7 +597,24 @@ async function translateBanglaToEnglish(banglaText) {
     }
 }
 
-// Live title translation
+// Translate Bangla to English for short text (title/options)
+async function translateBanglaToEnglishShort(banglaText) {
+    if (!banglaText || banglaText.trim() === '') {
+        return '';
+    }
+    
+    try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(banglaText)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data[0].map(item => item[0]).join('');
+    } catch (error) {
+        console.error('Translation error:', error);
+        return banglaText;
+    }
+}
+
+// Live title translation (Bangla to English)
 async function liveTranslateTitle() {
     const banglaTitle = document.getElementById('title_bn').value;
     if (!banglaTitle.trim()) {
@@ -376,73 +622,70 @@ async function liveTranslateTitle() {
         return;
     }
     
-    try {
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(banglaTitle)}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const translatedTitle = data[0].map(item => item[0]).join('');
-        document.getElementById('title_en').value = translatedTitle;
-    } catch (error) {
-        console.error('Title translation error:', error);
-    }
+    const translatedTitle = await translateBanglaToEnglishShort(banglaTitle);
+    document.getElementById('title_en').value = translatedTitle;
 }
 
-// Live content translation with debouncing
+// Auto translate poll question from Bangla to English
+async function autoTranslatePollQuestion() {
+    const bnQuestion = document.getElementById('poll_question_bn').value;
+    if (!bnQuestion.trim()) {
+        document.getElementById('poll_question_en').value = '';
+        return;
+    }
+    
+    const translated = await translateBanglaToEnglishShort(bnQuestion);
+    document.getElementById('poll_question_en').value = translated;
+}
+
+// Auto translate option from Bangla to English with debounce
+function autoTranslateOption(inputElement, index) {
+    clearTimeout(optionTranslationTimeouts[index]);
+    const bnValue = inputElement.value;
+    
+    if (!bnValue.trim()) {
+        const enInput = document.querySelectorAll('.option-en')[index];
+        if (enInput) enInput.value = '';
+        return;
+    }
+    
+    optionTranslationTimeouts[index] = setTimeout(async () => {
+        const translated = await translateBanglaToEnglishShort(bnValue);
+        const enInput = document.querySelectorAll('.option-en')[index];
+        if (enInput) enInput.value = translated;
+    }, 400);
+}
+
+// Live content translation (Bangla to English)
 function setupLiveTranslation() {
     let debounceTimer;
     
     quillBn.on('text-change', function(delta, oldDelta, source) {
         if (source === 'user') {
-            // Clear previous timer
             clearTimeout(debounceTimer);
-            
-            // Show indicator that translation is pending
             showTranslatingIndicator(true);
             
-            // Set new timer - translate after user stops typing for 500ms
             debounceTimer = setTimeout(async () => {
                 const banglaContent = quillBn.root.innerHTML;
                 const banglaText = quillBn.getText();
                 
                 if (banglaText.trim()) {
                     const translatedHtml = await translateBanglaToEnglish(banglaContent);
-                    
-                    // Store current cursor position
                     const selection = quillEn.getSelection();
-                    
-                    // Update English editor
                     quillEn.root.innerHTML = translatedHtml || '<p><br></p>';
-                    
-                    // Restore cursor position if possible
                     if (selection) {
-                        try {
-                            quillEn.setSelection(selection.index, selection.length);
-                        } catch(e) {}
+                        try { quillEn.setSelection(selection.index, selection.length); } catch(e) {}
                     }
                 } else {
                     quillEn.root.innerHTML = '<p><br></p>';
                 }
-                
                 showTranslatingIndicator(false);
-            }, 500); // 500ms delay for live typing feel
+            }, 500);
         }
     });
 }
 
-// Also translate when content is pasted
-quillBn.on('editor-change', function(eventName, ...args) {
-    if (eventName === 'text-change') {
-        // Already handled by text-change
-    }
-});
-
-// Setup live title translation on input
-document.getElementById('title_bn').addEventListener('input', liveTranslateTitle);
-
-// Initialize live translation
-setupLiveTranslation();
-
-// Custom image upload handler for Quill editors
+// Image upload handler
 function addImageUploadHandler(quillInstance) {
     const toolbar = quillInstance.getModule('toolbar');
     toolbar.addHandler('image', () => {
@@ -465,9 +708,7 @@ function addImageUploadHandler(quillInstance) {
                     const response = await fetch('/news/upload-image/', {
                         method: 'POST',
                         body: formData,
-                        headers: {
-                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                        }
+                        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
                     });
                     const data = await response.json();
                     
@@ -487,16 +728,173 @@ function addImageUploadHandler(quillInstance) {
     });
 }
 
-// Add image handlers to both editors
 addImageUploadHandler(quillEn);
 addImageUploadHandler(quillBn);
 
+// ========== POLL SECTION FUNCTIONS ==========
+let optionCounter = 2;
+
+function togglePollSection() {
+    const pollBody = document.getElementById('pollBody');
+    const toggleIcon = document.getElementById('pollToggleIcon');
+    
+    pollBody.classList.toggle('show');
+    if (pollBody.classList.contains('show')) {
+        toggleIcon.classList.remove('fa-chevron-down');
+        toggleIcon.classList.add('fa-chevron-up');
+    } else {
+        toggleIcon.classList.remove('fa-chevron-up');
+        toggleIcon.classList.add('fa-chevron-down');
+    }
+}
+
+function addOptionRow() {
+    const container = document.getElementById('pollOptionsContainer');
+    const currentRows = container.querySelectorAll('.poll-option-row').length;
+    
+    if (currentRows >= 6) {
+        alert('Maximum 6 options allowed');
+        return;
+    }
+    
+    const newIndex = optionCounter++;
+    const newRow = document.createElement('div');
+    newRow.className = 'poll-option-row';
+    newRow.setAttribute('data-option-index', newIndex);
+    newRow.innerHTML = `
+        <input type="text" name="option_bn[]" class="option-bn" placeholder="Option BN" onkeyup="autoTranslateOption(this, ${newIndex})">
+        <input type="text" name="option_en[]" class="option-en" placeholder="Option EN (auto)" readonly style="background:#f8fafc;">
+        <button type="button" class="remove-option" onclick="removeOptionRow(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(newRow);
+    updateRemoveButtons();
+}
+
+function removeOptionRow(btn) {
+    const row = btn.closest('.poll-option-row');
+    const container = document.getElementById('pollOptionsContainer');
+    const currentRows = container.querySelectorAll('.poll-option-row');
+    
+    if (currentRows.length <= 2) {
+        alert('Minimum 2 options required');
+        return;
+    }
+    
+    row.remove();
+    updateRemoveButtons();
+}
+
+function updateRemoveButtons() {
+    const container = document.getElementById('pollOptionsContainer');
+    const rows = container.querySelectorAll('.poll-option-row');
+    const removeBtns = container.querySelectorAll('.remove-option');
+    
+    removeBtns.forEach(btn => {
+        if (rows.length <= 2) {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    });
+}
+
+async function loadPollDataIntoForm(pollData, optionsData) {
+    if (pollData && pollData.poll_question_bn) {
+        document.getElementById('poll_question_bn').value = pollData.poll_question_bn || '';
+        document.getElementById('poll_question_en').value = pollData.poll_question_en || '';
+        
+        const pollBody = document.getElementById('pollBody');
+        const toggleIcon = document.getElementById('pollToggleIcon');
+        if (!pollBody.classList.contains('show')) {
+            pollBody.classList.add('show');
+            toggleIcon.classList.remove('fa-chevron-down');
+            toggleIcon.classList.add('fa-chevron-up');
+        }
+        
+        const container = document.getElementById('pollOptionsContainer');
+        const rows = container.querySelectorAll('.poll-option-row');
+        for (let i = rows.length - 1; i >= 0; i--) {
+            if (i >= 2) {
+                rows[i].remove();
+            }
+        }
+        
+        if (optionsData && optionsData.length) {
+            for (let idx = 0; idx < optionsData.length; idx++) {
+                const opt = optionsData[idx];
+                if (idx < 2) {
+                    const bnInput = document.querySelectorAll('.option-bn')[idx];
+                    const enInput = document.querySelectorAll('.option-en')[idx];
+                    if (bnInput) bnInput.value = opt.option_bn || '';
+                    if (enInput) enInput.value = opt.option_en || '';
+                } else {
+                    const newRow = document.createElement('div');
+                    newRow.className = 'poll-option-row';
+                    newRow.setAttribute('data-option-index', optionCounter++);
+                    newRow.innerHTML = `
+                        <input type="text" name="option_bn[]" class="option-bn" placeholder="Option BN" onkeyup="autoTranslateOption(this, ${optionCounter-1})" value="${escapeHtml(opt.option_bn || '')}">
+                        <input type="text" name="option_en[]" class="option-en" placeholder="Option EN (auto)" readonly style="background:#f8fafc;" value="${escapeHtml(opt.option_en || '')}">
+                        <button type="button" class="remove-option" onclick="removeOptionRow(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    container.appendChild(newRow);
+                }
+            }
+        }
+        updateRemoveButtons();
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function resetPollForm() {
+    document.getElementById('poll_question_bn').value = '';
+    document.getElementById('poll_question_en').value = '';
+    
+    const container = document.getElementById('pollOptionsContainer');
+    const rows = container.querySelectorAll('.poll-option-row');
+    for (let i = rows.length - 1; i >= 0; i--) {
+        if (i >= 2) {
+            rows[i].remove();
+        }
+    }
+    
+    const bnInputs = document.querySelectorAll('.option-bn');
+    const enInputs = document.querySelectorAll('.option-en');
+    if (bnInputs[0]) bnInputs[0].value = '';
+    if (enInputs[0]) enInputs[0].value = '';
+    if (bnInputs[1]) bnInputs[1].value = '';
+    if (enInputs[1]) enInputs[1].value = '';
+    
+    const pollBody = document.getElementById('pollBody');
+    const toggleIcon = document.getElementById('pollToggleIcon');
+    if (pollBody.classList.contains('show')) {
+        pollBody.classList.remove('show');
+        toggleIcon.classList.remove('fa-chevron-up');
+        toggleIcon.classList.add('fa-chevron-down');
+    }
+}
+
+// Editor functions
 function openEditor() {
     document.getElementById('newsForm').reset();
     document.getElementById('news_id').value = "";
     
-    quillEn.root.innerHTML = "<p><br></p>";
     quillBn.root.innerHTML = "<p><br></p>";
+    quillEn.root.innerHTML = "<p><br></p>";
     document.getElementById('title_en').value = "";
     document.getElementById('title_bn').value = "";
     
@@ -504,17 +902,24 @@ function openEditor() {
     const breakingCheckbox = document.querySelector('[name="is_breaking"]');
     if (breakingCheckbox) breakingCheckbox.checked = false;
     
+    // Clear Select2 selection
+    if ($('[name="tags"]').length) {
+        $('[name="tags"]').val(null).trigger('change');
+    }
+    
+    resetPollForm();
+    
     setTimeout(() => {
-        quillEn.root.style.minHeight = "250px";
         quillBn.root.style.minHeight = "250px";
+        quillEn.root.style.minHeight = "250px";
     }, 50);
     
-    document.getElementById('editorSection').style.display = 'block';
+    document.getElementById('editorSection').classList.remove('d-none');
     document.getElementById('listSection').style.display = 'none';
 }
 
 function closeEditor() {
-    document.getElementById('editorSection').style.display = 'none';
+    document.getElementById('editorSection').classList.add('d-none');
     document.getElementById('listSection').style.display = 'block';
 }
 
@@ -547,14 +952,21 @@ function editNews(id) {
             document.getElementById('title_en').value = data.title_en || '';
             document.getElementById('title_bn').value = data.title_bn || '';
             
-            quillEn.root.innerHTML = data.description_en || '<p><br></p>';
             quillBn.root.innerHTML = data.description_bn || '<p><br></p>';
+            quillEn.root.innerHTML = data.description_en || '<p><br></p>';
             
             const categorySelect = document.querySelector('[name="category"]');
             if (categorySelect) categorySelect.value = data.category;
             
             const locationSelect = document.querySelector('[name="location"]');
             if (locationSelect) locationSelect.value = data.location;
+            
+            // ✅ Handle multi-select tags with Select2
+            if (data.tags && data.tags.length) {
+                $('[name="tags"]').val(data.tags).trigger('change');
+            } else {
+                $('[name="tags"]').val(null).trigger('change');
+            }
             
             const breakingCheckbox = document.querySelector('[name="is_breaking"]');
             if (breakingCheckbox) breakingCheckbox.checked = data.is_breaking;
@@ -563,6 +975,12 @@ function editNews(id) {
                 document.getElementById('imagePreview').innerHTML = 
                     `<img src="${data.image}" style="max-width:150px;margin-top:10px;border-radius:8px;border:1px solid var(--border);">`;
             }
+            
+            const pollData = {
+                poll_question_bn: data.poll_question_bn,
+                poll_question_en: data.poll_question_en
+            };
+            loadPollDataIntoForm(pollData, data.options || []);
         })
         .catch(error => console.error('Error loading news:', error));
 }
@@ -587,21 +1005,9 @@ function deleteNews(id) {
     }
 }
 
-// Add keyboard shortcut for manual translation (Ctrl+Shift+T)
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.shiftKey && e.key === 'T') {
-        e.preventDefault();
-        // Force manual translation
-        const banglaContent = quillBn.root.innerHTML;
-        if (banglaContent && banglaContent !== '<p><br></p>') {
-            showTranslatingIndicator(true);
-            translateBanglaToEnglish(banglaContent).then(translated => {
-                quillEn.root.innerHTML = translated || '<p><br></p>';
-                showTranslatingIndicator(false);
-            });
-        }
-    }
-});
+// Initialize
+setupLiveTranslation();
+updateRemoveButtons();
 </script>
 
 {% endblock %}

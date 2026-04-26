@@ -10,16 +10,109 @@
 
 .navbar-nav .nav-link {
   font-weight: 600;
-  font-size: 1.1rem;
-  padding: 1rem 1rem;
+  font-size: 1rem;
+  padding: 1rem 0.8rem;
   color: #2d3e50;
   transition: 0.2s;
+  white-space: nowrap;
 }
 
 .navbar-nav .nav-link:hover, 
 .navbar-nav .nav-link.active {
   color: var(--primary-red);
   border-bottom: 2px solid var(--primary-red);
+}
+
+/* Dropdown styles */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-item.active, .dropdown-item:active{
+  background: #dc2626;
+}
+
+.dropdown-item {
+  font-weight: 500;
+  padding: 0.6rem 1.5rem;
+  color: #2d3e50;
+  transition: 0.2s;
+  font-size: 0.95rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: var(--primary-red);
+  padding-left: 1.8rem;
+}
+
+.dropdown-toggle::after {
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+/* More dropdown indicator */
+.more-dropdown {
+  color: var(--primary-red) !important;
+  font-weight: 600;
+}
+
+.badge-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ef4444;
+  color: white;
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 10px;
+  margin-top: 8px;
+  margin-right: 5px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .navbar-nav .nav-link {
+    padding: 1rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .dropdown-menu {
+    position: static !important;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+    padding-left: 1rem;
+    max-height: none;
+  }
+  
+  .dropdown-item:hover {
+    padding-left: 1rem;
+  }
+  
+  .nav-item.dropdown:hover .dropdown-menu {
+    display: none;
+  }
+  
+  .nav-item.dropdown.show .dropdown-menu {
+    display: block;
+  }
 }
 </style>
 
@@ -31,31 +124,78 @@
     </button>
 
     <div class="collapse navbar-collapse" id="mainNavbar">
-
-      <!-- MENU -->
       <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
-        <li class="nav-item"><a class="nav-link {% if active_url == 'home' %}active{% endif %}" href="{% url 'home' %}">{% if current_language == 'bn' %} হোম {% else %} Home {% endif %} </a></li>
-        {% for cat in categories %}
-          {% if current_language == 'en' %}
-            <li class="nav-item"><a class="nav-link {% if active_url == cat.slug %}active{% endif %}" href="{% url 'category_news' cat.slug %}">{{ cat.name_en }}</a></li>
-          {% else %}
-            <li class="nav-item"><a class="nav-link {% if active_url == cat.slug %}active{% endif %}" href="{% url 'category_news' cat.slug %}">{{ cat.name_bn }}</a></li>
-          {% endif %}
-        {% endfor %}
+        <li class="nav-item">
+          <a class="nav-link {% if active_url == 'home' %}active{% endif %}" href="{% url 'home' %}">
+            {% if current_language == 'bn' %} হোম {% else %} Home {% endif %}
+          </a>
+        </li>
+        {% with category_list=categories %}
+          {% for cat in category_list %}
+            {% if forloop.counter <= 10 %}
+              <!-- প্রথম ১০টি ক্যাটাগরি -->
+              <li class="nav-item">
+                <a class="nav-link {% if active_url == cat.slug %}active{% endif %}" 
+                   href="{% url 'category_news' cat.slug %}">
+                  {% if current_language == 'en' %}
+                    {{ cat.name_en|truncatechars:15 }}
+                  {% else %}
+                    {{ cat.name_bn|truncatechars:12 }}
+                  {% endif %}
+                </a>
+              </li>
+            {% elif forloop.counter == 11 %}
+              <!-- বাকি ক্যাটাগরিগুলোর জন্য 'আরও' ড্রপডাউন -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle more-dropdown" href="#" id="moreDropdown" 
+                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  {% if current_language == 'bn' %} আরও {% else %} More {% endif %}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreDropdown">
+                  {% for remaining_cat in category_list %}
+                    {% if forloop.counter > 10 %}
+                      <li>
+                        <a class="dropdown-item {% if active_url == remaining_cat.slug %}active{% endif %}" 
+                           href="{% url 'category_news' remaining_cat.slug %}">
+                          {% if current_language == 'en' %}
+                            {{ remaining_cat.name_en }}
+                          {% else %}
+                            {{ remaining_cat.name_bn }}
+                          {% endif %}
+                        </a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+            {% endif %}
+          {% endfor %}
+        {% endwith %}
 
       </ul>
-
-      <!-- SEARCH -->
-      {% comment %} <form class="d-flex" role="search">
-        <input class="form-control form-control-sm rounded-pill me-2"
-               type="search"
-               placeholder="{{ t.search }}">
-        <button class="btn btn-sm btn-outline-danger rounded-pill" type="submit">
-          <i class="fas fa-search"></i>
-        </button>
-      </form> {% endcomment %}
-
     </div>
   </div>
 </nav>
+
+<script>
+// মোবাইলে ড্রপডাউন ঠিকমতো কাজ করার জন্য
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth <= 992) {
+        const dropdowns = document.querySelectorAll('.dropdown-toggle');
+        dropdowns.forEach(dropdown => {
+            dropdown.addEventListener('click', function(e) {
+                e.preventDefault();
+                const parent = this.closest('.dropdown');
+                if (parent) {
+                    parent.classList.toggle('show');
+                    const menu = parent.querySelector('.dropdown-menu');
+                    if (menu) {
+                        menu.classList.toggle('show');
+                    }
+                }
+            });
+        });
+    }
+});
+</script>

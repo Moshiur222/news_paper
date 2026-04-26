@@ -58,6 +58,9 @@
                     <li class="{% if active_url == 'category' %}active{% endif %}">
                         <a href="{% url 'category' %}">Category</a>
                     </li>
+                    <li class="{% if active_url == 'tag' %}active{% endif %}">
+                        <a href="{% url 'tag' %}">Tag</a>
+                    </li>
                     <li class="{% if active_url == 'news' %}active{% endif %}">
                         <a href="{% url 'news' %}">Add News</a>
                     </li>

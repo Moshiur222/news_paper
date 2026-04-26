@@ -7,6 +7,7 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.02);
   position: relative;
   z-index: 99;
+  overflow: visible; /* FIX 🔥 */
 }
 
 .category-scroll {
@@ -16,6 +17,9 @@
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   scrollbar-width: thin;
+  align-items: center;
+  position: relative;
+  overflow: visible; /* FIX 🔥 */
 }
 
 .cat-item {
@@ -34,65 +38,176 @@
 
 .cat-item i {
   margin-right: 6px;
-  color: var(--primary-red);
+  color: var(--primary-red, #dc2626);
 }
 
 .cat-item:hover {
-  background: var(--primary-red);
+  background: var(--primary-red, #dc2626);
   color: #fff;
 }
 .cat-item:hover i {
   color: #fff;
 }
 
-/* Active state for current location */
 .cat-item.active {
-  background: var(--primary-red);
+  background: var(--primary-red, #dc2626);
   color: #fff;
-  border-color: var(--primary-red);
+  border-color: var(--primary-red, #dc2626);
 }
+
 .cat-item.active i {
   color: #fff;
 }
 
-/* Debug styles - remove after fixing */
-.debug-info {
-  font-size: 10px;
-  color: red;
-  margin-left: 5px;
+.more-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.more-btn {
+  background: #f8fafc;
+  border-radius: 40px;
+  padding: 0.4rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-red, #dc2626);
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.more-btn:hover {
+  background: var(--primary-red, #dc2626);
+  color: #fff;
+}
+
+.more-dropdown-content {
+  position: absolute;
+  background: #fff;
+  min-width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  z-index: 1000;
+  top: 100%;
+  left: 0;
+  margin-top: 5px;
+  display: none;
+}
+
+.more-dropdown-content a {
+  color: #1e293b;
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+  font-size: 0.85rem;
+}
+
+.more-dropdown-content a:hover {
+  background: #f1f5f9;
+  color: var(--primary-red, #dc2626);
 }
 </style>
 
 <div class="cat-strip">
   <div class="container-xl px-0 px-md-3">
     <div class="category-scroll">
-      
-      <!-- LOCATION LINKS -->
-      {% if locations %}
-        {% for location in locations %}
-          <a href="{% url 'location_news' location.slug %}" class="cat-item {% if active_url == location.slug %}active{% endif %}">
-            <i class="fas fa-map-marker-alt"></i>
-            {% if current_language == 'en' %}
-              {{ location.name_en }}
-            {% else %}
-              {{ location.name_bn }}
-            {% endif %}
-          </a>
-        {% endfor %}
-      {% else %}
-        <span class="text-muted small">No locations found</span>
+
+      {# ===== SHOW FIRST 6 LOCATIONS ===== #}
+      {% for location in locations|slice:":6" %}
+        <a href="{% url 'location_news' location.slug %}"
+           class="cat-item {% if active_url == location.slug %}active{% endif %}">
+          <i class="fas fa-map-marker-alt"></i>
+          {% if current_language == 'en' %}
+            {{ location.name_en|truncatechars:15 }}
+          {% else %}
+            {{ location.name_bn|truncatechars:12 }}
+          {% endif %}
+        </a>
+      {% endfor %}
+
+      {# ===== SHOW FIRST 5 TAGS ===== #}
+      {% for tag in all_tags|slice:":5" %}
+        <a href="{% url 'tag_news' tag.slug %}"
+           class="cat-item {% if active_url == tag.slug %}active{% endif %}">
+          <i class="fas fa-tag"></i>
+          {% if current_language == 'en' %}
+            {{ tag.name_en|truncatechars:15 }}
+          {% else %}
+            {{ tag.name_bn|truncatechars:12 }}
+          {% endif %}
+        </a>
+      {% endfor %}
+
+      {# ===== DROPDOWN IF EXTRA ITEMS EXIST ===== #}
+      {% if locations|length > 6 or all_tags|length > 5 %}
+        <div class="more-dropdown">
+          <div class="more-btn">
+            <i class="fas fa-ellipsis-h"></i>
+            {% if current_language == 'bn' %}আরও{% else %}More{% endif %}
+            <i class="fas fa-chevron-down"></i>
+          </div>
+
+          <div class="more-dropdown-content">
+
+            {# extra locations #}
+            {% for location in locations|slice:"6:" %}
+              <a href="{% url 'location_news' location.slug %}">
+                <i class="fas fa-map-marker-alt"></i>
+                {% if current_language == 'en' %}
+                  {{ location.name_en }}
+                {% else %}
+                  {{ location.name_bn }}
+                {% endif %}
+              </a>
+            {% endfor %}
+
+            {# extra tags #}
+            {% for tag in all_tags|slice:"5:" %}
+              <a href="{% url 'tag_news' tag.slug %}">
+                <i class="fas fa-tag"></i>
+                {% if current_language == 'en' %}
+                  {{ tag.name_en }}
+                {% else %}
+                  {{ tag.name_bn }}
+                {% endif %}
+              </a>
+            {% endfor %}
+
+          </div>
+        </div>
       {% endif %}
-      
+
     </div>
   </div>
 </div>
 
-<!-- Debug Info (remove in production) -->
-{% if not locations %}
-<div class="container mt-2">
-  <div class="alert alert-warning alert-sm small">
-    <i class="fas fa-exclamation-triangle"></i> 
-    No locations found in database. Please add locations.
-  </div>
-</div>
-{% endif %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const btn = document.querySelectorAll('.more-btn');
+
+  btn.forEach(b => {
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      const dropdown = this.nextElementSibling;
+
+      document.querySelectorAll('.more-dropdown-content').forEach(d => {
+        if (d !== dropdown) d.style.display = 'none';
+      });
+
+      dropdown.style.display =
+        dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+  });
+
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.more-dropdown-content').forEach(d => {
+      d.style.display = 'none';
+    });
+  });
+});
+</script>

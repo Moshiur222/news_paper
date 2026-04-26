@@ -26,10 +26,13 @@ def company_info(request):
     } 
     return context
 
+
 def category(request):
     return {
-        'categories': Category.objects.all().order_by('id')
+        'categories': Category.objects.all().order_by('id'),
+        'all_tags': Tag.objects.all().order_by('id'), 
     }
+
 
 def active_menu(request):
     url_name = ""

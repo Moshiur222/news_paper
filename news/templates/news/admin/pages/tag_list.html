@@ -5,6 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
+        /* Your existing styles remain the same */
         :root {
             --primary-color: #4f46e5;
             --secondary-color: #6366f1;
@@ -91,7 +92,6 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        /* Read-only English input style */
         #name_en {
             background-color: #f9fafb;
             text-transform: capitalize;
@@ -249,7 +249,6 @@
             margin-top: 1.5rem;
         }
 
-        /* Live translation badge */
         .live-translate-badge {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -266,7 +265,6 @@
             100% { opacity: 0.7; transform: scale(1); }
         }
 
-        /* Translate indicator */
         .translate-indicator {
             position: fixed;
             bottom: 20px;
@@ -288,7 +286,6 @@
             font-size: 14px;
         }
 
-        /* Character counter with limit warning */
         .char-counter {
             font-size: 11px;
             color: #6b7280;
@@ -311,7 +308,6 @@
             font-family: monospace;
         }
 
-        /* Limit reached style */
         .is-invalid-limit {
             border-color: #ef4444 !important;
             background-color: #fef2f2 !important;
@@ -378,6 +374,7 @@
 {% endblock css %}
 
 {% block main %}
+<div class="container-fluid main-container">
     <div class="row">
         <!-- Form Section -->
         <div class="col-lg-4 col-md-12" id="formSection" style="display: none;">
@@ -385,17 +382,17 @@
                 <div class="card-header">
                     <h5 id="form-title">
                         <i class="bi bi-plus-circle"></i>
-                        <span id="form-mode-text">Add New Location</span>
+                        <span id="form-mode-text">Add New Tag</span>
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" id="locationForm" novalidate>
+                    <form method="POST" id="tagForm" novalidate>
                         {% csrf_token %}
-                        <input type="hidden" name="location_id" id="location_id">
+                        <input type="hidden" name="tag_id" id="tag_id">
                         
                         <div class="mb-3">
                             <label for="name_bn" class="form-label">
-                                Location Name (বাংলা) 
+                                Tag Name (বাংলা) 
                                 <span class="text-danger">*</span>
                             </label>
                             <input 
@@ -403,7 +400,7 @@
                                 class="form-control" 
                                 id="name_bn" 
                                 name="name_bn" 
-                                placeholder=""
+                                placeholder="e.g., প্রযুক্তি, খেলাধুলা, রাজনীতি"
                                 autocomplete="off"
                                 maxlength="50">
                             <div class="char-counter" id="bnCharCounter">
@@ -420,7 +417,7 @@
 
                         <div class="mb-3">
                             <label for="name_en" class="form-label">
-                                Location Name (English) 
+                                Tag Name (English) 
                                 <span class="text-danger">*</span>
                             </label>
                             <input 
@@ -428,7 +425,7 @@
                                 class="form-control" 
                                 id="name_en" 
                                 name="name_en" 
-                                placeholder=""
+                                placeholder="Auto-translated from Bengali"
                                 readonly
                                 maxlength="50">
                             <div class="char-counter" id="enCharCounter">
@@ -445,10 +442,9 @@
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary flex-grow-1" id="submitBtn">
-                                <span id="submit-text">Add Location</span>
+                                <span id="submit-text">Add Tag</span>
                             </button>
-                            <button type="button" class="btn btn-secondary" onclick="cancelForm()"> Cancel
-                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -460,16 +456,16 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        All Locations
-                        <span class="badge bg-primary ms-2">{{ locations|length }}</span>
+                        <i class="bi bi-tags-fill"></i>
+                        All Tags
+                        <span class="badge bg-primary ms-2">{{ tags|length }}</span>
                     </h5>
                     <button class="btn btn-primary" onclick="showAddForm()">
-                        <i class="bi bi-plus-circle"></i> Add New Location
+                        <i class="bi bi-plus-circle"></i> Add New Tag
                     </button>
                 </div>
                 <div class="card-body p-0">
-                    {% if locations %}
+                    {% if tags %}
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead>
@@ -477,42 +473,42 @@
                                         <th width="5%">#</th>
                                         <th width="30%">English Name</th>
                                         <th width="30%">বাংলা নাম</th>
-                                        <th width="20%" class="text-end">Actions</th>
+                                        <th width="35%" class="text-end">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for location in locations %}
-                                        <tr id="location-row-{{ location.id }}">
+                                    {% for tag in tags %}
+                                        <tr id="tag-row-{{ tag.id }}">
                                             <td>{{ forloop.counter }}</td>
-                                            <td><strong>{{ location.name_en }}</strong></td>
-                                            <td><span class="badge bg-light text-dark"><i class="bi bi-translate"></i> {{ location.name_bn }}</span></td>
+                                            <td><strong><i class="bi bi-tag-fill text-primary"></i> {{ tag.name_en }}</strong></td>
+                                            <td><span class="badge bg-light text-dark"><i class="bi bi-translate"></i> {{ tag.name_bn }}</span></td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <button class="btn btn-sm btn-primary" onclick="editLocation({{ location.id }})" title="Edit">
-                                                        <i class="bi bi-pencil-square"></i>
+                                                    <button class="btn btn-sm btn-primary" onclick="editTag({{ tag.id }})" title="Edit">
+                                                        <i class="bi bi-pencil-square"></i> Edit
                                                     </button>
-                                                    <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ location.id }}, '{{ location.name_en|escapejs }}')" title="Delete">
-                                                        <i class="bi bi-trash"></i>
+                                                    <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ tag.id }}, '{{ tag.name_en|escapejs }}')" title="Delete">
+                                                        <i class="bi bi-trash"></i> Delete
                                                     </button>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                             </td>
+                                         </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     {% else %}
                         <div class="empty-state">
-                            <i class="bi bi-geo-alt"></i>
-                            <h5>No Locations Yet</h5>
-                            <p class="mb-0">Add your first location using the form on the left.</p>
+                            <i class="bi bi-tags"></i>
+                            <h5>No Tags Yet</h5>
+                            <p class="mb-0">Add your first tag using the form above.</p>
                         </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
-
+</div>
 
 <!-- Translating Indicator -->
 <div id="translateIndicator" class="translate-indicator">
@@ -529,15 +525,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete the location:</p>
-                <p class="text-center"><strong id="deleteLocationName" class="text-danger"></strong></p>
-                <p class="text-muted small mb-0">This action cannot be undone. Any news associated with this location will be affected.</p>
+                <p>Are you sure you want to delete the tag:</p>
+                <p class="text-center"><strong id="deleteTagName" class="text-danger"></strong></p>
+                <p class="text-muted small mb-0">This action cannot be undone. Any news associated with this tag will be affected.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Cancel</button>
                 <form method="POST" id="deleteForm" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Delete Tag</button>
                 </form>
             </div>
         </div>
@@ -574,7 +570,6 @@
                 if (bnCounterDiv) bnCounterDiv.classList.remove('danger');
                 if (bnErrorDiv) bnErrorDiv.classList.remove('show');
             }
-            // warning style if near limit
             if (bnLen >= 45 && bnLen <= MAX_LENGTH && bnCounterDiv) {
                 bnCounterDiv.classList.add('warning');
             } else if (bnCounterDiv) {
@@ -602,7 +597,7 @@
         }
     }
 
-    // Capitalize first letter of each word, but also enforce max length
+    // Capitalize first letter of each word with max length enforcement
     function capitalizeEachWord(str) {
         if (!str) return '';
         let capped = str.split(' ').map(word => {
@@ -615,7 +610,7 @@
         return capped;
     }
 
-    // translate with 50-char enforcement
+    // Translate with 50-char enforcement
     async function translateBanglaToEnglish(banglaText) {
         if (!banglaText || banglaText.trim() === '') return '';
         try {
@@ -645,7 +640,7 @@
 
         banglaInput.addEventListener('input', function(e) {
             let rawValue = e.target.value;
-            // enforce max length on the fly (soft trim)
+            // Enforce max length on the fly
             if (rawValue.length > MAX_LENGTH) {
                 rawValue = rawValue.substring(0, MAX_LENGTH);
                 banglaInput.value = rawValue;
@@ -658,6 +653,7 @@
                 updateCharCounters();
                 return;
             }
+            
             showTranslatingIndicator(true);
             translateTimeout = setTimeout(async () => {
                 try {
@@ -680,43 +676,50 @@
 
     function showTranslatingIndicator(show) {
         const indicator = document.getElementById('translateIndicator');
-        if (show) indicator.style.display = 'flex';
-        else setTimeout(() => indicator.style.display = 'none', 400);
+        if (show) {
+            indicator.style.display = 'flex';
+        } else {
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 400);
+        }
     }
 
-    // intercept form submission: check lengths, prevent if >50, also trim
+    // Form submission validation
     function setupFormSubmission() {
-        const form = document.getElementById('locationForm');
+        const form = document.getElementById('tagForm');
         if (!form) return;
+        
         form.addEventListener('submit', function(e) {
             const bnField = document.getElementById('name_bn');
             const enField = document.getElementById('name_en');
-            let isValid = true;
-
+            
             if (bnField.value.length > MAX_LENGTH) {
                 bnField.value = bnField.value.substring(0, MAX_LENGTH);
                 updateCharCounters();
                 alert(`Bengali name cannot exceed ${MAX_LENGTH} characters. It has been trimmed.`);
-                isValid = false;
                 e.preventDefault();
                 return;
             }
+            
             if (enField.value.length > MAX_LENGTH) {
                 enField.value = enField.value.substring(0, MAX_LENGTH);
                 updateCharCounters();
                 alert(`English name cannot exceed ${MAX_LENGTH} characters. It has been trimmed.`);
-                isValid = false;
                 e.preventDefault();
                 return;
             }
-            // enforce final capitalization for english (readonly but ensures)
+            
+            // Enforce final capitalization
             enField.value = capitalizeEachWord(enField.value);
-            if (enField.value.length > MAX_LENGTH) enField.value = enField.value.substring(0, MAX_LENGTH);
+            if (enField.value.length > MAX_LENGTH) {
+                enField.value = enField.value.substring(0, MAX_LENGTH);
+            }
             updateCharCounters();
         });
     }
 
-    // manual paste protection
+    // Handle paste events
     function setupPasteTranslation() {
         const banglaInput = document.getElementById('name_bn');
         if (banglaInput) {
@@ -751,15 +754,15 @@
         listSection.classList.remove('col-lg-12');
         listSection.classList.add('col-lg-8');
         
-        document.getElementById('locationForm').reset();
-        document.getElementById('location_id').value = '';
-        document.getElementById('form-mode-text').innerHTML = 'Add New Location';
-        document.getElementById('submit-text').textContent = 'Add Location';
+        document.getElementById('tagForm').reset();
+        document.getElementById('tag_id').value = '';
+        document.getElementById('form-mode-text').innerHTML = 'Add New Tag';
+        document.getElementById('submit-text').textContent = 'Add Tag';
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.classList.remove('btn-success');
         submitBtn.classList.add('btn-primary');
         
-        // reset char counters & remove error styles
+        // Reset char counters & remove error styles
         updateCharCounters();
         const bnError = document.getElementById('bnLimitError');
         const enError = document.getElementById('enLimitError');
@@ -772,19 +775,20 @@
         setTimeout(() => document.getElementById('name_bn').focus(), 300);
     }
 
+    // Cancel form and hide it
     function cancelForm() {
         const formSection = document.getElementById('formSection');
         const listSection = document.getElementById('listSection');
         formSection.style.display = 'none';
         listSection.classList.remove('col-lg-8');
         listSection.classList.add('col-lg-12');
-        document.getElementById('locationForm').reset();
+        document.getElementById('tagForm').reset();
         updateCharCounters();
     }
 
-    // edit: fetch and fill with respect to limit
-    function editLocation(id) {
-        fetch(`/locations/get/${id}/`)
+    // Edit tag function
+    function editTag(id) {
+        fetch(`/tag/get/${id}/`)
             .then(response => response.json())
             .then(data => {
                 const formSection = document.getElementById('formSection');
@@ -798,37 +802,41 @@
                 if (bnVal.length > MAX_LENGTH) bnVal = bnVal.substring(0, MAX_LENGTH);
                 if (enVal.length > MAX_LENGTH) enVal = enVal.substring(0, MAX_LENGTH);
                 
-                document.getElementById('location_id').value = data.id;
+                document.getElementById('tag_id').value = data.id;
                 document.getElementById('name_bn').value = bnVal;
                 document.getElementById('name_en').value = capitalizeEachWord(enVal);
                 updateCharCounters();
                 
-                document.getElementById('form-mode-text').innerHTML = 'Edit Location';
-                document.getElementById('submit-text').textContent = 'Update Location';
+                document.getElementById('form-mode-text').innerHTML = 'Edit Tag';
+                document.getElementById('submit-text').textContent = 'Update Tag';
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.classList.remove('btn-primary');
                 submitBtn.classList.add('btn-success');
                 
                 formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             })
-            .catch(error => { console.error(error); alert('Failed to load location data'); });
+            .catch(error => { 
+                console.error('Error:', error); 
+                alert('Failed to load tag data'); 
+            });
     }
 
+    // Confirm delete
     function confirmDelete(id, name) {
-        document.getElementById('deleteLocationName').innerText = name;
-        document.getElementById('deleteForm').action = `/locations/delete/${id}/`;
+        document.getElementById('deleteTagName').innerText = name;
+        document.getElementById('deleteForm').action = `/tag/delete/${id}/`;
         new bootstrap.Modal(document.getElementById('deleteModal')).show();
     }
 
-    // Auto-hide alerts if any
+    // Auto-hide alerts
     setTimeout(() => {
         document.querySelectorAll('.alert').forEach(alert => { 
             let bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-            bsAlert.close();
+            setTimeout(() => bsAlert.close(), 5000);
         });
-    }, 5000);
+    }, 1000);
 
-    // extra: ensure english field does not bypass limit from js edits
+    // Watch English field for changes
     function watchEnglishField() {
         const enInput = document.getElementById('name_en');
         if (enInput) {
@@ -838,15 +846,19 @@
         }
     }
 
+    // Initialize everything when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
         setupLiveTranslation();
         setupPasteTranslation();
         setupFormSubmission();
         updateCharCounters();
         watchEnglishField();
-        // if there are server errors, show form
+        
+        // Show form if there are errors
         {% if errors %}
-        window.addEventListener('DOMContentLoaded', function() { showAddForm(); });
+        window.addEventListener('DOMContentLoaded', function() { 
+            showAddForm(); 
+        });
         {% endif %}
     });
 </script>

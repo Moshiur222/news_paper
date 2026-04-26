@@ -4,6 +4,10 @@
 {% block css %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<!-- DataTables CSS -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet">
 
 <style>
 :root {
@@ -42,6 +46,47 @@ body {
     background: #f3f4f6;
     font-size: 12px;
     text-transform: uppercase;
+}
+
+/* DataTables custom styling */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    margin-left: 8px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 4px 8px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 6px !important;
+    padding: 6px 12px !important;
+    margin: 0 2px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+    color: white !important;
 }
 
 .action-buttons {
@@ -142,46 +187,100 @@ body {
     background: #f3f4f6;
 }
 
-/* Capitalized text style for English input */
-#name_en {
-    text-transform: capitalize;
+/* Character limit styles */
+.char-counter {
+    font-size: 11px;
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.char-counter.warning {
+    color: #f59e0b;
+}
+.char-counter.danger {
+    color: #ef4444;
+    font-weight: 600;
+}
+.char-limit-badge {
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-family: monospace;
+    font-size: 10px;
+}
+.is-invalid-limit {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+}
+.limit-error-msg {
+    font-size: 11px;
+    color: #ef4444;
+    margin-top: 4px;
+    display: none;
+}
+.limit-error-msg.show {
+    display: block;
+}
+.char-counter-text {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Export buttons styling */
+.dt-buttons {
+    margin-left: 15px;
+}
+
+.dt-buttons .btn {
+    margin: 0 2px;
+}
+
+/* Loading overlay */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 99999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-spinner {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.loading-spinner i {
+    font-size: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>
 {% endblock css %}
 
 {% block main %}
 
-<div class="container-fluid mt-4">
-
-    <!-- Navigation Bar -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body py-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="bi bi-grid-3x3-gap-fill text-primary"></i>
-                            <strong class="ms-2">Dashboard Navigation</strong>
-                        </div>
-                        <div class="nav-buttons">
-                            <a href="/news/admin/dashboard/" class="nav-btn nav-btn-outline">
-                                <i class="bi bi-speedometer2"></i> Dashboard
-                            </a>
-                            <a href="/news/admin/categories/" class="nav-btn nav-btn-primary">
-                                <i class="bi bi-tags"></i> Categories
-                            </a>
-                            <a href="/news/admin/locations/" class="nav-btn nav-btn-outline">
-                                <i class="bi bi-geo-alt"></i> Locations
-                            </a>
-                            <a href="/news/admin/news/" class="nav-btn nav-btn-outline">
-                                <i class="bi bi-newspaper"></i> News
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Loading Overlay -->
+<div id="loadingOverlay">
+    <div class="loading-spinner">
+        <i class="bi bi-arrow-repeat"></i>
+        <p class="mt-2 mb-0">Loading...</p>
     </div>
+</div>
+
+<div class="container-fluid mt-4">
 
     <div class="row">
 
@@ -196,53 +295,60 @@ body {
                 </div>
 
                 <div class="card-body">
-                    <form method="POST" id="categoryForm">
+                    <form method="POST" id="categoryForm" novalidate>
                         {% csrf_token %}
                         <input type="hidden" name="category_id" id="category_id">
 
                         <div class="mb-3">
                             <label>
-                                <i class="bi bi-translate"></i> Bangla Name 
-                                <span class="live-translate-badge">
-                                    <i class="bi bi-chat-dots"></i> Live Translate
-                                </span>
+                                 Category Name 
+                                <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text">বাংলা</span>
                                 <input type="text" name="name_bn" id="name_bn"
                                     class="form-control" 
-                                    placeholder="বাংলা নাম লিখুন (Type Bangla name)"
-                                    autocomplete="off">
+                                    placeholder=""
+                                    autocomplete="off"
+                                    maxlength="50">
                             </div>
-                            <small class="text-muted">
-                                <i class="bi bi-info-circle"></i> 
-                                ইংরেজি নাম automatically translate এবং capitalized হবে
-                            </small>
+                            <div class="char-counter" id="bnCharCounter">
+                                <span class="char-counter-text">
+                                    <i class="bi bi-text-paragraph"></i> 
+                                    Characters: <span id="bnCharCount">0</span>
+                                </span>
+                                <span class="char-limit-badge">Max: 50</span>
+                            </div>
+                            <div id="bnLimitError" class="limit-error-msg">
+                                <i class="bi bi-exclamation-triangle-fill"></i> Cannot exceed 50 characters
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label><i class="bi bi-translate"></i> English Name (Auto-translated & Capitalized)</label>
+                            <label> Category Name</label>
                             <div class="input-group">
-                                <span class="input-group-text">EN</span>
+                                <span class="input-group-text">English</span>
                                 <input type="text" name="name_en" id="name_en"
                                     class="form-control" 
-                                    placeholder="English name will appear automatically with capital letters"
-                                    readonly style="background-color: #f9fafb;">
+                                    placeholder=""
+                                    readonly style="background-color: #f9fafb;"
+                                    maxlength="50">
                             </div>
-                            <small class="text-muted">
-                                <i class="bi bi-magic"></i> 
-                                Automatically translated from Bangla &nbsp;
-                                <i class="bi bi-fonts"></i> First letter of each word capitalized
-                            </small>
+                            <div class="char-counter" id="enCharCounter">
+                                <span class="char-counter-text">
+                                    <i class="bi bi-text-paragraph"></i> 
+                                    Characters: <span id="enCharCount">0</span>
+                                </span>
+                                <span class="char-limit-badge">Max: 50</span>
+                            </div>
+                            <div id="enLimitError" class="limit-error-msg">
+                                <i class="bi bi-exclamation-triangle-fill"></i> English name cannot exceed 50 characters
+                            </div>
                         </div>
 
                         <div class="d-flex gap-2 mt-3">
-                            <button type="button" class="btn btn-secondary w-50" onclick="cancelForm()">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </button>
-                            <button type="submit" class="btn btn-primary w-50" id="submitBtn">
-                                <i class="bi bi-save"></i> Save Category
-                            </button>
+                            <button type="button" class="btn btn-secondary w-50" onclick="cancelForm()"> Cancel</button>
+                            <button type="submit" class="btn btn-primary w-50" id="submitBtn"> Save</button>
                         </div>
                     </form>
                 </div>
@@ -254,26 +360,30 @@ body {
 
             <div class="card">
 
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                    <h5 class="mb-2 mb-md-0">
                         <i class="bi bi-tags"></i> All Categories
+                        <span class="badge bg-primary ms-2">{{ categories|length }}</span>
                     </h5>
 
-                    <button class="btn btn-primary" onclick="showForm()">
-                        <i class="bi bi-plus-circle"></i> Add Category
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" onclick="showForm()">
+                            <i class="bi bi-plus-circle"></i> Add Category
+                        </button>
+                    </div>
                 </div>
 
                 <div class="card-body p-0">
 
                     {% if categories %}
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover mb-0" id="categoryTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>English Name</th>
                                     <th>Bangla Name</th>
+                                    <th>Created Date</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
@@ -283,13 +393,20 @@ body {
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>
-                                        <strong>{{ cat.name_en }}</strong>
+                                        <strong>{{ cat.name_en|truncatechars:50 }}</strong>
+                                        {% if cat.name_en|length > 50 %}
+                                            <span class="badge bg-warning ms-1" title="Truncated from {{ cat.name_en|length }} chars">!</span>
+                                        {% endif %}
                                     </td>
                                     <td>
                                         <span class="badge bg-light text-dark">
-                                            <i class="bi bi-translate"></i> {{ cat.name_bn }}
+                                            <i class="bi bi-translate"></i> {{ cat.name_bn|truncatechars:50 }}
                                         </span>
+                                        {% if cat.name_bn|length > 50 %}
+                                            <span class="badge bg-warning ms-1" title="Truncated from {{ cat.name_bn|length }} chars">!</span>
+                                        {% endif %}
                                     </td>
+                                    <td>{{ cat.created_at|date:"d M Y H:i" }}</td>
                                     <td class="text-end">
                                         <div class="action-buttons justify-content-end">
                                             <button class="btn btn-sm btn-primary"
@@ -297,7 +414,7 @@ body {
                                                 <i class="bi bi-pencil"></i>
                                             </button>
                                             <button class="btn btn-sm btn-danger"
-                                                onclick="deleteCategory({{ cat.id }}, '{{ cat.name_en }}')">
+                                                onclick="deleteCategory({{ cat.id }}, '{{ cat.name_en|escapejs }}')">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -363,28 +480,181 @@ body {
   </div>
 </div>
 
+<!-- SUCCESS TOAST -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+        <div class="toast-header bg-success text-white">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            Operation completed successfully!
+        </div>
+    </div>
+</div>
+
 {% endblock main %}
 
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery (required for DataTables) -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 
 <script>
-// Live translation variables
-let translateTimeout;
-let isTranslating = false;
+// 50-character limit constant
+const MAX_LENGTH = 50;
+let dataTable;
 
-// Function to capitalize first letter of each word
+// Initialize DataTable
+function initDataTable() {
+    if ($.fn.DataTable.isDataTable('#categoryTable')) {
+        $('#categoryTable').DataTable().destroy();
+    }
+    
+    dataTable = $('#categoryTable').DataTable({
+        responsive: true,
+        processing: true,
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        order: [[0, 'asc']],
+        language: {
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ categories",
+            infoEmpty: "No categories found",
+            infoFiltered: "(filtered from _MAX_ total categories)",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            },
+            zeroRecords: "No matching categories found"
+        },
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        columnDefs: [
+            { targets: [0], orderable: true },
+            { targets: [4], orderable: false, searchable: false }
+        ]
+    });
+}
+
+// Show toast notification
+function showToast(message, isSuccess = true) {
+    const toast = document.getElementById('successToast');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastHeader = toast.querySelector('.toast-header');
+    
+    toastMessage.textContent = message;
+    
+    if (isSuccess) {
+        toastHeader.classList.remove('bg-danger');
+        toastHeader.classList.add('bg-success');
+    } else {
+        toastHeader.classList.remove('bg-success');
+        toastHeader.classList.add('bg-danger');
+    }
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+
+// Show/hide loading overlay
+function showLoading(show) {
+    const overlay = document.getElementById('loadingOverlay');
+    if (show) {
+        overlay.style.display = 'flex';
+    } else {
+        overlay.style.display = 'none';
+    }
+}
+
+
+// Function to capitalize first letter of each word with length limit
 function capitalizeEachWord(str) {
     if (!str) return '';
     
-    // Split by space and capitalize first letter of each word
-    return str.split(' ').map(word => {
+    let capped = str.split(' ').map(word => {
         if (word.length === 0) return word;
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }).join(' ');
+    
+    if (capped.length > MAX_LENGTH) {
+        capped = capped.substring(0, MAX_LENGTH);
+    }
+    return capped;
 }
 
-// Function to show/hide translating indicator
+// Update character counters and validation UI
+function updateCharCounters() {
+    const bnInput = document.getElementById('name_bn');
+    const enInput = document.getElementById('name_en');
+    const bnCountSpan = document.getElementById('bnCharCount');
+    const enCountSpan = document.getElementById('enCharCount');
+    const bnCounterDiv = document.getElementById('bnCharCounter');
+    const enCounterDiv = document.getElementById('enCharCounter');
+    const bnErrorDiv = document.getElementById('bnLimitError');
+    const enErrorDiv = document.getElementById('enLimitError');
+
+    if (bnInput && bnCountSpan) {
+        const bnLen = bnInput.value.length;
+        bnCountSpan.innerText = bnLen;
+        
+        if (bnLen > MAX_LENGTH) {
+            bnInput.classList.add('is-invalid-limit');
+            if (bnCounterDiv) bnCounterDiv.classList.add('danger');
+            if (bnErrorDiv) bnErrorDiv.classList.add('show');
+        } else {
+            bnInput.classList.remove('is-invalid-limit');
+            if (bnCounterDiv) bnCounterDiv.classList.remove('danger');
+            if (bnErrorDiv) bnErrorDiv.classList.remove('show');
+        }
+        
+        if (bnLen >= 45 && bnLen <= MAX_LENGTH && bnCounterDiv) {
+            bnCounterDiv.classList.add('warning');
+        } else if (bnCounterDiv) {
+            bnCounterDiv.classList.remove('warning');
+        }
+    }
+
+    if (enInput && enCountSpan) {
+        const enLen = enInput.value.length;
+        enCountSpan.innerText = enLen;
+        
+        if (enLen > MAX_LENGTH) {
+            enInput.classList.add('is-invalid-limit');
+            if (enCounterDiv) enCounterDiv.classList.add('danger');
+            if (enErrorDiv) enErrorDiv.classList.add('show');
+        } else {
+            enInput.classList.remove('is-invalid-limit');
+            if (enCounterDiv) enCounterDiv.classList.remove('danger');
+            if (enErrorDiv) enErrorDiv.classList.remove('show');
+        }
+        
+        if (enLen >= 45 && enLen <= MAX_LENGTH && enCounterDiv) {
+            enCounterDiv.classList.add('warning');
+        } else if (enCounterDiv) {
+            enCounterDiv.classList.remove('warning');
+        }
+    }
+}
+
+// Show/hide translating indicator
 function showTranslatingIndicator(show) {
     const indicator = document.getElementById('translateIndicator');
     if (show) {
@@ -396,34 +666,35 @@ function showTranslatingIndicator(show) {
     }
 }
 
-// Function to translate Bangla to English using Google Translate API
+// Translate Bangla to English with length limit
 async function translateBanglaToEnglish(banglaText) {
     if (!banglaText || banglaText.trim() === '') {
         return '';
     }
     
     try {
-        // Using Google Translate API (free, no API key needed for demo)
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(banglaText)}`;
         const response = await fetch(url);
         const data = await response.json();
         
-        // Extract translated text from response
         let translatedText = '';
         for (let i = 0; i < data[0].length; i++) {
             translatedText += data[0][i][0];
         }
         
-        // Apply capitalization to the translated text
-        return capitalizeEachWord(translatedText);
+        let capped = capitalizeEachWord(translatedText);
+        if (capped.length > MAX_LENGTH) capped = capped.substring(0, MAX_LENGTH);
+        return capped;
         
     } catch (error) {
         console.error('Translation error:', error);
-        return capitalizeEachWord(banglaText) + ' (Translation failed)';
+        let fallback = capitalizeEachWord(banglaText);
+        if (fallback.length > MAX_LENGTH) fallback = fallback.substring(0, MAX_LENGTH);
+        return fallback;
     }
 }
 
-// Live translation for Bangla to English with capitalization
+// Live translation setup
 function setupLiveTranslation() {
     const banglaInput = document.getElementById('name_bn');
     const englishInput = document.getElementById('name_en');
@@ -433,91 +704,168 @@ function setupLiveTranslation() {
     let debounceTimer;
     
     banglaInput.addEventListener('input', function(e) {
-        const banglaText = e.target.value;
+        let rawValue = e.target.value;
         
-        // Clear previous timer
+        if (rawValue.length > MAX_LENGTH) {
+            rawValue = rawValue.substring(0, MAX_LENGTH);
+            banglaInput.value = rawValue;
+        }
+        
+        updateCharCounters();
+        
         clearTimeout(debounceTimer);
         
-        if (banglaText.trim() === '') {
+        if (rawValue.trim() === '') {
             englishInput.value = '';
+            updateCharCounters();
             return;
         }
         
-        // Show translating indicator
         showTranslatingIndicator(true);
         
-        // Set new timer - translate after user stops typing for 500ms
         debounceTimer = setTimeout(async () => {
             try {
-                const translatedText = await translateBanglaToEnglish(banglaText);
-                englishInput.value = translatedText;
+                let translated = await translateBanglaToEnglish(rawValue);
+                if (translated.length > MAX_LENGTH) translated = translated.substring(0, MAX_LENGTH);
+                englishInput.value = translated;
+                updateCharCounters();
             } catch (error) {
                 console.error('Translation failed:', error);
-                englishInput.value = capitalizeEachWord(banglaText);
+                let fallback = capitalizeEachWord(rawValue);
+                if (fallback.length > MAX_LENGTH) fallback = fallback.substring(0, MAX_LENGTH);
+                englishInput.value = fallback;
+                updateCharCounters();
             } finally {
                 showTranslatingIndicator(false);
             }
-        }, 500); // 500ms delay for better user experience
+        }, 500);
     });
 }
 
-// Also translate when pasting content
+// Handle paste with length limit
 function setupPasteTranslation() {
     const banglaInput = document.getElementById('name_bn');
     
     if (banglaInput) {
-        banglaInput.addEventListener('paste', function(e) {
-            setTimeout(async () => {
-                const banglaText = e.target.value;
-                if (banglaText.trim()) {
-                    showTranslatingIndicator(true);
-                    const translatedText = await translateBanglaToEnglish(banglaText);
-                    document.getElementById('name_en').value = translatedText;
-                    showTranslatingIndicator(false);
+        banglaInput.addEventListener('paste', function() {
+            setTimeout(() => {
+                let val = banglaInput.value;
+                if (val.length > MAX_LENGTH) {
+                    val = val.substring(0, MAX_LENGTH);
+                    banglaInput.value = val;
                 }
-            }, 100);
+                updateCharCounters();
+                
+                if (val.trim()) {
+                    showTranslatingIndicator(true);
+                    translateBanglaToEnglish(val).then(trans => {
+                        let engField = document.getElementById('name_en');
+                        if (trans.length > MAX_LENGTH) trans = trans.substring(0, MAX_LENGTH);
+                        engField.value = trans;
+                        updateCharCounters();
+                        showTranslatingIndicator(false);
+                    }).catch(() => showTranslatingIndicator(false));
+                }
+            }, 50);
+        });
+    }
+}
+
+// Form submission with validation
+function setupFormSubmission() {
+    const form = document.getElementById('categoryForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const bnField = document.getElementById('name_bn');
+            const enField = document.getElementById('name_en');
+            
+            if (bnField.value.length > MAX_LENGTH) {
+                bnField.value = bnField.value.substring(0, MAX_LENGTH);
+                updateCharCounters();
+                alert(`Bangla name cannot exceed ${MAX_LENGTH} characters. It has been trimmed.`);
+                e.preventDefault();
+                return false;
+            }
+            
+            if (enField.value.length > MAX_LENGTH) {
+                enField.value = enField.value.substring(0, MAX_LENGTH);
+                updateCharCounters();
+                alert(`English name cannot exceed ${MAX_LENGTH} characters. It has been trimmed.`);
+                e.preventDefault();
+                return false;
+            }
+            
+            enField.value = capitalizeEachWord(enField.value);
+            updateCharCounters();
+            
+            showLoading(true);
+            return true;
         });
     }
 }
 
 // Form display functions
 function showForm(){
-    document.getElementById('formSection').style.display = 'block';
-    document.getElementById('listSection').className = 'col-lg-8';
+    const formSection = document.getElementById('formSection');
+    const listSection = document.getElementById('listSection');
     
-    // Scroll to form smoothly
-    document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function cancelForm(){
-    document.getElementById('formSection').style.display = 'none';
-    document.getElementById('listSection').className = 'col-lg-12';
+    formSection.style.display = 'block';
+    listSection.className = 'col-lg-8';
     
-    // Reset form
     document.getElementById('categoryForm').reset();
     document.getElementById('category_id').value = '';
     document.getElementById('formTitle').innerHTML = '<i class="bi bi-plus-circle"></i> Add Category';
+    
+    updateCharCounters();
+    formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    setTimeout(() => {
+        document.getElementById('name_bn').focus();
+    }, 300);
+}
+
+function cancelForm(){
+    const formSection = document.getElementById('formSection');
+    const listSection = document.getElementById('listSection');
+    
+    formSection.style.display = 'none';
+    listSection.className = 'col-lg-12';
+    document.getElementById('categoryForm').reset();
+    updateCharCounters();
 }
 
 function editCategory(id){
+    showLoading(true);
     fetch(`/categories/get/${id}/`)
     .then(res => res.json())
     .then(data => {
-        showForm();
+        const formSection = document.getElementById('formSection');
+        const listSection = document.getElementById('listSection');
+        
+        formSection.style.display = 'block';
+        listSection.className = 'col-lg-8';
+        
+        let bnVal = data.name_bn || '';
+        let enVal = data.name_en || '';
+        
+        if (bnVal.length > MAX_LENGTH) bnVal = bnVal.substring(0, MAX_LENGTH);
+        if (enVal.length > MAX_LENGTH) enVal = enVal.substring(0, MAX_LENGTH);
         
         document.getElementById('category_id').value = data.id;
-        document.getElementById('name_bn').value = data.name_bn;
-        // Apply capitalization to existing English name when editing
-        document.getElementById('name_en').value = capitalizeEachWord(data.name_en);
+        document.getElementById('name_bn').value = bnVal;
+        document.getElementById('name_en').value = capitalizeEachWord(enVal);
         
+        updateCharCounters();
         document.getElementById('formTitle').innerHTML = '<i class="bi bi-pencil-square"></i> Edit Category';
         
-        // Optional: Focus on Bangla input for editing
+        formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         document.getElementById('name_bn').focus();
+        showLoading(false);
     })
     .catch(error => {
         console.error('Error fetching category:', error);
         alert('Error loading category data');
+        showLoading(false);
     });
 }
 
@@ -529,91 +877,57 @@ function deleteCategory(id, name){
     deleteModal.show();
 }
 
-// Function to ensure English input is always capitalized before form submission
-function setupFormSubmission() {
-    const form = document.getElementById('categoryForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            const englishInput = document.getElementById('name_en');
-            if (englishInput && englishInput.value) {
-                englishInput.value = capitalizeEachWord(englishInput.value);
-            }
-        });
+// Handle form submission success messages from Django
+function checkForMessages() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('message')) {
+        showToast(decodeURIComponent(urlParams.get('message')), true);
+    }
+    if (urlParams.get('error')) {
+        showToast(decodeURIComponent(urlParams.get('error')), false);
     }
 }
 
-// Initialize live translation when page loads
+// Initialize everything
 document.addEventListener('DOMContentLoaded', function() {
+    initDataTable();
     setupLiveTranslation();
     setupPasteTranslation();
     setupFormSubmission();
+    updateCharCounters();
+    checkForMessages();
+    
+    // Hide loading overlay after page loads
+    setTimeout(() => {
+        showLoading(false);
+    }, 500);
 });
 
-// If there are form errors, show the form
-{% if errors %}
-window.onload = function(){
-    showForm();
-    
-    // Focus on the field with error
-    {% if errors.name_bn %}
-        document.getElementById('name_bn').focus();
-    {% elif errors.name_en %}
-        document.getElementById('name_en').focus();
-    {% endif %}
-}
-{% endif %}
-
-// Keyboard shortcut: Ctrl+Shift+T to manually translate and capitalize
+// Keyboard shortcut: Ctrl+Shift+T for manual translation
 document.addEventListener('keydown', async function(e) {
     if (e.ctrlKey && e.shiftKey && e.key === 'T') {
         e.preventDefault();
         const banglaText = document.getElementById('name_bn').value;
-        if (banglaText.trim()) {
+        if (banglaText && banglaText.trim()) {
             showTranslatingIndicator(true);
             const translatedText = await translateBanglaToEnglish(banglaText);
             document.getElementById('name_en').value = translatedText;
+            updateCharCounters();
             showTranslatingIndicator(false);
         }
     }
 });
 
-// Add character counter for Bangla input
-const banglaInput = document.getElementById('name_bn');
-if (banglaInput) {
-    banglaInput.addEventListener('input', function() {
-        const count = this.value.length;
-        let counterElement = document.getElementById('charCounter');
-        if (!counterElement) {
-            counterElement = document.createElement('small');
-            counterElement.id = 'charCounter';
-            counterElement.className = 'text-muted d-block mt-1';
-            this.parentNode.appendChild(counterElement);
-        }
-        counterElement.innerHTML = `<i class="bi bi-text-paragraph"></i> Characters: ${count}`;
-    });
-}
-
-// Live preview of capitalized text (optional - shows how it will look)
-function addCapitalizationPreview() {
-    const englishInput = document.getElementById('name_en');
-    if (englishInput) {
-        const previewSpan = document.createElement('small');
-        previewSpan.className = 'text-success d-block mt-1';
-        previewSpan.id = 'capitalizePreview';
-        previewSpan.innerHTML = '<i class="bi bi-check-circle"></i> Will be saved as: ';
-        englishInput.parentNode.appendChild(previewSpan);
-        
-        englishInput.addEventListener('input', function() {
-            const preview = document.getElementById('capitalizePreview');
-            if (preview && this.value) {
-                preview.innerHTML = '<i class="bi bi-check-circle"></i> Will be saved as: <strong>' + 
-                    capitalizeEachWord(this.value) + '</strong>';
-            }
-        });
-    }
-}
-
-// Call this after DOM is loaded
-setTimeout(addCapitalizationPreview, 500);
+// Show form if there are errors
+{% if errors %}
+window.addEventListener('DOMContentLoaded', function() {
+    showForm();
+    {% if errors.name_bn %}
+        document.getElementById('name_bn').focus();
+    {% elif errors.name_en %}
+        document.getElementById('name_en').focus();
+    {% endif %}
+});
+{% endif %}
 </script>
 {% endblock js %}

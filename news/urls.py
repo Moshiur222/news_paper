@@ -8,21 +8,30 @@ urlpatterns = [
     
     # ========== TRENDING NEWS URLs ==========
     path('trending/', trending, name='trending'),
-    path('trending/<slug:slug>/', trending_news, name='trending_news'),  # স্ল্যাশ যোগ করুন
-    path('trending/get/<int:pk>/', get_trending_news, name='get_trending_news'),  # ← যোগ করুন
-    path('trending/delete/<int:pk>/', delete_trending_news, name='delete_trending_news'),  # ← যোগ করুন
+    path('trending/<slug:slug>/', trending_news, name='trending_news'),
+    path('trending/get/<int:pk>/', get_trending_news, name='get_trending_news'),
+    path('trending/delete/<int:pk>/', delete_trending_news, name='delete_trending_news'),
     
     # ========== REGULAR NEWS URLs ==========
-    path('news/<slug:slug>/', news_view, name='news_home'),  # স্ল্যাশ যোগ করুন
+    path('news/<slug:slug>/', news_view, name='news_home'),
     path("admin/news/", news, name="news"),
     path("news/get/<int:pk>/", get_news, name="get_news"),
     path("news/delete/<int:pk>/", delete_news, name="delete_news"),
+    path('api/poll/vote/', submit_poll_vote, name='submit_poll_vote'),
+    path('api/poll/results/', get_poll_results, name='get_poll_results'),
+    path('api/comment/add/', submit_comment, name='submit_comment'),
     
     # ========== OTHER URLs ==========
     path('dashboard/', dashboard, name='dashboard'),
     path('logout/', logout_view, name='logout'),
     path('admin_location_list/', admin_location_list, name='admin_location_list'),
     path('category/', category, name='category'),
+    path('tag/', tags, name='tag'),
+    path('tag/get/<int:pk>/', get_tag, name='get_tag'),
+    path('tag/delete/<int:pk>/', delete_tag, name='delete_tag'),
+    path('tags/<slug:slug>/', tag_news, name='tag_news'),
+
+    path('tag/get/<int:pk>/', get_tag, name='get_tag'),
     path('categories/get/<int:pk>/', get_category, name='get_category'),
     path('categories/delete/<int:pk>/', delete_category, name='delete_category'),
     path('switch-language/', switch_language, name='switch_language'),

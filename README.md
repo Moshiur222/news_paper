@@ -1,18 +1,18 @@
 # 📰 Django News Portal
 
-A full-featured **News Portal Web Application** built with Django.  
-This project allows administrators to manage news articles, categories, and tags through a powerful admin dashboard, while users can browse and read news in a clean and responsive interface.
+A **scalable, full-featured News Portal web application** built using Django.  
+This project demonstrates a complete content management system where administrators can manage news articles, categories, and tags, while users can browse news in a clean, responsive interface.
 
 ---
 
 ## 🚀 Features
 
 - 🗂 Category-based news organization  
-- 🏷 Tagging system for better content filtering  
-- 📰 Latest & breaking news section  
-- ⚙️ Django admin dashboard for content management  
-- 📱 Responsive UI design  
-- 🔍 Easy navigation and structured layout  
+- 🏷 Advanced tagging system  
+- 📰 Breaking & latest news section  
+- ⚙️ Powerful Django admin dashboard  
+- 📱 Fully responsive UI design  
+- 🔍 Structured and user-friendly navigation  
 
 ---
 
@@ -20,8 +20,8 @@ This project allows administrators to manage news articles, categories, and tags
 
 - **Backend:** Django (Python)  
 - **Frontend:** HTML, CSS, JavaScript  
-- **Database:** SQLite (can be upgraded to MySQL/PostgreSQL)  
-- **Others:** Django Templates, Static & Media Handling  
+- **Database:** SQLite (development)  
+- **Architecture:** MVC (Django MVT)  
 
 ---
 

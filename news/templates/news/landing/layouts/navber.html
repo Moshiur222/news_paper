@@ -1,4 +1,13 @@
+<!-- news/landing/layouts/navbar.html -->
+{% load static %}
+
 <style>
+:root {
+    --primary-red: #dc2626;
+    --primary-dark: #b91c1c;
+    --sidebar-width: 100%;
+}
+
 .nav-modern {
   background: white;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
@@ -62,140 +71,1187 @@
   margin-left: 0.5rem;
 }
 
-/* More dropdown indicator */
 .more-dropdown {
   color: var(--primary-red) !important;
   font-weight: 600;
 }
 
-.badge-count {
+/* ===== AUTH BUTTONS STYLES ===== */
+.btn-auth {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-login {
+  background: transparent;
+  border: 1px solid #dc2626;
+  color: #dc2626;
+}
+
+.btn-login:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-register {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-register:hover {
+  background: #b91c1c;
+}
+
+.user-actions {
+  position: relative;
+}
+
+.top-bar-modern {
+  margin-left: auto;
+}
+
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menu-toggle-btn {
+  background: transparent;
+  border: 1px solid #e9ecef;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.menu-toggle-btn:hover {
+  background: #f8f9fa;
+}
+
+/* ===== PROFILE DROPDOWN STYLES ===== */
+.user-profile-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 30px;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+
+.profile-trigger:hover {
+  background: #f1f5f9;
+}
+
+.profile-info {
+  line-height: 1.2;
+}
+
+.profile-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  display: block;
+}
+
+.profile-email {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.dropdown-menu-profile {
   position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.02);
+  min-width: 220px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: 0.2s;
+  z-index: 1000;
+  border: 1px solid #eef2f6;
+}
+
+.user-profile-dropdown:hover .dropdown-menu-profile {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu-profile a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: #334155;
+  text-decoration: none;
+  transition: 0.2s;
+  font-size: 0.85rem;
+}
+
+.dropdown-menu-profile a:hover {
+  background: #fef2f2;
+  color: var(--primary-red);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #eef2f6;
+  margin: 6px 0;
+}
+
+.logout-btn {
+  color: #dc2626 !important;
+}
+
+.logout-btn:hover {
+  background: #fef2f2 !important;
+}
+
+/* ===== MODAL STYLES (Login/Register) ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.auth-modal {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+  animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--primary-red), var(--primary-dark));
+  color: white;
+  padding: 1.75rem;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-close:hover {
+  background: rgba(255,255,255,0.3);
+  transform: rotate(90deg);
+}
+
+.modal-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.modal-body {
+  padding: 1.75rem;
+}
+
+/* Social Login Styles */
+.social-login-section {
+    margin-bottom: 1.5rem;
+}
+.social-login-title {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    position: relative;
+}
+.social-login-title span {
+    background: white;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+}
+.social-login-title::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #e2e8f0;
+    z-index: 0;
+}
+.social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.social-btn {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.social-btn-google { border-color: #ea4335; color: #ea4335; }
+.social-btn-google:hover { background: #ea4335; color: white; }
+.social-btn-facebook { border-color: #1877f2; color: #1877f2; }
+.social-btn-facebook:hover { background: #1877f2; color: white; }
+.social-btn-github { border-color: #333; color: #333; }
+.social-btn-github:hover { background: #333; color: white; }
+
+.form-divider {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin: 1rem 0;
+}
+
+.form-group { margin-bottom: 1.25rem; }
+
+.form-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, var(--primary-red), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -5px rgba(220,38,38,0.4);
+}
+
+.switch-auth-link {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+}
+
+.switch-auth-link a {
+  color: var(--primary-red);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ============================================================
+   NEW PROTHOM ALO STYLE FULL PAGE SIDEBAR
+   ============================================================ */
+.sidebar-menu {
+  position: fixed;
   top: 0;
   right: 0;
-  background: #ef4444;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 9999;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+.sidebar-menu.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.pa-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+
+/* Sidebar Header */
+.pa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1000;
+}
+.pa-logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #333;
+  text-decoration: none;
+}
+
+.pa-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Sidebar Body Layout */
+.pa-body-wrapper {
+  display: flex;
+  margin-top: 30px;
+  gap: 40px;
+}
+
+/* Left Main Nav */
+.pa-left-nav {
+  flex: 3;
+}
+
+.pa-top-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.pa-top-menu a {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.pa-top-menu a:hover { color: var(--primary-red); }
+
+/* Category Rows */
+.pa-row {
+  display: flex;
+  padding: 14px 0;
+  border-bottom: 1px solid #f3f4f6;
+  align-items: center;
+}
+
+.pa-row-title {
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pa-row-title a {
+  font-weight: 700;
+  color: #111;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.pa-row-title i {
+  color: var(--primary-red);
+  font-size: 0.7rem;
+}
+
+.pa-sub-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.pa-sub-items a {
+  color: #666;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.pa-sub-items a:hover { color: var(--primary-red); }
+
+
+.pa-user-section { margin-bottom: 30px; }
+
+.pa-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pa-user-card img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eee;
+}
+
+/* Sidebar Search Box */
+.pa-search-wrapper {
+  display: flex;
+  margin-bottom: 40px;
+}
+
+.pa-search-wrapper input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #e5e7eb;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.pa-search-wrapper button {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 10px 15px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.pa-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #9ca3af;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.pa-social-box {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.pa-social-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.pa-social-icon:hover {
+  background: var(--primary-red);
   color: white;
-  font-size: 9px;
-  padding: 2px 5px;
-  border-radius: 10px;
-  margin-top: 8px;
-  margin-right: 5px;
+  border-color: var(--primary-red);
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
-  .navbar-nav .nav-link {
-    padding: 1rem 0.5rem;
-    font-size: 0.85rem;
-  }
+.pa-apps-box img {
+  height: 38px;
+  margin-bottom: 10px;
+  display: block;
 }
 
-@media (max-width: 992px) {
-  .dropdown-menu {
-    position: static !important;
-    float: none;
-    width: auto;
-    margin-top: 0;
-    background-color: transparent;
-    border: 0;
-    box-shadow: none;
-    padding-left: 1rem;
-    max-height: none;
-  }
-  
-  .dropdown-item:hover {
-    padding-left: 1rem;
-  }
-  
-  .nav-item.dropdown:hover .dropdown-menu {
-    display: none;
-  }
-  
-  .nav-item.dropdown.show .dropdown-menu {
-    display: block;
-  }
+.pa-footer-links {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.85rem;
 }
+
+.pa-footer-links a {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pa-footer-links a:hover { color: var(--primary-red); }
+
+@media (max-width: 991px) {
+  .pa-body-wrapper { flex-direction: column; }
+}
+
+
+#profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
 </style>
 
 <nav class="navbar navbar-expand-lg nav-modern">
   <div class="container">
-
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="mainNavbar">
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+<ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+  <li class="nav-item">
+    <a class="nav-link {% if active_url == 'home' %}active{% endif %}" href="{% url 'home' %}">
+      {% if current_language == 'bn' %} হোম {% else %} Home {% endif %}
+    </a>
+  </li>
 
+  {% with category_list=categories %}
+    
+    {# ✅ First 9 Categories #}
+    {% for cat in category_list %}
+      {% if forloop.counter <= 9 %}
         <li class="nav-item">
-          <a class="nav-link {% if active_url == 'home' %}active{% endif %}" href="{% url 'home' %}">
-            {% if current_language == 'bn' %} হোম {% else %} Home {% endif %}
+          <a class="nav-link {% if active_url == cat.slug %}active{% endif %}" 
+             href="{% url 'category_news' cat.slug %}">
+            {% if current_language == 'en' %}
+              {{ cat.name_en|truncatechars:15 }}
+            {% else %}
+              {{ cat.name_bn|truncatechars:12 }}
+            {% endif %}
           </a>
         </li>
-        {% with category_list=categories %}
+      {% endif %}
+    {% endfor %}
+
+    {# ✅ More Dropdown (only if categories > 9) #}
+    {% if category_list|length > 9 %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle more-dropdown" href="#" id="moreDropdown" role="button" data-bs-toggle="dropdown">
+          {% if current_language == 'bn' %} আরও {% else %} More {% endif %}
+        </a>
+
+        <ul class="dropdown-menu">
           {% for cat in category_list %}
-            {% if forloop.counter <= 10 %}
-              <!-- প্রথম ১০টি ক্যাটাগরি -->
-              <li class="nav-item">
-                <a class="nav-link {% if active_url == cat.slug %}active{% endif %}" 
-                   href="{% url 'category_news' cat.slug %}">
+            {% if forloop.counter > 9 %}
+              <li>
+                <a class="dropdown-item" href="{% url 'category_news' cat.slug %}">
                   {% if current_language == 'en' %}
-                    {{ cat.name_en|truncatechars:15 }}
+                    {{ cat.name_en }}
                   {% else %}
-                    {{ cat.name_bn|truncatechars:12 }}
+                    {{ cat.name_bn }}
                   {% endif %}
                 </a>
               </li>
-            {% elif forloop.counter == 11 %}
-              <!-- বাকি ক্যাটাগরিগুলোর জন্য 'আরও' ড্রপডাউন -->
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle more-dropdown" href="#" id="moreDropdown" 
-                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  {% if current_language == 'bn' %} আরও {% else %} More {% endif %}
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreDropdown">
-                  {% for remaining_cat in category_list %}
-                    {% if forloop.counter > 10 %}
-                      <li>
-                        <a class="dropdown-item {% if active_url == remaining_cat.slug %}active{% endif %}" 
-                           href="{% url 'category_news' remaining_cat.slug %}">
-                          {% if current_language == 'en' %}
-                            {{ remaining_cat.name_en }}
-                          {% else %}
-                            {{ remaining_cat.name_bn }}
-                          {% endif %}
-                        </a>
-                      </li>
-                    {% endif %}
-                  {% endfor %}
-                </ul>
-              </li>
             {% endif %}
           {% endfor %}
-        {% endwith %}
+        </ul>
+      </li>
+    {% endif %}
 
-      </ul>
+  {% endwith %}
+</ul>
+      
+      <div class="top-bar-modern">
+        <div class="top-right">
+          <div class="user-actions">
+            <div class="auth-buttons" id="authButtons">
+              <button class="btn-auth btn-login" id="loginBtnModal">
+                <i class="far fa-user"></i> {% if current_language == 'en' %}Login{% else %}লগইন{% endif %}
+              </button>
+              <button class="btn-auth btn-register" id="registerBtnModal">
+                <i class="fas fa-user-plus"></i> {% if current_language == 'en' %}Register{% else %}রেজিস্ট্রেশন{% endif %}
+              </button>
+            </div>
+            
+            <div class="user-profile-dropdown" id="userProfile" style="display: none;">
+              <div class="profile-trigger">
+                <div class="profile-avatar" id="profileAvatar">
+                  <img id="profileImage" src="/media/profile_pics/inbound2728597900894784363_1.jpg" alt="profile">
+                </div>
+                <div class="profile-info">
+                  <span class="profile-name" id="profileName">User</span>
+                </div>
+                <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+              </div>
+              <div class="dropdown-menu-profile">
+                <a href="{% url 'profile' %}" id="profileLink"><i class="far fa-user"></i> Profile</a>
+                <a id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              </div>
+            </div>
+          </div>
+          <button class="menu-toggle-btn" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
 
+<!-- LOGIN MODAL (Updated with Manual Email/Password + Social Logins) -->
+<div class="modal-overlay" id="loginModal">
+  <div class="auth-modal">
+    <div class="modal-header">
+      <button class="modal-close" id="closeLoginModalBtn"><i class="fas fa-times"></i></button>
+      <h2 class="modal-title">{% if current_language == 'bn' %}স্বাগতম!{% else %}Welcome Back!{% endif %}</h2>
+    </div>
+    <div class="modal-body">
+      <form id="loginForm">
+        <div class="form-group"><input type="email" id="loginEmail" class="form-input" placeholder="Email" required></div>
+        <div class="form-group"><input type="password" id="loginPassword" class="form-input" placeholder="Password" required></div>
+        <button type="submit" class="btn-submit">{% if current_language == 'bn' %}ইমেইল দিয়ে লগইন করুন{% else %}Login with Email{% endif %}</button>
+      </form>
+      <div class="switch-auth-link">{% if current_language == 'bn' %}নতুন ব্যবহারকারী?{% else %}New user?{% endif %} <a id="switchToRegisterFromLogin">{% if current_language == 'bn' %}নিবন্ধন করুন{% else %}Register{% endif %}</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="registerModal">
+  <div class="auth-modal">
+    <div class="modal-header">
+      <button class="modal-close" id="closeRegisterModalBtn">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <h2 class="modal-title">
+        {% if current_language == 'bn' %}অ্যাকাউন্ট তৈরি করুন{% else %}Create Account{% endif %}
+      </h2>
+    </div>
+
+    <div class="modal-body">
+      <form id="registerForm">
+        
+        <div class="form-group">
+          <input type="text" id="registerName" class="form-input"
+            placeholder="{% if current_language == 'bn' %}পূর্ণ নাম{% else %}Full Name{% endif %}" required>
+        </div>
+
+        <div class="form-group">
+          <input type="email" id="registerEmail" class="form-input"
+            placeholder="{% if current_language == 'bn' %}ইমেইল ঠিকানা{% else %}Email Address{% endif %}" required>
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="registerPassword" class="form-input"
+            placeholder="{% if current_language == 'bn' %}পাসওয়ার্ড দিন{% else %}Choose a Password{% endif %}" required>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          {% if current_language == 'bn' %}নিবন্ধন করুন{% else %}Register{% endif %}
+        </button>
+      </form>
+      
+      <div class="form-divider">
+        {% if current_language == 'bn' %}অথবা{% else %}OR{% endif %}
+      </div>
+      
+      <div class="social-login-section">
+        <div class="social-buttons">
+          
+          <button class="social-btn social-btn-google" id="googleRegisterBtn">
+            <i class="fab fa-google"></i>
+            {% if current_language == 'bn' %}গুগল দিয়ে সাইন আপ{% else %}Sign up with Google{% endif %}
+          </button>
+
+          <button class="social-btn social-btn-facebook" id="facebookRegisterBtn">
+            <i class="fab fa-facebook-f"></i>
+            {% if current_language == 'bn' %}ফেসবুক দিয়ে সাইন আপ{% else %}Sign up with Facebook{% endif %}
+          </button>
+
+          <button class="social-btn social-btn-github" id="githubRegisterBtn">
+            <i class="fab fa-github"></i>
+            {% if current_language == 'bn' %}গিটহাব দিয়ে সাইন আপ{% else %}Sign up with GitHub{% endif %}
+          </button>
+
+        </div>
+      </div>
+      
+      <div class="switch-auth-link">
+        {% if current_language == 'bn' %}
+          আগে থেকেই অ্যাকাউন্ট আছে?
+          <a id="switchToLoginFromRegister">লগইন করুন</a>
+        {% else %}
+          Already have an account?
+          <a id="switchToLoginFromRegister">Login</a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- ==================== NEW PROTHOM ALO STYLE FULL PAGE MENU ==================== -->
+<div class="sidebar-menu" id="sidebarMenu">
+  <div class="pa-container">
+    <div class="pa-header">
+       <a href="/" class="pa-logo">
+          <img src="{% static 'news/landing/images/logo.png' %}" alt="iNews24" class="logo-img">
+        </a>
+      <button class="pa-close-btn" id="sidebarCloseBtn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="pa-body-wrapper">
+      <!-- Left Side -->
+<div class="pa-left-nav">
+  <div class="pa-top-menu">
+    <a href="/">
+      {% if current_language == 'bn' %}প্রচ্ছদ{% else %}Home{% endif %}
+    </a>
+
+    {% for cat in categories %}
+      {% if forloop.counter <= 9 %}
+        <a class="nav-link {% if active_url == cat.slug %}active{% endif %}" 
+           href="{% url 'category_news' cat.slug %}">
+          {% if current_language == 'en' %}
+            {{ cat.name_en|truncatechars:15 }}
+          {% else %}
+            {{ cat.name_bn|truncatechars:12 }}
+          {% endif %}
+        </a>
+      {% endif %}
+    {% endfor %}
+
+    <a href="#">
+      {% if current_language == 'bn' %}ছবি{% else %}Photo{% endif %}
+    </a>
+    <a href="#">
+      {% if current_language == 'bn' %}ভিডিও{% else %}Video{% endif %}
+    </a>
+  </div>
+
+  <div class="pa-category-rows">
+    {% for cat in categories %}
+      <div class="pa-row">
+
+        <div class="pa-row-title">
+          <a href="{% url 'category_news' cat.slug %}">
+            {% if current_language == 'bn' %}
+              {{ cat.name_bn }}
+            {% else %}
+              {{ cat.name_en }}
+            {% endif %}
+          </a>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        {# ✅ FIX: category → news → tags #}
+        <div class="pa-sub-items">
+          {% for news in cat.news.all %}
+            {% for tag in news.tags.all %}
+              <a href="{% url 'tag_news' tag.slug %}">{{ tag.name_bn }}</a>
+            {% endfor %}
+          {% endfor %}
+        </div>
+
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+      <!-- Right Side -->
+      <div class="pa-right-panel">
+        <div class="pa-user-section" id="sidebarUserInfo" style="display: none;">
+          <div class="pa-user-card">
+            <div class="profile-avatar" id="sidebarAvatar" style="width:32px; height:32px; font-size:12px;">U</div>
+            <span id="sidebarUserName" style="font-weight: 600;">User Name</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: auto;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
-// মোবাইলে ড্রপডাউন ঠিকমতো কাজ করার জন্য
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.innerWidth <= 992) {
-        const dropdowns = document.querySelectorAll('.dropdown-toggle');
-        dropdowns.forEach(dropdown => {
-            dropdown.addEventListener('click', function(e) {
-                e.preventDefault();
-                const parent = this.closest('.dropdown');
-                if (parent) {
-                    parent.classList.toggle('show');
-                    const menu = parent.querySelector('.dropdown-menu');
-                    if (menu) {
-                        menu.classList.toggle('show');
-                    }
-                }
-            });
-        });
+// =====================
+// USER STATE
+// =====================
+let currentUser = null;
+
+// =====================
+// STORAGE
+// =====================
+function saveUserToStorage(user) {
+  localStorage.setItem('inews24_user', JSON.stringify(user));
+}
+
+function loadUserFromStorage() {
+  const saved = localStorage.getItem('inews24_user');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      return currentUser;
+    } catch (e) {
+      return null;
     }
+  }
+  return null;
+}
+
+function clearUserStorage() {
+  localStorage.removeItem('inews24_user');
+}
+
+// =====================
+// UI UPDATE - LOGIN
+// =====================
+function updateUIForLoggedInUser(user) {
+  const authButtons = document.getElementById('authButtons');
+  const userProfile = document.getElementById('userProfile');
+
+  if (authButtons) authButtons.style.display = 'none';
+  if (userProfile) userProfile.style.display = 'block';
+
+  const name = user.name || 'User';
+
+  const profileName = document.getElementById('profileName');
+  const profileAvatar = document.getElementById('profileAvatar');
+
+  if (profileName) profileName.textContent = name;
+  if (profileAvatar) profileAvatar.textContent = name.charAt(0).toUpperCase();
+
+  updateSidebarForLoggedInUser(user);
+}
+
+// =====================
+// SIDEBAR USER
+// =====================
+function updateSidebarForLoggedInUser(user) {
+  const sidebarUserInfo = document.getElementById('sidebarUserInfo');
+
+  if (sidebarUserInfo) {
+    sidebarUserInfo.style.display = 'block';
+
+    const name = user.name || 'User';
+
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarAvatar = document.getElementById('sidebarAvatar');
+
+    if (sidebarUserName) sidebarUserName.textContent = name;
+    if (sidebarAvatar) sidebarAvatar.textContent = name.charAt(0).toUpperCase();
+  }
+}
+
+// =====================
+// UI UPDATE - LOGOUT
+// =====================
+function updateUIForLoggedOutUser() {
+  const authButtons = document.getElementById('authButtons');
+  const userProfile = document.getElementById('userProfile');
+  const sidebarUserInfo = document.getElementById('sidebarUserInfo');
+
+  if (authButtons) authButtons.style.display = 'flex';
+  if (userProfile) userProfile.style.display = 'none';
+  if (sidebarUserInfo) sidebarUserInfo.style.display = 'none';
+
+  clearUserStorage();
+  currentUser = null;
+}
+
+// =====================
+// MANUAL LOGIN HANDLER (Manual Email/Password Setup)
+// =====================
+async function handleLoginSubmit(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+  try {
+    const response = await fetch('/api/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Login failed");
+      return;
+    }
+
+    currentUser = data.user;
+    saveUserToStorage(data.user);
+    updateUIForLoggedInUser(data.user);
+
+    closeLoginModal();
+    alert("✅ Login successful");
+
+  } catch (error) {
+    alert("Something went wrong!");
+  }
+}
+// =====================
+// MANUAL REGISTER HANDLER
+// =====================
+async function handleRegisterSubmit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('registerName').value;
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+  try {
+    const response = await fetch('/api/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Registration failed");
+      return;
+    }
+
+    currentUser = data.user;
+    saveUserToStorage(data.user);
+    updateUIForLoggedInUser(data.user);
+
+    closeRegisterModal();
+    alert("🎉 Registration successful!");
+
+  } catch (error) {
+    alert("Something went wrong!");
+  }
+}
+
+
+// =====================
+// SOCIAL LOGIN HANDLERS (Google, Facebook, GitHub)
+// =====================
+function handleSocialLogin(provider) {
+  // In a real app, this would redirect to OAuth endpoint
+  // For demo, we'll create a mock user
+  const mockEmail = `user_${Date.now()}@${provider}.com`;
+  const user = {
+    email: mockEmail,
+    name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
+    loginMethod: provider
+  };
+
+  currentUser = user;
+  saveUserToStorage(user);
+  updateUIForLoggedInUser(user);
+  closeLoginModal();
+  closeRegisterModal();
+  alert(`✅ Logged in with ${provider.charAt(0).toUpperCase() + provider.slice(1)} as ${user.name}`);
+}
+
+// =====================
+// LOGOUT
+// =====================
+function handleLogout() {
+  if (confirm("Are you sure you want to logout?")) {
+    updateUIForLoggedOutUser();
+    alert("✅ Successfully logged out!");
+  }
+}
+
+// =====================
+// MODAL CONTROLS
+// =====================
+function openLoginModal() {
+  document.getElementById('loginModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLoginModal() {
+  document.getElementById('loginModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function openRegisterModal() {
+  document.getElementById('registerModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRegisterModal() {
+  document.getElementById('registerModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function switchToRegister() {
+  closeLoginModal();
+  setTimeout(openRegisterModal, 200);
+}
+
+function switchToLogin() {
+  closeRegisterModal();
+  setTimeout(openLoginModal, 200);
+}
+
+// =====================
+// SIDEBAR CONTROLS
+// =====================
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebarMenu');
+
+  if (sidebar.classList.contains('active')) {
+    sidebar.classList.remove('active');
+    document.body.style.overflow = '';
+  } else {
+    sidebar.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// =====================
+// INITIALIZATION
+// =====================
+document.addEventListener('DOMContentLoaded', function () {
+  // Load user from storage
+  const user = loadUserFromStorage();
+  if (user) {
+    currentUser = user;
+    updateUIForLoggedInUser(user);
+  }
+
+  // LOGIN / REGISTER MODAL BUTTONS
+  document.getElementById('loginBtnModal')?.addEventListener('click', openLoginModal);
+  document.getElementById('registerBtnModal')?.addEventListener('click', openRegisterModal);
+
+  document.getElementById('closeLoginModalBtn')?.addEventListener('click', closeLoginModal);
+  document.getElementById('closeRegisterModalBtn')?.addEventListener('click', closeRegisterModal);
+
+  // FORM SUBMISSIONS
+  document.getElementById('loginForm')?.addEventListener('submit', handleLoginSubmit);
+  document.getElementById('registerForm')?.addEventListener('submit', handleRegisterSubmit);
+
+  // SWITCH BETWEEN MODALS
+  document.getElementById('switchToRegisterFromLogin')?.addEventListener('click', switchToRegister);
+  document.getElementById('switchToLoginFromRegister')?.addEventListener('click', switchToLogin);
+
+  // LOGOUT BUTTON
+  document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+
+  // SIDEBAR BUTTONS
+  document.getElementById('menuToggleBtn')?.addEventListener('click', toggleSidebar);
+  document.getElementById('sidebarCloseBtn')?.addEventListener('click', toggleSidebar);
+
+  // SOCIAL LOGIN BUTTONS (Login Modal)
+  document.getElementById('googleLoginBtn')?.addEventListener('click', function() { handleSocialLogin('google'); });
+  document.getElementById('facebookLoginBtn')?.addEventListener('click', function() { handleSocialLogin('facebook'); });
+  document.getElementById('githubLoginBtn')?.addEventListener('click', function() { handleSocialLogin('github'); });
+
+  // SOCIAL LOGIN BUTTONS (Register Modal)
+  document.getElementById('googleRegisterBtn')?.addEventListener('click', function() { handleSocialLogin('google'); });
+  document.getElementById('facebookRegisterBtn')?.addEventListener('click', function() { handleSocialLogin('facebook'); });
+  document.getElementById('githubRegisterBtn')?.addEventListener('click', function() { handleSocialLogin('github'); });
+
+  // Escape key closes modals and sidebar
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeLoginModal();
+      closeRegisterModal();
+      const sidebar = document.getElementById('sidebarMenu');
+      if (sidebar && sidebar.classList.contains('active')) {
+        toggleSidebar();
+      }
+    }
+  });
 });
+
+async function loadProfile() {
+  try {
+    const res = await fetch('/api/profile/profile-pic/', { cache: "no-store" });
+    const data = await res.json();
+
+    const user = data.user;
+    const img = document.getElementById('profileImage');
+
+    if (!img) return;
+
+    if (user.profile_pic) {
+      const fullUrl = window.location.origin + user.profile_pic;
+
+      // cache busting (IMPORTANT)
+      img.src = fullUrl + "?t=" + new Date().getTime();
+    } else {
+      img.src = "/static/news/landing/images/default-user.png";
+    }
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadProfile);
 </script>

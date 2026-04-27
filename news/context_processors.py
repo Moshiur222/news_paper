@@ -19,6 +19,17 @@ def top_news(request):
 
     return context
 
+
+def all_news(request):
+    all_newses = News.objects.all().order_by('-id')
+    context = {
+        'all_newses': all_newses,
+    }
+
+    return context
+
+
+
 def company_info(request):
     company_infos = CompanyInfo.objects.all()
     context = {

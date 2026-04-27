@@ -85,6 +85,7 @@ TEMPLATES = [
                 'news.context_processors.category',
                 'news.context_processors.top_news',
                 'news.context_processors.company_info',
+                'news.context_processors.all_news',
             ],
         },
     },

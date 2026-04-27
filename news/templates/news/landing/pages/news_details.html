@@ -976,10 +976,6 @@
                                 <form id="commentForm" onsubmit="submitComment(event)">
                                     {% csrf_token %}
                                     <div class="comment-input-group">
-                                        <label for="commentName">{% if current_language == 'bn' %}আপনার নাম *{% else %}Your Name *{% endif %}</label>
-                                        <input type="text" id="commentName" placeholder="{% if current_language == 'bn' %}আপনার নাম লিখুন{% else %}Enter your name{% endif %}" required>
-                                    </div>
-                                    <div class="comment-input-group">
                                         <label for="commentText">{% if current_language == 'bn' %}আপনার মন্তব্য *{% else %}Your Comment *{% endif %}</label>
                                         <textarea id="commentText" rows="3" placeholder="{% if current_language == 'bn' %}এখানে মন্তব্য লিখুন...{% else %}Write your comment here...{% endif %}" required></textarea>
                                     </div>

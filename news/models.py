@@ -40,6 +40,11 @@ class User(AbstractUser):
     objects = UserManager()
     def __str__(self):
         return self.email
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+
+    profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
 
 # ================= LOCATION =================
 class Location(models.Model):
@@ -127,23 +132,21 @@ class PollVote(models.Model):
 # ================= COMMENT =================
 
 class Comment(models.Model):
-    name = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     message = models.TextField(null=True, blank=True)
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.name
-
-
 class CommentReply(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="replies")
-    name = models.CharField(max_length=100)
     message = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
 
 class Tag(models.Model):
     name_bn = models.CharField(max_length=50, null=True)

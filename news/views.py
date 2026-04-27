@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login, logout
@@ -16,6 +17,190 @@ from .models import *
 import json
 
 
+
+# ================= AUTH =================
+
+def login_api(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        email = data.get("email")
+        password = data.get("password")
+
+        user = authenticate(request, username=email, password=password)
+
+        if user:
+            login(request, user)
+            return JsonResponse({
+                "message": "Login successful",
+                "user": {
+                    "name": user.first_name,
+                    "email": user.email,
+                    "user_type": user.user_type
+                }
+            })
+
+        return JsonResponse({"error": "Invalid credentials"}, status=400)
+
+
+def register_api(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            name = data.get("name")
+            email = data.get("email")
+            password = data.get("password")
+
+            if not name or not email or not password:
+                return JsonResponse({"error": "All fields required"}, status=400)
+
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({"error": "User already exists"}, status=400)
+
+            user = User.objects.create_user(
+                email=email,
+                password=password,
+                first_name=name,
+                user_type=2
+            )
+
+            # AUTO CREATE PROFILE (IMPORTANT FIX)
+            Profile.objects.create(user=user)
+
+            return JsonResponse({
+                "message": "User created successfully",
+                "user": {
+                    "name": user.first_name,
+                    "email": user.email,
+                    "user_type": user.user_type
+                }
+            })
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+
+# ================= PROFILE =================
+
+@login_required
+def profile_view(request):
+    user = request.user
+
+    comments = Comment.objects.filter(user=user).order_by('-created_at')
+
+    # SAFE PROFILE GET (FIX ERROR)
+    profile, created = Profile.objects.get_or_create(user=user)
+
+    return render(request, 'news/landing/pages/profile.html', {
+        'user_profile': user,
+        'profile': profile,
+        'comments_list': comments,
+        'comments_count': comments.count(),
+    })
+
+def user_profile_api(request):
+    profile = Profile.objects.get(user=request.user)
+
+    data = {
+        "user": {
+            "name": profile.user.username,
+            "email": profile.user.email,
+            "profile_pic": profile.profile_pic.url if profile.profile_pic else None,
+        }
+    }
+
+    return JsonResponse(data)
+
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user = request.user
+
+        user.first_name = data.get('name', user.first_name)
+        user.save()
+
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False})
+
+
+@login_required
+def upload_profile_pic(request):
+    if request.method == 'POST' and request.FILES.get('profile_pic'):
+
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        profile.profile_pic = request.FILES['profile_pic']
+        profile.save()
+
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False})
+
+
+@login_required
+def remove_profile_pic(request):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    profile.profile_pic = None
+    profile.save()
+
+    return JsonResponse({'success': True})
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user = request.user
+
+        if not check_password(data.get('current_password'), user.password):
+            return JsonResponse({'success': False, 'error': 'Wrong password'})
+
+        user.set_password(data.get('new_password'))
+        user.save()
+
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False})
+
+
+@login_required
+def upload_profile_pic(request):
+    if request.method == 'POST' and request.FILES.get('profile_pic'):
+        profile = request.user.profile
+        profile.profile_pic = request.FILES['profile_pic']
+        profile.save()
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False})
+
+@login_required
+def remove_profile_pic(request):
+    profile = request.user.profile
+    profile.profile_pic = None
+    profile.save()
+    return JsonResponse({'success': True})
+
+
+@csrf_exempt
+def delete_comment(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'})
+    
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        comment_id = data.get('comment_id')
+        
+        try:
+            comment = Comment.objects.get(id=comment_id, user=request.user)
+            comment.delete()
+            return JsonResponse({'success': True})
+        except Comment.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Comment not found'})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 
 
@@ -510,8 +695,11 @@ def admin(request):
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            login(request, user)
-            return redirect("dashboard")
+            if user.user_type == 1:  # admin
+                login(request, user)
+                return redirect("dashboard")
+            else:
+                messages.error(request, "You are not authorized as admin")
         else:
             messages.error(request, "Invalid email or password")
 

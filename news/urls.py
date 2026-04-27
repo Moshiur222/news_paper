@@ -4,7 +4,18 @@ from .views import *
 urlpatterns = [
     path('admin/', admin, name='admin'),
     path('', home, name='home'),
+    path('api/login/', login_api, name='login_api'),
+    path('api/register/', register_api, name='register_api'),
     path('location/<slug:slug>/', location_news, name='location_news'),
+
+
+    path('profile/', profile_view, name='profile'),
+    path('api/profile/update/', update_profile, name='update_profile'),
+    path('api/profile/change-password/', change_password, name='change_password'),
+    path('api/profile/upload-pic/', upload_profile_pic, name='upload_profile_pic'),
+    path('api/profile/remove-pic/', remove_profile_pic, name='remove_profile_pic'),
+    path('api/comment/delete/', delete_comment, name='delete_comment'),
+    path('api/profile/profile-pic/', user_profile_api, name='profile_pic'),
     
     # ========== TRENDING NEWS URLs ==========
     path('trending/', trending, name='trending'),

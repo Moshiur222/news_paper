@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mega Menu</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Hind Siliguri', sans-serif;
+  background: #fff;
+}
+
+/* Header */
+.menu-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+
+.menu-header img {
+  height: 40px;
+}
+
+.close-btn {
+  position: absolute;
+  right: 20px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Layout */
+.menu-container {
+  display: flex;
+  padding: 20px 40px;
+}
+
+/* Left side */
+.menu-left {
+  flex: 3;
+}
+
+.menu-row {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-title {
+  width: 150px;
+  font-weight: 600;
+}
+
+.menu-title::after {
+  content: ">";
+  color: red;
+  margin-left: 10px;
+}
+
+.menu-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.menu-links a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.menu-links a:hover {
+  color: red;
+}
+
+/* Right side */
+.menu-right {
+  flex: 1;
+  padding-left: 30px;
+  border-left: 1px solid #eee;
+}
+
+.profile-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-box img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.search-box {
+  margin: 15px 0;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.social-icons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.social-icons div {
+  width: 30px;
+  height: 30px;
+  background: #eee;
+  border-radius: 50%;
+}
+
+/* Apps */
+.apps img {
+  width: 120px;
+  margin-top: 10px;
+}
+
+/* Footer links */
+.footer-links {
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="menu-header">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Prothom_Alo_Logo.svg">
+  <div class="close-btn">✕</div>
+</div>
+
+<div class="menu-container">
+
+  <!-- LEFT -->
+  <div class="menu-left">
+
+    <div class="menu-row">
+      <div class="menu-title">বাংলাদেশ</div>
+      <div class="menu-links">
+        <a href="#">রাজনীতি</a>
+        <a href="#">জেলা</a>
+        <a href="#">অপরাধ</a>
+      </div>
+    </div>
+
+    <div class="menu-row">
+      <div class="menu-title">বিশ্ব</div>
+      <div class="menu-links">
+        <a href="#">ইউরোপ</a>
+        <a href="#">মধ্যপ্রাচ্য</a>
+        <a href="#">আমেরিকা</a>
+      </div>
+    </div>
+
+    <div class="menu-row">
+      <div class="menu-title">খেলা</div>
+      <div class="menu-links">
+        <a href="#">ক্রিকেট</a>
+        <a href="#">ফুটবল</a>
+        <a href="#">টেনিস</a>
+      </div>
+    </div>
+
+    <div class="menu-row">
+      <div class="menu-title">বিনোদন</div>
+      <div class="menu-links">
+        <a href="#">টিভি</a>
+        <a href="#">সিনেমা</a>
+        <a href="#">গান</a>
+      </div>
+    </div>
+
+    <div class="menu-row">
+      <div class="menu-title">প্রযুক্তি</div>
+      <div class="menu-links">
+        <a href="#">মোবাইল</a>
+        <a href="#">গ্যাজেট</a>
+        <a href="#">AI</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="menu-right">
+
+    <div class="profile-box">
+      <img src="https://i.pravatar.cc/100">
+      <div>Moshiur</div>
+    </div>
+
+    <div class="search-box">
+      <input type="text" placeholder="খুঁজুন">
+    </div>
+
+    <div class="social-icons">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div class="apps">
+      <p>মোবাইল অ্যাপ</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg">
+      <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg">
+    </div>
+
+    <div class="footer-links">
+      <a href="#">আমাদের সম্পর্কে</a>
+      <a href="#">যোগাযোগ</a>
+      <a href="#">নীতিমালা</a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
